@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "utils.h"
+#include "prime.h"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -47,17 +48,14 @@ int main(int argc, const char** argv) {
             }
             int base = atoi(data);
             int pow =  atoi(argv[3]);
-            int res = custom_pow(base, pow);    // TODO: Implement me
+            int res = custom_pow(base, pow);
             printf("%i\n", res);
             break;
         }
         case TST_MOD_IMPL: {
-            // Comment for prevent `unused variable` error
-            // int num = atoi(data);
-
-            // TODO: Print to stdout `1` if `num` is prime number and `0` otherwise
-            // This function MUST be implemented in
-            // a separate C-module (not in `main` or `utils` module)
+            int num = atoi(data);
+            int res = prime_number(num);
+            printf("%i\n", res);
             break;
         }
         default: {
