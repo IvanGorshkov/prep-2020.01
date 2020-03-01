@@ -6,8 +6,12 @@ size_t custom_strlen(const char* str) {
 }
 
 // TODO: Implement `power of` function
-/*
+
 int custom_pow(int base, int power) {
-    return 0;
+    int res=1;
+    for (; power>0; power--){
+        res = res * base;
+    }
+    return res;
 }
-*/
+

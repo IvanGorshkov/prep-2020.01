@@ -45,13 +45,10 @@ int main(int argc, const char** argv) {
             if (argc != 4) {
                 return ERR_ARGS_COUNT;
             }
-            /* Comment to prevent `unused parameter` error
             int base = atoi(data);
             int pow =  atoi(argv[3]);
             int res = custom_pow(base, pow);    // TODO: Implement me
-
             printf("%i\n", res);
-            */
             break;
         }
         case TST_MOD_IMPL: {
