@@ -45,8 +45,7 @@ int main(int argc, const char** argv) {
             if (argc != 4) {
                 return ERR_ARGS_COUNT;
             }
-            int res = custom_pow(atoi(data), atoi(argv[3]));
-            printf("%i\n", res);
+            printf("%i\n", custom_pow(atoi(data), atoi(argv[3])));
             break;
         }
         case TST_MOD_IMPL: {
