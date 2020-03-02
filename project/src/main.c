@@ -38,24 +38,19 @@ int main(int argc, const char** argv) {
 
     switch (test_case) {
         case TST_FOO_FIX: {
-            size_t res = custom_strlen(data);
-            printf("%zu\n", res);
+            printf("%zu\n", custom_strlen(data));
             break;
         }
         case TST_FOO_IMPL: {
             if (argc != 4) {
                 return ERR_ARGS_COUNT;
             }
-            int base = atoi(data);
-            int pow =  atoi(argv[3]);
-            int res = custom_pow(base, pow);
+            int res = custom_pow(atoi(data), atoi(argv[3]));
             printf("%i\n", res);
             break;
         }
         case TST_MOD_IMPL: {
-            int num = atoi(data);
-            int res = prime_number(num);
-            printf("%i\n", res);
+            printf("%i\n", prime_number(atoi(data)));
             break;
         }
         default: {
