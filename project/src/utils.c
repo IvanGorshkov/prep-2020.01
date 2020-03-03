@@ -1,4 +1,3 @@
-#include <string.h>
 #include "utils.h"
 
 size_t custom_strlen(const char* str) {

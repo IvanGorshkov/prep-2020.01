@@ -1,5 +1,4 @@
 #include "prime.h"
-#include <stdio.h>
 
 int prime_number(int num) {
     if (num <= 1) {
