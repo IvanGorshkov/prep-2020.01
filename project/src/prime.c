@@ -11,4 +11,3 @@ int prime_number(int num) {
     }
     return 1;
 }
-
