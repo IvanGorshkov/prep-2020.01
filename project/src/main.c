@@ -16,26 +16,33 @@ int main(int argc, const char** argv) {
     if (argc < 3) {
         return ERR_ARGS_COUNT;
     }
+
     const char* data = argv[2];
+
     switch (atoi(argv[1])) {
         case TST_FOO_FIX: {
             printf("%zu\n", custom_strlen(data));
             break;
         }
+
         case TST_FOO_IMPL: {
             if (argc != 4) {
                 return ERR_ARGS_COUNT;
             }
+
             printf("%i\n", custom_pow(atoi(data), atoi(argv[3])));
             break;
         }
+
         case TST_MOD_IMPL: {
-            printf("%i\n", prime_number(atoi(data)));
+            printf("%i\n", is_prime(atoi(data)));
             break;
         }
+
         default: {
             return ERR_WRONG_FLG;
         }
     }
+
     return 0;
 }
