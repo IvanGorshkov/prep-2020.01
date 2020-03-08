@@ -1,9 +1,8 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef MENU_H
+#define MENU_H
 
 #include <stdio.h>
-#include <stdlib.h>
 
 void output_menu(int num);
 
-#endif //UTILS_H
+#endif //MENU_H

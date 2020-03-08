@@ -7,13 +7,8 @@ void masterWrite(FILE *of_ptr, Data client) {
         int a = 0;
 
         fprintf(of_ptr, "%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n", client.number, client.name, client.surname, client.addres, client.tel_number, client.indebtedness, client.credit_limit, client.cash_payments);
-
-            puts("continue?\n 1 - yes\n 2- no");
-            if (scanf("%d",&a) != -1 && a == 2) {
-                break;
-           }
-
-   output_menu(1);
+        
+        output_menu(1);
     }
 }
 
@@ -25,13 +20,7 @@ void transactionWrite(FILE *of_ptr,Data transfer) {
 
             fprintf(of_ptr, "%-3d%-6.2f\n", transfer.number, transfer.cash_payments);
 
-            puts("continue?\n 1 - yes\n 2- no");
-
-            if (scanf("%d",&a) != -1 && a == 2) {
-                break;
-            }
-
-        output_menu(2);
+            output_menu(2);
         }
 }
 
