@@ -1,11 +1,16 @@
-#define UTILS_H
 #ifndef UTILS_H
+#define UTILS_H
 
 #include <stdio.h>
 #include <stdlib.h>
-#define filename "transaction.dat"
+#include "model.h"
+#include "filemodule.h"
+#include "menu.h"
 
-void masterWrite(FILE *ofPTR, Data Client);
-void transactionWrite(FILE *ofPTR, Data transfer);
-void blackRecord(FILE *ofPTR, FILE *ofPTR_2, FILE *blackrecord, Data client_data, Data transfer);
+#define filename_1 "record.dat"
+#define filename_2 "transaction.dat"
+#define filename_3 "blackrecord.dat"
+
+void print_menu(const char * const str);
+
 #endif //UTILS_H
