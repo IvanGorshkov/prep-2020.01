@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef PROJECT_INCLUDE_UTILS_H_
+#define PROJECT_INCLUDE_UTILS_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,4 +13,4 @@
 
 void print_menu(const char * const str);
 
-#endif //UTILS_H
+#endif  // PROJECT_INCLUDE_UTILS_H_

@@ -1,5 +1,5 @@
-#ifndef MODEL_H
-#define MODEL_H
+#ifndef PROJECT_INCLUDE_MODEL_H_
+#define PROJECT_INCLUDE_MODEL_H_
 struct Master_record{
   int number;
   char name[20];
@@ -12,4 +12,4 @@ struct Master_record{
 };
 typedef struct Master_record Data;
 
-#endif //MODEL_H
+#endif  // PROJECT_INCLUDE_MODEL_H_
