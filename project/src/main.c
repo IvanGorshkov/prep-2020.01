@@ -1,8 +1,9 @@
 #include "utils.h"
 
+
 int main(void) {
     int choice = 0;
-    FILE *ptr, *ptr_2, *blackrecord;
+    FILE *ptr, *ptr_2, *black_record;
     Data client_data = {0};
     Data transfer = {0};
     output_menu(3);
@@ -34,15 +35,15 @@ int main(void) {
             case 3:
                 ptr = fopen(filename_1, "r");
                 ptr_2 = fopen(filename_2, "r");
-                blackrecord = fopen(filename_3, "w");
+                black_record = fopen(filename_3, "w");
 
                 if (ptr == NULL || ptr_2 == NULL || &blackRecord == NULL) {
                     puts("exit");
                 } else {
-                    blackRecord(ptr, ptr_2, blackrecord, client_data,  transfer);
+                    blackRecord(ptr, ptr_2, black_record, client_data,  transfer);
                     fclose(ptr);
                     fclose(ptr_2);
-                    fclose(blackrecord);
+                    fclose(black_record);
                 }
 
                 break;
