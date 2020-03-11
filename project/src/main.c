@@ -37,7 +37,7 @@ int main(void) {
                 ptr_2 = fopen(filename_2, "r");
                 black_record = fopen(filename_3, "w");
 
-                if (ptr == NULL || ptr_2 == NULL || &blackRecord == NULL) {
+                if (ptr == NULL || ptr_2 == NULL || black_record == NULL) {
                     puts("exit");
                 } else {
                     blackRecord(ptr, ptr_2, black_record, client_data,  transfer);
