@@ -20,9 +20,9 @@ int main(void) {
     test_read_from_file(file_to_read, &got_data);
 
     if (data_cmp(&expected_data, &got_data) == EXIT_SUCCESS) {
-        printf("%s\n","SECCSESS");
+        printf("%s\n", "SECCSESS");
         return EXIT_SUCCESS;
     }
-    printf("%s\n","SOMTHING GOES WRONG");
+    printf("%s\n", "SOMTHING GOES WRONG");
     return EXIT_FAILURE;
 }
