@@ -3,7 +3,7 @@
 
 int main(void) {
     int choice = 0;
-    FILE *ptr, *ptr_2, *black_record;
+    FILE *ptr, *ptr_2, *ptr_3;
     Data client_data = {0};
     Data transfer = {0};
     output_menu(3);
@@ -16,7 +16,7 @@ int main(void) {
                 if (ptr == NULL) {
                     puts("Not acess");
                 } else {
-                    masterWrite(ptr, client_data);
+                    master_write(ptr, client_data);
                     fclose(ptr);
                 }
 
@@ -27,7 +27,7 @@ int main(void) {
                 if (ptr == NULL) {
                     puts("Not acess");
                 } else {
-                    transactionWrite(ptr, transfer);
+                    transaction_write(ptr, transfer);
                     fclose(ptr);
                 }
 
@@ -35,15 +35,15 @@ int main(void) {
             case 3:
                 ptr = fopen(filename_1, "r");
                 ptr_2 = fopen(filename_2, "r");
-                black_record = fopen(filename_3, "w");
+                ptr_3 = fopen(filename_3, "w");
 
-                if (ptr == NULL || ptr_2 == NULL || black_record == NULL) {
+                if (ptr == NULL || ptr_2 == NULL || ptr_3 == NULL) {
                     puts("exit");
                 } else {
-                    blackRecord(ptr, ptr_2, black_record, client_data,  transfer);
+                    black_record(ptr, ptr_2, ptr_3, client_data,  transfer);
                     fclose(ptr);
                     fclose(ptr_2);
-                    fclose(black_record);
+                    fclose(ptr_3);
                 }
 
                 break;
