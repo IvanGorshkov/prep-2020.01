@@ -10,7 +10,6 @@
 #define filename_1 "record.dat"
 #define filename_2 "transaction.dat"
 #define filename_3 "blackrecord.dat"
-
-void print_menu(const char * const str);
+#define end_of_file -1
 
 #endif  // PROJECT_INCLUDE_UTILS_H_

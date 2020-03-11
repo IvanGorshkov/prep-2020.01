@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include "model.h"
 #include "menu.h"
+#include "utils.h"
+
 
 void master_write(FILE *of_ptr, Data Client);
 void transaction_write(FILE *of_ptr, Data transfer);

@@ -6,7 +6,7 @@ int main(void) {
         .number = 1,
         .name = "name_1",
         .surname = "surname_1",
-        .addres = "address_1",
+        .address = "address_1",
         .tel_number = "tel_1",
         .indebtedness = 80.00,
         .credit_limit = 150.00,
@@ -19,11 +19,10 @@ int main(void) {
     test_write_to_file(file_to_write, &expected_data);
     test_read_from_file(file_to_read, &got_data);
 
-    if (data_cmp(&expected_data, &got_data)) {
-        puts("SECCSESS");
-    } else {
-        puts("SOMTHING GOES WRONG");
+    if (data_cmp(&expected_data, &got_data) == EXIT_SUCCESS) {
+        printf("%s\n","SECCSESS");
+        return EXIT_SUCCESS;
     }
-
-  return 0;
+    printf("%s\n","SOMTHING GOES WRONG");
+    return EXIT_FAILURE;
 }
