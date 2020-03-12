@@ -6,6 +6,7 @@
 #include <string.h>
 #include "model.h"
 #include "filemodule.h"
+#include "utils.h"
 
 void test_write_to_file(const char *file_name, Data *data);
 void test_read_from_file(const char *file_name, Data *data);
