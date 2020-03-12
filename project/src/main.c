@@ -1,22 +1,19 @@
 #include "utils.h"
 
-
 int main(void) {
     int choice = 0;
-    FILE *ptr_master = NULL;
-    FILE *ptr_transaction = NULL;
-    FILE *ptr_black_record = NULL;
     Data client_data = {0};
     Data transfer = {0};
     output_menu(main_menu);
 
-    while (scanf("%d", &choice) != end_of_file) {
+    while (scanf("%d", &choice) != EOF) {
         switch (choice) {
             case 1: {
+                FILE *ptr_master = NULL;
                 ptr_master = fopen(filename_1, "w+");
 
                 if (ptr_master == NULL) {
-                    printf("Not acess");
+                    printf("%s%s file", not_acess, filename_1);
                     break;
                 }
 
@@ -25,10 +22,11 @@ int main(void) {
                 break;
             }
             case 2: {
+                FILE *ptr_transaction = NULL;
                 ptr_transaction = fopen(filename_2, "w+");
 
                 if (ptr_transaction == NULL) {
-                    printf("Not acess");
+                    printf("%s%s file", not_acess, filename_2);
                     break;
                 }
 
@@ -37,12 +35,15 @@ int main(void) {
                 break;
             }
             case 3: {
+                FILE *ptr_master = NULL;
+                FILE *ptr_transaction = NULL;
+                FILE *ptr_black_record = NULL;
                 ptr_master = fopen(filename_1, "r");
                 ptr_transaction = fopen(filename_2, "r");
                 ptr_black_record = fopen(filename_3, "w+");
 
-                if (ptr_master == NULL || ptr_transaction == NULL) {
-                    printf("don't exist %s or %s files", filename_1, filename_2);
+                if (ptr_master == NULL || ptr_transaction == NULL || ptr_black_record == NULL) {
+                    printf("%s%s, %s or %s files", not_acess, filename_1, filename_2, filename_3);
                     break;
                 }
 

@@ -11,7 +11,7 @@ void master_write(FILE *of_ptr, Data client) {
                  client.tel_number,
                  &client.indebtedness,
                  &client.credit_limit,
-                 &client.cash_payments) != end_of_file) {
+                 &client.cash_payments) != EOF) {
         write_to_file(of_ptr, client);
         output_menu(menu_master);
     }
@@ -20,15 +20,15 @@ void master_write(FILE *of_ptr, Data client) {
 void transaction_write(FILE *of_ptr, Data transfer) {
     output_menu(menu_transaction);
 
-    while (scanf("%d %lf", &transfer.number, &transfer.cash_payments) != end_of_file) {
+    while (scanf("%d %lf", &transfer.number, &transfer.cash_payments) != EOF) {
         fprintf(of_ptr, "%-3d%-6.2f\n", transfer.number, transfer.cash_payments);
         output_menu(menu_transaction);
     }
 }
 
 void black_record(FILE *of_ptr, FILE *of_ptr_2, FILE *blackrecord, Data client_data, Data transfer) {
-    while (read_from_file(of_ptr, &client_data) != end_of_file) {
-         while (fscanf(of_ptr_2, "%d %lf", &transfer.number, &transfer.cash_payments) != end_of_file) {
+    while (read_from_file(of_ptr, &client_data) != EOF) {
+         while (fscanf(of_ptr_2, "%d %lf", &transfer.number, &transfer.cash_payments) != EOF) {
                 if (client_data.number == transfer.number && transfer.cash_payments != 0) {
                     client_data.credit_limit += transfer.cash_payments;
                 }

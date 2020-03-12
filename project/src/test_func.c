@@ -1,6 +1,5 @@
 #include "test_func.h"
 
-
 void test_write_to_file(const char *file_name, Data *data) {
     FILE *ptr_test = fopen(file_name, "w+");
     if (ptr_test == NULL) {

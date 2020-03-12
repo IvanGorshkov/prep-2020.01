@@ -1,6 +1,5 @@
 #include "menu.h"
 
-
 void output_menu(int num) {
     switch (num) {
         case 1:
