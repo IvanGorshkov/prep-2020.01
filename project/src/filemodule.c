@@ -3,7 +3,7 @@
 void master_write(FILE *of_ptr, Data client) {
     output_menu(menu_master);
 
-    while (scanf(" %d%20s%20s%30s%15s%lf%lf%lf",
+    while (scanf(" %d%19s%19s%29s%14s%lf%lf%lf",
                  &client.number,
                  client.name,
                  client.surname,
@@ -51,7 +51,7 @@ void write_to_file(FILE *of_ptr, Data client_data) {
 }
 
 int read_from_file(FILE *of_ptr, Data *client_data) {
-    return fscanf(of_ptr, "%d%20s%20s%20s%20s%lf%lf%lf",
+    return fscanf(of_ptr, "%d%19s%19s%29s%14s%lf%lf%lf",
                   &client_data->number,
                   client_data->name,
                   client_data->surname,
