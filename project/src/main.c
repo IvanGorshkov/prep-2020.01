@@ -9,8 +9,7 @@ int main(void) {
     while (scanf("%d", &choice) != EOF) {
         switch (choice) {
             case 1: {
-                FILE *ptr_master = NULL;
-                ptr_master = fopen(filename_1, "w+");
+                FILE *ptr_master = fopen(filename_1, "w+");
 
                 if (ptr_master == NULL) {
                     printf("%s%s file", not_acess, filename_1);
@@ -22,8 +21,7 @@ int main(void) {
                 break;
             }
             case 2: {
-                FILE *ptr_transaction = NULL;
-                ptr_transaction = fopen(filename_2, "w+");
+                FILE *ptr_transaction = fopen(filename_2, "w+");
 
                 if (ptr_transaction == NULL) {
                     printf("%s%s file", not_acess, filename_2);
@@ -35,12 +33,9 @@ int main(void) {
                 break;
             }
             case 3: {
-                FILE *ptr_master = NULL;
-                FILE *ptr_transaction = NULL;
-                FILE *ptr_black_record = NULL;
-                ptr_master = fopen(filename_1, "r");
-                ptr_transaction = fopen(filename_2, "r");
-                ptr_black_record = fopen(filename_3, "w+");
+                FILE *ptr_master = fopen(filename_1, "r");
+                FILE *ptr_transaction = fopen(filename_2, "r");
+                FILE *ptr_black_record = fopen(filename_3, "w+");
 
                 if (ptr_master == NULL || ptr_transaction == NULL || ptr_black_record == NULL) {
                     printf("%s%s, %s or %s files", not_acess, filename_1, filename_2, filename_3);
