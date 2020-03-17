@@ -4,17 +4,17 @@
 int main(void) {
     Matrix* matrix = create_matrix(3,3);
 
-    set_elem(matrix, 1, 1, 1);
-    set_elem(matrix, 1, 2, 2);
+    set_elem(matrix, 1, 1, 6);
+    set_elem(matrix, 1, 2, 7);
     set_elem(matrix, 1, 3, 3);
     printf("\n");
-    set_elem(matrix, 2, 1, 4);
-    set_elem(matrix, 2, 2, 5);
-    set_elem(matrix, 2, 3, 6);
+    set_elem(matrix, 2, 1, 22);
+    set_elem(matrix, 2, 2, 3);
+    set_elem(matrix, 2, 3, 4);
      printf("\n");
-    set_elem(matrix, 3, 1, 7);
-    set_elem(matrix, 3, 2, 8);
-    set_elem(matrix, 3, 3, 9);
+    set_elem(matrix, 3, 1, 6);
+    set_elem(matrix, 3, 2, 76);
+    set_elem(matrix, 3, 3, 6);
      printf("\n");
     
     double val;

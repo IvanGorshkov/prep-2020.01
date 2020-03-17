@@ -212,27 +212,57 @@ Matrix* mul(const Matrix* l, const Matrix* r){
 }
 
 int det(const Matrix* matrix, double* val){
-    if(matrix == NULL) {
+    if (matrix == NULL || val == NULL) {
         return EXIT_FAILURE;
     }
-    
+    *val = 1;
     int rows = matrix->rows;
     int cols = matrix->cols;
     
-    for(int i = 0; i < rows - 1; i++) {
-        for(int j = i + 1; j < rows; j++) {
-            double k = -matrix->matrix[cols * i+j] / matrix->matrix[i*i];
-            
-            for(int col = j; col < rows; col++) {
-                matrix->matrix[cols * i+j]  += matrix->matrix[cols * i+col] * k;
+    if (rows != cols){
+        return EXIT_FAILURE;
+    }
+    if (rows == 1) {
+        *val = matrix->matrix[0];
+    }
+    if (rows == 2) {
+        *val = matrix->matrix[0] * matrix->matrix[3] - matrix->matrix[1] * matrix->matrix[2];
+    }
+    
+    if (rows > 2) {
+        Matrix* det_matrix = create_matrix(matrix->rows, matrix->cols);
+        
+        if (det_matrix == NULL) {
+            return EXIT_FAILURE;
+        }
+        
+        int n = cols;
+        
+        for (int i = 0; i < n*n; i++) {
+            det_matrix->matrix[i] = matrix->matrix[i];
+        }
+        
+        for (int x = 1; x < n; x++) {
+            for (int y = x; y < n; y++) {
+                double d = det_matrix->matrix[cols * y+(x-1)] / det_matrix->matrix[cols * (x-1) + (x-1)];
+                for (int i = 0; i < n+1; i++) {
+                    det_matrix->matrix[cols * y + i] = det_matrix->matrix[cols * y + i] - d * det_matrix->matrix[cols * (x-1) + i];
+                }
             }
         }
+        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < rows; j++) {
+                if (i == j) {
+                    *val *= det_matrix->matrix[cols * j+i];
+                    break;
+                }
+            }
+        }
+        
+        free_matrix(det_matrix);
     }
-    print_mat(matrix);
-    double Det = 1;
-    for(int i = 0; i < rows; i++)
-        Det *= matrix->matrix[i*i];
-    val++;
+    printf("%f", *val);
     return EXIT_SUCCESS;
 }
 void print_mat(const Matrix* matrix) {
