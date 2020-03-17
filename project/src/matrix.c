@@ -2,7 +2,7 @@
 
 
 Matrix* create_matrix(size_t rows, size_t cols) {
-    if(rows = 0 || cols = 0) {
+    if(rows == 0 || cols == 0) {
         return NULL;
     }
 
@@ -10,7 +10,7 @@ Matrix* create_matrix(size_t rows, size_t cols) {
 
     if(matrix == NULL) {
         printf("%s","Can not calloc memory");
-        return NULL[;]
+        return NULL;
     }
 
     matrix->rows = rows;
@@ -61,22 +61,46 @@ int get_elem(const Matrix* matrix, size_t row, size_t col, double* val) {
         return EXIT_FAILURE;
     }
 
-    if (matrix->cols < col || matrix->rows <= row) {
+    if (matrix->cols < col || matrix->rows < row) {
         return EXIT_FAILURE;
     }
 
     *val = matrix->matrix[row * col - 1];
     return EXIT_SUCCESS;
 }
+
 int set_elem(Matrix* matrix, size_t row, size_t col, double val) {
     if (matrix == NULL || row <= 0 || col <= 0) {
         return EXIT_FAILURE;
     }
     
-    if (matrix->cols < col || matrix->rows <= row) {
+    if (matrix->cols < col || matrix->rows < row) {
         return EXIT_FAILURE;
     }
     
-    matrix->matrix[col*row-1] = val;
+    matrix->matrix[col * row - 1] = val;
     return EXIT_SUCCESS;
+}
+
+Matrix* mul_scalar(const Matrix* matrix, double val) {
+    if(matrix == NULL) {
+        return NULL;
+    }
+    
+    Matrix* mul_matrix = create_matrix(matrix->rows, matrix->cols);
+    
+    if(mul_matrix == NULL) {
+        return NULL;
+    }
+    
+    int cols = mul_matrix->cols;
+    int rows = mul_matrix->rows;
+    
+    for (int i = 0; i < cols; i++) {
+        for (int j = 0; j < rows; j++) {
+            double data = matrix->matrix[i * j] * val;
+            mul_matrix->matrix[i * j] = data;
+        }
+    }
+    return mul_matrix;
 }

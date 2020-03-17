@@ -2,12 +2,13 @@
 #define _MATRIX_H_
 
 #include <stddef.h>
-
+#include <stdlib.h>
+#include <stdio.h>
 
 typedef struct Matrix {
     size_t rows;
     size_t cols;
-    double** matrix;
+    double* matrix;
 } Matrix;
 
 // Init/release operations
