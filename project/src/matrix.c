@@ -65,7 +65,7 @@ int get_elem(const Matrix* matrix, size_t row, size_t col, double* val) {
         return EXIT_FAILURE;
     }
 
-    *val = matrix->matrix[row * col - 1];
+    *val = matrix->matrix[(matrix->cols * (row-1))+col-1];
     return EXIT_SUCCESS;
 }
 
@@ -77,8 +77,7 @@ int set_elem(Matrix* matrix, size_t row, size_t col, double val) {
     if (matrix->cols < col || matrix->rows < row) {
         return EXIT_FAILURE;
     }
-    
-    matrix->matrix[col * row - 1] = val;
+    matrix->matrix[(matrix->cols * (row-1))+col-1] = val;
     return EXIT_SUCCESS;
 }
 
@@ -96,11 +95,9 @@ Matrix* mul_scalar(const Matrix* matrix, double val) {
     int cols = mul_matrix->cols;
     int rows = mul_matrix->rows;
     
-    for (int i = 0; i < cols; i++) {
-        for (int j = 0; j < rows; j++) {
-            double data = matrix->matrix[i * j] * val;
-            mul_matrix->matrix[i * j] = data;
-        }
+    for (int i = 0; i < cols*rows; i++) {
+            double data = matrix->matrix[i] * val;
+            mul_matrix->matrix[i] = data;
     }
     return mul_matrix;
 }
@@ -111,11 +108,47 @@ Matrix* transp(const Matrix* matrix) {
     }
     
     Matrix* transp_matrix = create_matrix(matrix->cols, matrix->rows);
-    transp_matrix->matrix = matrix->matrix;
     
     if(transp_matrix == NULL) {
         return NULL;
     }
     
+    int cols = transp_matrix->cols;
+    int rows = transp_matrix->rows;
+    printf("%i\n",cols);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            transp_matrix->matrix[transp_matrix->cols * i+j] = matrix->matrix[matrix->cols * j+i];
+        }
+    }
     return transp_matrix;
+}
+
+Matrix* sum(const Matrix* l, const Matrix* r) {
+    if(l == NULL || r == NULL) {
+        return NULL;
+    }
+    
+    if(l->cols != r->cols && l->rows != r->rows) {
+        return NULL;
+    }
+    
+    Matrix* sum_matrix = create_matrix(l->rows, l->cols);
+    
+    if(sum_matrix == NULL) {
+        return NULL;
+    }
+    
+    int cols = sum_matrix->cols;
+    int rows = sum_matrix->rows;
+    
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            double data = l->matrix[l->cols * i+j] + r->matrix[r->cols * i+j];
+            sum_matrix->matrix[sum_matrix->cols * i+j] = data;
+            
+        }
+    }
+    
+    return sum_matrix;
 }

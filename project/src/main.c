@@ -2,26 +2,33 @@
 #include "matrix.h"
 
 int main(void) {
-    Matrix* matrix = create_matrix(10,10);
-    size_t rows = 0;
-    size_t cols = 0;
-    get_rows(matrix, &rows);
-    printf("%zu\n", rows);
-    get_cols(matrix, &cols);
-    printf("%zu\n", cols);
+    Matrix* matrix = create_matrix(4,3);
+
     set_elem(matrix, 1, 1, 1);
     set_elem(matrix, 1, 2, 2);
     set_elem(matrix, 1, 3, 3);
-    set_elem(matrix, 1, 4, 4);
+    printf("\n");
+    set_elem(matrix, 2, 1, 4);
+    set_elem(matrix, 2, 2, 5);
+    set_elem(matrix, 2, 3, 6);
+     printf("\n");
+    set_elem(matrix, 3, 1, 7);
+    set_elem(matrix, 3, 2, 8);
+    set_elem(matrix, 3, 3, 9);
+     printf("\n");
+    set_elem(matrix, 4, 1, 10);
+    set_elem(matrix, 4, 2, 12);
+    set_elem(matrix, 4, 3, 13);
+    
     double val;
-    get_elem(matrix, 1, 3, &val);
+    
+    Matrix *mul = mul_scalar(matrix,2);
+    get_elem(mul, 4, 3, &val);
     printf("%f\n", val);
-    Matrix* mul_matrix = mul_scalar(matrix, 2);
-    get_elem(mul_matrix, 1, 3, &val);
-    printf("%f\n", val);
-    Matrix* transp_matrix = transp(matrix);
-    get_elem(transp_matrix, 4, 1, &val);
-    printf("%f\n", val);
+    
+    Matrix *summatrix = sum(mul, matrix);
+    get_elem(summatrix, 4, 3, &val);
+       printf("%f\n", val);
     return 0;
 }
 
