@@ -1,23 +1,24 @@
 #include "test_func.h"
 
+
 void test_write_to_file(const char *file_name, Data *data) {
-    FILE *ptr_test = fopen(file_name, "w+");
-    if (ptr_test == NULL) {
-         printf("%s%s file", not_acess, file_name);
+    FILE *file_ptr_test = fopen(file_name, "w+");
+    if (file_ptr_test == NULL) {
+         printf("%s%s file", NOT_ACESS, file_name);
         return;
     }
-    write_to_file(ptr_test, *data);
-    fclose(ptr_test);
+    write_to_file(file_ptr_test, *data);
+    fclose(file_ptr_test);
 }
 
 void test_read_from_file(const char *file_name, Data *data) {
-    FILE *ptr_test = fopen(file_name, "r+");
-    if (ptr_test == NULL) {
-        printf("%s%s file", not_acess, file_name);
+    FILE *file_ptr_test = fopen(file_name, "r+");
+    if (file_ptr_test == NULL) {
+        printf("%s%s file", NOT_ACESS, file_name);
         return;
     }
-    read_from_file(ptr_test, data);
-    fclose(ptr_test);
+    read_from_file(file_ptr_test, data);
+    fclose(file_ptr_test);
 }
 
 int data_cmp(Data *got_data, Data *expected_data) {

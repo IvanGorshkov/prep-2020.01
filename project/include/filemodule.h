@@ -7,11 +7,15 @@
 #include "menu.h"
 #include "utils.h"
 
-void master_write(FILE *of_ptr, Data Client);
-void transaction_write(FILE *of_ptr, Data transfer);
-void black_record(FILE *of_ptr, FILE *of_ptr_2, FILE *blackrecord, Data client_data, Data transfer);
+void master_write(FILE *ptr_master, Data client);
+void transaction_write(FILE *ptr_transaction, Data transfer);
+void black_record_write(FILE *ptr_master,
+                        FILE *ptr_transaction,
+                        FILE *ptr_black_record,
+                        Data client_data,
+                        Data transfer);
 void output_menu(int num);
-void write_to_file(FILE *of_ptr, Data client_data);
-int read_from_file(FILE *of_ptr, Data *client_data);
+void write_to_file(FILE *ptr_file, Data client_data);
+int read_from_file(FILE *ptr_file, Data *client_data);
 
 #endif  // PROJECT_INCLUDE_FILEMODULE_H_

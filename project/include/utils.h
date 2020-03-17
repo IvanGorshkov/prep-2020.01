@@ -7,9 +7,9 @@
 #include "filemodule.h"
 #include "menu.h"
 
-#define filename_1 "record.dat"
-#define filename_2 "transaction.dat"
-#define filename_3 "blackrecord.dat"
-#define not_acess "Not acess to "
+#define RECORD_FILENAME "record.dat"
+#define TRANSACTION_FILENAME "transaction.dat"
+#define BLACKRECORD_FILENAME "blackrecord.dat"
+#define NOT_ACESS "Not acess to "
 
 #endif  // PROJECT_INCLUDE_UTILS_H_

@@ -4,15 +4,15 @@ int main(void) {
     int choice = 0;
     Data client_data = {0};
     Data transfer = {0};
-    output_menu(main_menu);
+    output_menu(MAIN_MENU);
 
     while (scanf("%d", &choice) != EOF) {
         switch (choice) {
             case 1: {
-                FILE *ptr_master = fopen(filename_1, "w+");
+                FILE *ptr_master = fopen(RECORD_FILENAME, "w+");
 
                 if (ptr_master == NULL) {
-                    printf("%s%s file", not_acess, filename_1);
+                    printf("%s%s file", NOT_ACESS, RECORD_FILENAME);
                     break;
                 }
 
@@ -21,10 +21,10 @@ int main(void) {
                 break;
             }
             case 2: {
-                FILE *ptr_transaction = fopen(filename_2, "w+");
+                FILE *ptr_transaction = fopen(TRANSACTION_FILENAME, "w+");
 
                 if (ptr_transaction == NULL) {
-                    printf("%s%s file", not_acess, filename_2);
+                    printf("%s%s file", NOT_ACESS, TRANSACTION_FILENAME);
                     break;
                 }
 
@@ -33,16 +33,32 @@ int main(void) {
                 break;
             }
             case 3: {
-                FILE *ptr_master = fopen(filename_1, "r");
-                FILE *ptr_transaction = fopen(filename_2, "r");
-                FILE *ptr_black_record = fopen(filename_3, "w+");
+                FILE *ptr_master = fopen(RECORD_FILENAME, "r");
+                FILE *ptr_transaction = fopen(TRANSACTION_FILENAME, "r");
+                FILE *ptr_black_record = fopen(BLACKRECORD_FILENAME, "w+");
 
                 if (ptr_master == NULL || ptr_transaction == NULL || ptr_black_record == NULL) {
-                    printf("%s%s, %s or %s files", not_acess, filename_1, filename_2, filename_3);
+                    printf("%s%s, %s or %s files",
+                           NOT_ACESS, RECORD_FILENAME,
+                           TRANSACTION_FILENAME,
+                           BLACKRECORD_FILENAME);
+
+                    if (ptr_master != NULL) {
+                        fclose(ptr_master);
+                    }
+
+                    if (ptr_transaction != NULL) {
+                        fclose(ptr_transaction);
+                    }
+
+                    if (ptr_black_record != NULL) {
+                        fclose(ptr_black_record);
+                    }
+
                     break;
                 }
 
-                black_record(ptr_master, ptr_transaction, ptr_black_record, client_data,  transfer);
+                black_record_write(ptr_master, ptr_transaction, ptr_black_record, client_data,  transfer);
                 fclose(ptr_master);
                 fclose(ptr_transaction);
                 fclose(ptr_black_record);
@@ -53,7 +69,7 @@ int main(void) {
                 break;
             }
 
-        output_menu(main_menu);
+        output_menu(MAIN_MENU);
     }
 
   return 0;
