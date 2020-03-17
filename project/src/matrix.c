@@ -39,7 +39,7 @@ int free_matrix(Matrix* matrix) {
 }
 
 int get_rows(const Matrix* matrix, size_t* rows) {
-    if (matrix == NULL && rows == NULL) {
+    if (matrix == NULL || rows == NULL) {
         return EXIT_FAILURE;
     }
 
@@ -48,10 +48,35 @@ int get_rows(const Matrix* matrix, size_t* rows) {
 }
 
 int get_cols(const Matrix* matrix, size_t* cols) {
-    if (matrix == NULL && cols == NULL) {
+    if (matrix == NULL || cols == NULL) {
         return EXIT_FAILURE;
     }
 
     *cols = matrix->cols;
+    return EXIT_SUCCESS;
+}
+
+int get_elem(const Matrix* matrix, size_t row, size_t col, double* val) {
+    if (matrix == NULL || val == NULL || row <= 0 || col <= 0) {
+        return EXIT_FAILURE;
+    }
+
+    if (matrix->cols < col || matrix->rows <= row) {
+        return EXIT_FAILURE;
+    }
+
+    *val = matrix->matrix[row * col - 1];
+    return EXIT_SUCCESS;
+}
+int set_elem(Matrix* matrix, size_t row, size_t col, double val) {
+    if (matrix == NULL || row <= 0 || col <= 0) {
+        return EXIT_FAILURE;
+    }
+    
+    if (matrix->cols < col || matrix->rows <= row) {
+        return EXIT_FAILURE;
+    }
+    
+    matrix->matrix[col*row-1] = val;
     return EXIT_SUCCESS;
 }
