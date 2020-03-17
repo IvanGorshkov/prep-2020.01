@@ -2,7 +2,7 @@
 #include "matrix.h"
 
 int main(void) {
-    Matrix* matrix = create_matrix(4,3);
+    Matrix* matrix = create_matrix(3,3);
 
     set_elem(matrix, 1, 1, 1);
     set_elem(matrix, 1, 2, 2);
@@ -16,9 +16,6 @@ int main(void) {
     set_elem(matrix, 3, 2, 8);
     set_elem(matrix, 3, 3, 9);
      printf("\n");
-    set_elem(matrix, 4, 1, 10);
-    set_elem(matrix, 4, 2, 11);
-    set_elem(matrix, 4, 3, 12);
     
     double val;
     
@@ -34,6 +31,7 @@ int main(void) {
      //  printf("%f\n", val);
     Matrix *mul_matrix = mul(matrix, trans);
     get_elem(mul_matrix, 2, 2, &val);
+    det(matrix, &val);
    // printf("%f\n", val);
     return 0;
 }

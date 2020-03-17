@@ -213,15 +213,42 @@ Matrix* mul(const Matrix* l, const Matrix* r){
 
 int det(const Matrix* matrix, double* val){
     if(matrix == NULL) {
-           return 0;
-       }
-       Matrix* mul_matrix = create_matrix(matrix->rows, matrix->cols);
-       if (mul_matrix == NULL) {
-           return 1;
-       }
+        return EXIT_FAILURE;
+    }
+    
+    int rows = matrix->rows;
+    int cols = matrix->cols;
+    
+    for(int i = 0; i < rows - 1; i++) {
+        for(int j = i + 1; j < rows; j++) {
+            double k = -matrix->matrix[cols * i+j] / matrix->matrix[i*i];
+            
+            for(int col = j; col < rows; col++) {
+                matrix->matrix[cols * i+j]  += matrix->matrix[cols * i+col] * k;
+            }
+        }
+    }
+    print_mat(matrix);
+    double Det = 1;
+    for(int i = 0; i < rows; i++)
+        Det *= matrix->matrix[i*i];
     val++;
-    return 2;
+    return EXIT_SUCCESS;
 }
+void print_mat(const Matrix* matrix) {
+    int rows = matrix->rows;
+    int cols = matrix->cols;
+    printf("\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%fl ",matrix->matrix[matrix->cols * i+j]);
+        
+        }
+        printf("\n");
+    }
+    
+}
+
 Matrix* adj(const Matrix* matrix){
     if(matrix == NULL) {
           }
