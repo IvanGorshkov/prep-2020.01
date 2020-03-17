@@ -104,3 +104,18 @@ Matrix* mul_scalar(const Matrix* matrix, double val) {
     }
     return mul_matrix;
 }
+
+Matrix* transp(const Matrix* matrix) {
+    if(matrix == NULL) {
+        return NULL;
+    }
+    
+    Matrix* transp_matrix = create_matrix(matrix->cols, matrix->rows);
+    transp_matrix->matrix = matrix->matrix;
+    
+    if(transp_matrix == NULL) {
+        return NULL;
+    }
+    
+    return transp_matrix;
+}

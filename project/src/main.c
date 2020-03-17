@@ -12,11 +12,15 @@ int main(void) {
     set_elem(matrix, 1, 1, 1);
     set_elem(matrix, 1, 2, 2);
     set_elem(matrix, 1, 3, 3);
+    set_elem(matrix, 1, 4, 4);
     double val;
     get_elem(matrix, 1, 3, &val);
     printf("%f\n", val);
     Matrix* mul_matrix = mul_scalar(matrix, 2);
     get_elem(mul_matrix, 1, 3, &val);
+    printf("%f\n", val);
+    Matrix* transp_matrix = transp(matrix);
+    get_elem(transp_matrix, 4, 1, &val);
     printf("%f\n", val);
     return 0;
 }
