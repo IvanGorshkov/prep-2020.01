@@ -5,6 +5,9 @@
 
 
 typedef struct Matrix {
+    size_t rows;
+    size_t cols;
+    double** matrix;
 } Matrix;
 
 // Init/release operations
