@@ -29,6 +29,9 @@ int main(void) {
     Matrix *summatrix = sum(mul, matrix);
     get_elem(summatrix, 4, 3, &val);
        printf("%f\n", val);
+    Matrix *submatrix = sub(summatrix, matrix);
+    get_elem(submatrix, 4, 3, &val);
+       printf("%f\n", val);
     return 0;
 }
 

@@ -152,3 +152,31 @@ Matrix* sum(const Matrix* l, const Matrix* r) {
     
     return sum_matrix;
 }
+Matrix* sub(const Matrix* l, const Matrix* r){
+    if(l == NULL || r == NULL) {
+           return NULL;
+       }
+       
+       if(l->cols != r->cols && l->rows != r->rows) {
+           return NULL;
+       }
+       
+       Matrix* sub_matrix = create_matrix(l->rows, l->cols);
+       
+       if(sub_matrix == NULL) {
+           return NULL;
+       }
+       
+       int cols = sub_matrix->cols;
+       int rows = sub_matrix->rows;
+       
+       for (int i = 0; i < rows; i++) {
+           for (int j = 0; j < cols; j++) {
+               double data = l->matrix[l->cols * i+j] - r->matrix[r->cols * i+j];
+               sub_matrix->matrix[sub_matrix->cols * i+j] = data;
+               
+           }
+       }
+       
+       return sub_matrix;
+}
