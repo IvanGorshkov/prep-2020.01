@@ -1,9 +1,15 @@
-#define UTILS_H
-#ifndef UTILS_H
+#ifndef PROJECT_INCLUDE_UTILS_H_
+#define PROJECT_INCLUDE_UTILS_H_
 
-#define filename "transaction.dat";
+#include <stdio.h>
+#include <stdlib.h>
+#include "model.h"
+#include "filemodule.h"
+#include "menu.h"
 
-// This comment is very useful
-printf("This message is very useful too")
+#define RECORD_FILENAME "record.dat"
+#define TRANSACTION_FILENAME "transaction.dat"
+#define BLACKRECORD_FILENAME "blackrecord.dat"
+#define NOT_ACESS "Not acess to "
 
-#endif //UTILS_H
+#endif  // PROJECT_INCLUDE_UTILS_H_
