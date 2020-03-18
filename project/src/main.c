@@ -2,20 +2,27 @@
 #include "matrix.h"
 
 int main(void) {
-    Matrix* matrix = create_matrix(3,3);
+    Matrix* matrix = create_matrix(4,4);
 
     set_elem(matrix, 1, 1, 6);
-    set_elem(matrix, 1, 2, 7);
-    set_elem(matrix, 1, 3, 3);
+    set_elem(matrix, 1, 2, -5);
+    set_elem(matrix, 1, 3, 8);
+    set_elem(matrix, 1, 4, 4);
     printf("\n");
-    set_elem(matrix, 2, 1, 22);
-    set_elem(matrix, 2, 2, 3);
-    set_elem(matrix, 2, 3, 4);
+    set_elem(matrix, 2, 1, 9);
+    set_elem(matrix, 2, 2, 7);
+    set_elem(matrix, 2, 3, 5);
+    set_elem(matrix, 2, 4, 2);
      printf("\n");
-    set_elem(matrix, 3, 1, 6);
-    set_elem(matrix, 3, 2, 76);
-    set_elem(matrix, 3, 3, 6);
-     printf("\n");
+    set_elem(matrix, 3, 1, 7);
+    set_elem(matrix, 3, 2, 5);
+    set_elem(matrix, 3, 3, 3);
+    set_elem(matrix, 3, 4, 7);
+    printf("\n");
+     set_elem(matrix, 4, 1, -4);
+     set_elem(matrix, 4, 2, 8);
+     set_elem(matrix, 4, 3, -8);
+     set_elem(matrix, 4, 4, -3);
     
     double val;
     
@@ -31,8 +38,13 @@ int main(void) {
      //  printf("%f\n", val);
     Matrix *mul_matrix = mul(matrix, trans);
     get_elem(mul_matrix, 2, 2, &val);
-    det(matrix, &val);
+        
    // printf("%f\n", val);
+   //  Matrix *adj_matrix = adj(matrix);
+    
+  //  det(adj_matrix, &val);
+    Matrix *inv_matrix = inv(matrix);
+    get_elem(inv_matrix, 2, 2, &val);
     return 0;
 }
 
