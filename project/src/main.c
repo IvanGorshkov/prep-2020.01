@@ -2,50 +2,60 @@
 #include "matrix.h"
 
 int main(void) {
-    Matrix* matrix = create_matrix(4,4);
+    char *file_ptr = "matrix.txt";
+    Matrix *matrix = create_matrix_from_file(file_ptr);
 
-    set_elem(matrix, 1, 1, 6);
-    set_elem(matrix, 1, 2, -5);
-    set_elem(matrix, 1, 3, 8);
-    set_elem(matrix, 1, 4, 4);
-    printf("\n");
-    set_elem(matrix, 2, 1, 9);
-    set_elem(matrix, 2, 2, 7);
-    set_elem(matrix, 2, 3, 5);
-    set_elem(matrix, 2, 4, 2);
-     printf("\n");
-    set_elem(matrix, 3, 1, 7);
-    set_elem(matrix, 3, 2, 5);
-    set_elem(matrix, 3, 3, 3);
-    set_elem(matrix, 3, 4, 7);
-    printf("\n");
-     set_elem(matrix, 4, 1, -4);
-     set_elem(matrix, 4, 2, 8);
-     set_elem(matrix, 4, 3, -8);
-     set_elem(matrix, 4, 4, -3);
-    
+    size_t size;
+    get_rows(matrix, &size);
+    printf("Count of rows: %zu\n", size);
+    get_cols(matrix, &size);
+    printf("Count of cols: %zu\n", size);
+
+    set_elem(matrix, 0, 0, 20.05);
+    double elem;
+    get_elem(matrix, 0, 0, &elem);
+    printf("matrix elem[0][0] = %f\n", elem);
+
+    Matrix *mul_s_matrix = mul_scalar(matrix, 2.0);
+    get_elem(mul_s_matrix, 1, 0, &elem);
+    printf("mul_s_matrix elem[1][0] = %f\n", elem);
+
+    Matrix *transp_matrix =  transp(mul_s_matrix);
+    get_elem(transp_matrix, 0, 1, &elem);
+    printf("transp_matrix elem[0][1] = %f\n", elem);
+
+    Matrix *sum_matrix = sum(matrix, mul_s_matrix);
+    get_elem(sum_matrix, 0, 0, &elem);
+    printf("sum_matrix elem[0][0] = %f\n", elem);
+
+    Matrix *sub_matrix = sub(sum_matrix, mul_s_matrix);
+    get_elem(sub_matrix, 0, 0, &elem);
+    printf("sub_matrix elem[0][0] = %f\n", elem);
+
+    Matrix *mul_matrix = mul(sum_matrix, sub_matrix);
+    get_elem(mul_matrix, 0, 0, &elem);
+    printf("mul_matrix elem[0][0] = %f\n", elem);
+
     double val;
-    
-    Matrix *muls = mul_scalar(matrix,2);
-    get_elem(muls, 4, 3, &val);
-    size_t count;
-    get_rows(matrix, &count);
-    get_cols(matrix, &count);
-   // printf("%f\n", val);
-    Matrix *trans = transp(matrix);
-    Matrix *summatrix = sum(muls, matrix);
-    get_elem(summatrix, 4, 3, &val);
-     //  printf("%f\n", val);
-    Matrix *submatrix = sub(summatrix, matrix);
-    get_elem(submatrix, 4, 3, &val);
-     //  printf("%f\n", val);
-    Matrix *mul_matrix = mul(matrix, trans);
-    get_elem(mul_matrix, 2, 2, &val);
-        
-    Matrix *file = create_matrix_from_file("in.txt");
-    get_cols(file, &count);
+    det(matrix, &val);
+    printf("det of matrix: %f\n", val);
+
+    Matrix *adj_matrix = adj(matrix);
+    get_elem(adj_matrix, 0, 0, &elem);
+    printf("adj_matrix elem[0][0] = %f\n", elem);
+
     Matrix *inv_matrix = inv(matrix);
-    get_elem(inv_matrix, 2, 2, &val);
+    get_elem(inv_matrix, 0, 0, &elem);
+    printf("inv_matrix elem[0][0] = %f\n", elem);
+
+    free_matrix(inv_matrix);
+    free_matrix(adj_matrix);
+    free_matrix(mul_matrix);
+    free_matrix(sub_matrix);
+    free_matrix(sum_matrix);
+    free_matrix(transp_matrix);
+    free_matrix(mul_s_matrix);
+    free_matrix(matrix);
     return 0;
 }
 
