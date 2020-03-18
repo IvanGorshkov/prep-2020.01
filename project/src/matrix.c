@@ -365,7 +365,7 @@ Matrix* inv(const Matrix *matrix) {
 
     Matrix *adj_matrix = adj(matrix);
     Matrix *return_matrix = mul_scalar(adj_matrix, (1/val));
-
+    free_matrix(adj_matrix);
     return return_matrix;
 }
 
