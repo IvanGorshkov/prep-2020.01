@@ -276,7 +276,7 @@ int det(const Matrix *matrix, double *val) {
         }
 
         *val = res;
-        free(matrix_det);
+        free_matrix(matrix_det);
     }
 
     return EXIT_SUCCESS;
