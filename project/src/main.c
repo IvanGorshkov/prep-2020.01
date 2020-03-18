@@ -28,6 +28,9 @@ int main(void) {
     
     Matrix *muls = mul_scalar(matrix,2);
     get_elem(muls, 4, 3, &val);
+    size_t count;
+    get_rows(matrix, &count);
+    get_cols(matrix, &count);
    // printf("%f\n", val);
     Matrix *trans = transp(matrix);
     Matrix *summatrix = sum(muls, matrix);
@@ -39,10 +42,8 @@ int main(void) {
     Matrix *mul_matrix = mul(matrix, trans);
     get_elem(mul_matrix, 2, 2, &val);
         
-   // printf("%f\n", val);
-   //  Matrix *adj_matrix = adj(matrix);
-    
-  //  det(adj_matrix, &val);
+    Matrix *file = create_matrix_from_file("in.txt");
+    get_cols(file, &count);
     Matrix *inv_matrix = inv(matrix);
     get_elem(inv_matrix, 2, 2, &val);
     return 0;
