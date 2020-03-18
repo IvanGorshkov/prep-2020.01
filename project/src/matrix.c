@@ -208,7 +208,10 @@ Matrix* mul(const Matrix* l, const Matrix* r){
     return mul_matrix;
 }
 
+
+
 int det(const Matrix* matrix, double* val){
+    
     if (matrix == NULL || val == NULL) {
         return EXIT_FAILURE;
     }
@@ -225,37 +228,48 @@ int det(const Matrix* matrix, double* val){
     if (rows == 2) {
         *val = matrix->matrix[0] * matrix->matrix[3] - matrix->matrix[1] * matrix->matrix[2];
     }
-    
+    int k = 1;
+    double res = 0;
     if (rows > 2) {
-        Matrix* matrix_det = create_matrix(matrix->rows, matrix->cols);
+        Matrix* matrix_det = create_matrix(matrix->rows-1, matrix->cols-1);
         if (matrix_det == NULL) {
             return 1;
         }
-        double dett = 1;
-        int cols = matrix_det->cols;
-        int n = cols;
-        double d;
-        
-        for (int i = 0; i < n*n; i++) {
-            matrix_det->matrix[i] = matrix->matrix[i];
-        }
-        
-        
-        for (int k = 1; k < n; k++) {
-            for (int j = k; j < n; j++) {
-                d = matrix_det->matrix[cols * j+(k-1)] / matrix_det->matrix[cols * (k-1) + (k-1)];
-                for (int i = 0; i < n+1; i++) {
-                    matrix_det->matrix[cols * j+i] = matrix_det->matrix[cols * j+i] - d * matrix_det->matrix[cols * (k-1)+i];
+        int n = matrix->cols;
+        int col = 0;
+        int x = 0;
+        int y = 0;
+        int true_bool = 0;
+        for (int row = 0; row < n; row++) {
+            double val1;
+            
+            get_elem(matrix,row,col,&val1);
+            y = 0;
+            for (int d_row = 0; d_row < n; d_row++) {
+                x = 0;
+                true_bool = 0;
+                for (int d_col = 0; d_col < n; d_col++) {
+                    if(d_row != row && d_col != 0){
+                        double val2;
+                        get_elem(matrix,d_row,d_col,&val2);
+                        set_elem(matrix_det,y,x,val2);
+                        x++;
+                        true_bool = 1;
+                    }
+                }
+                if (true_bool == 1) {
+                    y++;
                 }
             }
+            double val3;
+            det(matrix_det, &val3);
+            res += val1*k*val3;
+            k = -k;
         }
-        for (int i = 0; i < n; i++) {
-            dett *= matrix_det->matrix[cols * i+i];
-        }
-        *val = dett;
-        free_matrix(matrix_det);
-
+        *val =res;
+        free(matrix_det);
     }
+    
     return EXIT_SUCCESS;
 }
 
@@ -317,7 +331,6 @@ Matrix* adj(const Matrix* matrix){
             c++;
             double val;
             det(tmp_matrix, &val);
-            printf("%d\n",j%2 );
             if(i%2 != 0){
                 val *= -1;
             }
@@ -343,6 +356,11 @@ Matrix* inv(const Matrix* matrix){
     }
     double val;
     det(matrix, &val);
+    if(matrix->rows == 1){
+      Matrix* return_1_1 = create_matrix(1, 1);
+        set_elem(return_1_1,0,0,(1/val));
+      return return_1_1;
+    }
     Matrix* adj_matrix = adj(matrix);
     Matrix* return_matrix = mul_scalar(adj_matrix, (1/val));
     return return_matrix;
@@ -354,7 +372,6 @@ Matrix* create_matrix_from_file(const char* path_file){
        FILE *file_ptr = fopen(path_file, "r");
        Matrix* matrix = NULL;
        if (file_ptr == NULL) {
-           printf("Error: Can't open");
            return NULL;
        }
        int rows = 0;
