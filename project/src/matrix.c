@@ -27,12 +27,12 @@ int free_matrix(Matrix *matrix) {
     if (matrix == NULL) {
         return EXIT_FAILURE;
     }
-    
+
     if (matrix->matrix == NULL) {
         free(matrix);
         return EXIT_FAILURE;
     }
-    
+
     free(matrix->matrix);
     free(matrix);
 
@@ -247,7 +247,8 @@ int det(const Matrix *matrix, double *val) {
 
         for (size_t row = 0; row < n; ++row) {
             double elem_val = 0;
-            get_elem(matrix, row, col, &elem_val); // Получем элмент исходной матрицы для нахождения определителя
+            get_elem(matrix, row, col, &elem_val);  // Получем элмент исходной
+                                                    // матрицы для нахождения определителя
             int row_new_matrix = 0;
             for (size_t d_row = 0; d_row < n; ++d_row) {
                 int col_new_matrix = 0;
@@ -256,15 +257,18 @@ int det(const Matrix *matrix, double *val) {
                 for (size_t d_col = 0; d_col < n; ++d_col) {
                     if (d_row != row && d_col != 0) {  // Условие для вычеркивания строки и столбца
                         double val2;
-                        get_elem(matrix, d_row, d_col, &val2);  // Получаем элемент из исходной матрицы по d_row, d_col
-                        set_elem(matrix_det, row_new_matrix, col_new_matrix, val2); // Записываем элемент в матрицу для определителя
+                        get_elem(matrix, d_row, d_col, &val2);  // Получаем элемент из
+                                                                // исходной матрицы по d_row, d_col
+                        set_elem(matrix_det, row_new_matrix, col_new_matrix, val2);
+                                                                // Записываем элемент
+                                                                // в матрицу для определителя
                         col_new_matrix++;  // Переходим на следующий столбец
                         is_set_mat = true;
                     }
                 }
 
                 if (is_set_mat) {
-                    row_new_matrix++; // Переходим на следующую строку
+                    row_new_matrix++;  // Переходим на следующую строку
                 }
             }
 
@@ -325,7 +329,7 @@ Matrix* adj(const Matrix *matrix) {
                         set_elem(tmp_matrix,
                                  row_new_matrix,
                                  col_new_matrix,
-                                 matrix->matrix[cols * i_row + j_col]); // Устанавливаем элемент матрицы
+                                 matrix->matrix[cols * i_row + j_col]);  // Устанавливаем элемент матрицы
                         col_new_matrix++;  // Переходим на следующий столбец
                     }
                 }
