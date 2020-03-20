@@ -85,16 +85,16 @@ int main(void) {
             if (!get_elem(inv_matrix, 0, 0, &elem)) {
                 printf("inv_matrix elem[0][0] = %f\n", elem);
             }
-
-            free_matrix(inv_matrix);
-            free_matrix(adj_matrix);
-            free_matrix(mul_matrix);
-            free_matrix(sub_matrix);
-            free_matrix(sum_matrix);
-            free_matrix(transp_matrix);
-            free_matrix(mul_s_matrix);
-            free_matrix(matrix);
         }
+        
+        free_matrix(inv_matrix);
+        free_matrix(adj_matrix);
+        free_matrix(mul_matrix);
+        free_matrix(sub_matrix);
+        free_matrix(sum_matrix);
+        free_matrix(transp_matrix);
+        free_matrix(mul_s_matrix);
+        free_matrix(matrix);
     }
 
     return 0;

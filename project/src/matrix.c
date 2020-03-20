@@ -99,7 +99,7 @@ Matrix* mul_scalar(const Matrix *matrix, double val) {
     size_t rows = mul_matrix->rows;
     size_t c_r_mul = cols * rows;
     for (size_t i = 0; i < c_r_mul; ++i) {
-            mul_matrix->matrix[i] = matrix->matrix[i] * val;
+        mul_matrix->matrix[i] = matrix->matrix[i] * val;
     }
 
     return mul_matrix;
