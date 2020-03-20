@@ -279,7 +279,7 @@ int det(const Matrix *matrix, double *val) {
                     row_new_matrix++;
                 }
             }
-            
+
             // храниться значение рекурсии
             double rec_val = 0;
             det(matrix_det, &rec_val);
@@ -368,7 +368,7 @@ Matrix* adj(const Matrix *matrix) {
             if (j % 2 != 0) {
                 val *= -1;
             }
-            
+
             // Добавляем значение присоединенной матрице
             set_elem(adj_matrix, i, j, val);
             free_matrix(tmp_matrix);
@@ -411,7 +411,7 @@ Matrix* inv(const Matrix *matrix) {
 
     Matrix *return_matrix = mul_scalar(adj_matrix, (1 / val));
     free_matrix(adj_matrix);
-    
+
     if (return_matrix == NULL || return_matrix->matrix == NULL) {
         free_matrix(return_matrix);
         return NULL;

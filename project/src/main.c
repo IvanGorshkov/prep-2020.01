@@ -48,13 +48,13 @@ int main(void) {
     }
 
     get_elem(mul_s_matrix, 1, 0, &elem);
-    
+
     if (get_elem(mul_s_matrix, 1, 0, &elem)) {
         free_matrix(mul_s_matrix);
         free_matrix(matrix);
         return 1;
     }
-    
+
     printf("mul_s_matrix elem[1][0] = %f\n", elem);
 
     Matrix *transp_matrix =  transp(mul_s_matrix);
@@ -126,7 +126,6 @@ int main(void) {
     }
 
     if (get_elem(mul_matrix, 0, 0, &elem)) {
-        
         free_matrix(mul_matrix);
         free_matrix(sub_matrix);
         free_matrix(sum_matrix);
@@ -139,7 +138,7 @@ int main(void) {
     printf("mul_matrix elem[0][0] = %f\n", elem);
 
     double val = 0;
-    
+
     if (det(matrix, &val)) {
         free_matrix(mul_matrix);
         free_matrix(sub_matrix);
@@ -149,9 +148,8 @@ int main(void) {
         free_matrix(matrix);
         return 1;
     }
-    
-    printf("det of matrix: %f\n", val);
 
+    printf("det of matrix: %f\n", val);
     Matrix *adj_matrix = adj(matrix);
 
     if (adj_matrix == NULL) {
@@ -174,9 +172,8 @@ int main(void) {
         free_matrix(matrix);
         return 1;
     }
-    
-    printf("adj_matrix elem[0][0] = %f\n", elem);
 
+    printf("adj_matrix elem[0][0] = %f\n", elem);
     Matrix *inv_matrix = inv(matrix);
 
     if (inv_matrix == NULL) {
@@ -190,7 +187,6 @@ int main(void) {
         return 1;
     }
 
-    
     if (get_elem(inv_matrix, 0, 0, &elem)) {
         free_matrix(inv_matrix);
         free_matrix(adj_matrix);
@@ -202,7 +198,7 @@ int main(void) {
         free_matrix(matrix);
         return 1;
     }
-    
+
     printf("inv_matrix elem[0][0] = %f\n", elem);
 
     free_matrix(inv_matrix);
