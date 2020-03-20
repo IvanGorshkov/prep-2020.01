@@ -91,13 +91,14 @@ Matrix* mul_scalar(const Matrix *matrix, double val) {
     Matrix* mul_matrix = create_matrix(matrix->rows, matrix->cols);
 
     if (mul_matrix == NULL || mul_matrix->matrix == NULL) {
+        free_matrix(mul_matrix);
         return NULL;
     }
 
     size_t cols = mul_matrix->cols;
     size_t rows = mul_matrix->rows;
     size_t c_r_mul = cols * rows;
-    for (size_t i = 0; i < c_r_mul; i++) {
+    for (size_t i = 0; i < c_r_mul; ++i) {
             mul_matrix->matrix[i] = matrix->matrix[i] * val;
     }
 
@@ -112,6 +113,7 @@ Matrix* transp(const Matrix *matrix) {
     Matrix *transp_matrix = create_matrix(matrix->cols, matrix->rows);
 
     if (transp_matrix == NULL || transp_matrix->matrix == NULL) {
+        free_matrix(transp_matrix);
         return NULL;
     }
 
@@ -139,6 +141,7 @@ Matrix* sum(const Matrix *l, const Matrix *r) {
     Matrix *sum_matrix = create_matrix(l->rows, l->cols);
 
     if (sum_matrix == NULL || sum_matrix->matrix == NULL) {
+        free_matrix(sum_matrix);
         return NULL;
     }
 
@@ -166,6 +169,7 @@ Matrix* sub(const Matrix *l, const Matrix *r) {
     Matrix *sub_matrix = create_matrix(l->rows, l->cols);
 
     if (sub_matrix == NULL || sub_matrix->matrix == NULL) {
+        free_matrix(sub_matrix);
         return NULL;
     }
 
@@ -187,13 +191,14 @@ Matrix* mul(const Matrix *l, const Matrix *r) {
         return NULL;
     }
 
-    if (l->cols != r->rows && l->rows != r->cols) {
+    if (l->cols != r->rows) {
         return NULL;
     }
 
     Matrix* mul_matrix = create_matrix(r->cols, l->rows);
 
     if (mul_matrix == NULL || mul_matrix->matrix == NULL) {
+        free_matrix(mul_matrix);
         return NULL;
     }
 
@@ -238,6 +243,7 @@ int det(const Matrix *matrix, double *val) {
         Matrix *matrix_det = create_matrix(matrix->rows-1, matrix->cols-1);
 
         if (matrix_det == NULL || matrix_det->matrix == NULL) {
+            free_matrix(matrix_det);
             return EXIT_FAILURE;
         }
 
@@ -247,34 +253,38 @@ int det(const Matrix *matrix, double *val) {
 
         for (size_t row = 0; row < n; ++row) {
             double elem_val = 0;
-            get_elem(matrix, row, col, &elem_val);  // Получем элмент исходной
-                                                    // матрицы для нахождения определителя
+            // Получем элмент исходной матрицы для нахождения определителя
+            get_elem(matrix, row, col, &elem_val);
             int row_new_matrix = 0;
             for (size_t d_row = 0; d_row < n; ++d_row) {
                 int col_new_matrix = 0;
                 bool is_set_mat = false;
 
                 for (size_t d_col = 0; d_col < n; ++d_col) {
-                    if (d_row != row && d_col != 0) {  // Условие для вычеркивания строки и столбца
+                    // Условие для вычеркивания строки и столбца
+                    if (d_row != row && d_col != 0) {
                         double val2;
-                        get_elem(matrix, d_row, d_col, &val2);  // Получаем элемент из
-                                                                // исходной матрицы по d_row, d_col
+                        // Получаем элемент из исходной матрицы по d_row, d_col
+                        get_elem(matrix, d_row, d_col, &val2);
+                        // Записываем элемент в матрицу для определителя
                         set_elem(matrix_det, row_new_matrix, col_new_matrix, val2);
-                                                                // Записываем элемент
-                                                                // в матрицу для определителя
-                        col_new_matrix++;  // Переходим на следующий столбец
+                        // Переходим на следующий столбец
+                        col_new_matrix++;
                         is_set_mat = true;
                     }
                 }
 
                 if (is_set_mat) {
-                    row_new_matrix++;  // Переходим на следующую строку
+                    // Переходим на следующую строку
+                    row_new_matrix++;
                 }
             }
-
-            double rec_val;
+            
+            // храниться значение рекурсии
+            double rec_val = 0;
             det(matrix_det, &rec_val);
-            res += elem_val * k * rec_val;  // Складываем определители
+            // Складываем определители
+            res += elem_val * k * rec_val;
             k = -k;
         }
 
@@ -304,6 +314,7 @@ Matrix* adj(const Matrix *matrix) {
     }
 
     if (adj_matrix == NULL || adj_matrix->matrix == NULL) {
+        free_matrix(adj_matrix);
         return NULL;
     }
 
@@ -316,6 +327,8 @@ Matrix* adj(const Matrix *matrix) {
             Matrix *tmp_matrix = create_matrix(rows - 1, cols - 1);
 
             if (tmp_matrix == NULL || tmp_matrix->matrix == NULL) {
+                free_matrix(adj_matrix);
+                free_matrix(tmp_matrix);
                 return NULL;
             }
 
@@ -324,46 +337,54 @@ Matrix* adj(const Matrix *matrix) {
                 bool is_set_mat = false;
 
                 for (size_t j_col = 0; j_col < cols; ++j_col) {
-                    if (row != i_row && col != j_col) {  // Условие для вычеркивания строки и столбца
+                    // Условие для вычеркивания строки и столбца
+                    if (row != i_row && col != j_col) {
                         is_set_mat = true;
+                        // Устанавливаем элемент матрицы
                         set_elem(tmp_matrix,
                                  row_new_matrix,
                                  col_new_matrix,
-                                 matrix->matrix[cols * i_row + j_col]);  // Устанавливаем элемент матрицы
-                        col_new_matrix++;  // Переходим на следующий столбец
+                                 matrix->matrix[cols * i_row + j_col]);
+                        // Переходим на следующий столбец
+                        col_new_matrix++;
                     }
                 }
 
                 if (is_set_mat) {
-                    row_new_matrix++;  // Переходим на следующую строку
+                    // Переходим на следующую строку
+                    row_new_matrix++;
                 }
             }
 
             col++;
             double val = 0;
-            det(tmp_matrix, &val);  // Находим определитель матрицы
+            // Находим определитель матрицы
+            det(tmp_matrix, &val);
 
-            if (i%2 != 0) {
+            if (i % 2 != 0) {
                 val *= -1;
             }
 
-            if (j%2 != 0) {
+            if (j % 2 != 0) {
                 val *= -1;
             }
-
-            set_elem(adj_matrix, i, j, val);  // Добавляем значение присоединенной матрице
+            
+            // Добавляем значение присоединенной матрице
+            set_elem(adj_matrix, i, j, val);
             free_matrix(tmp_matrix);
         }
         row++;
     }
-    Matrix *return_matrix = transp(adj_matrix);  // Транспонируем матрицу
+    // Транспонируем матрицу
+    Matrix *transp_matrix = transp(adj_matrix);
     free_matrix(adj_matrix);
 
-    if (return_matrix == NULL || return_matrix->matrix == NULL) {
+    if (transp_matrix == NULL || transp_matrix->matrix == NULL) {
+        free_matrix(transp_matrix);
         return NULL;
     }
 
-    return return_matrix;
+    return transp_matrix;
 }
 
 Matrix* inv(const Matrix *matrix) {
@@ -377,24 +398,25 @@ Matrix* inv(const Matrix *matrix) {
 
     double val = 0;
     det(matrix, &val);
-
-    if (val == 0) {
+    if (fabs(val - 0) < 0.0001) {
         return NULL;
     }
 
     Matrix *adj_matrix = adj(matrix);
 
     if (adj_matrix == NULL || adj_matrix->matrix == NULL) {
+        free_matrix(adj_matrix);
         return NULL;
     }
 
     Matrix *return_matrix = mul_scalar(adj_matrix, (1 / val));
-
+    free_matrix(adj_matrix);
+    
     if (return_matrix == NULL || return_matrix->matrix == NULL) {
+        free_matrix(return_matrix);
         return NULL;
     }
 
-    free_matrix(adj_matrix);
     return return_matrix;
 }
 
