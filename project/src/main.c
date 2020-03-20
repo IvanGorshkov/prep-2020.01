@@ -86,7 +86,7 @@ int main(void) {
                 printf("inv_matrix elem[0][0] = %f\n", elem);
             }
         }
-        
+
         free_matrix(inv_matrix);
         free_matrix(adj_matrix);
         free_matrix(mul_matrix);
