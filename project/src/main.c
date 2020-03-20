@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "matrix.h"
-#include <stdarg.h>
+
 
 int main(void) {
     const char *file_ptr = "matrix.txt";
