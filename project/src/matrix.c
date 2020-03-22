@@ -1,5 +1,5 @@
 #include "matrix.h"
-
+#define SWAP(a,b,t) ((t)=(a), (a)=(b), (b)=(t))
 
 Matrix* create_matrix(size_t rows, size_t cols) {
     if (rows == 0 || cols == 0) {
@@ -240,7 +240,7 @@ int det(const Matrix *matrix, double *val) {
     int k = 1;
 
     if (rows > 2) {
-        Matrix *matrix_det = create_matrix(matrix->rows-1, matrix->cols-1);
+        Matrix *matrix_det = create_matrix(rows-1, cols-1);
 
         if (matrix_det == NULL || matrix_det->matrix == NULL) {
             free_matrix(matrix_det);
@@ -299,13 +299,14 @@ Matrix* adj(const Matrix *matrix) {
     if (matrix == NULL || matrix->matrix == NULL) {
         return NULL;
     }
-
-    if (matrix->rows != matrix->cols) {
+    
+    size_t rows = matrix->rows;
+    size_t cols = matrix->cols;
+    
+    if (rows != cols) {
         return NULL;
     }
 
-    size_t rows = matrix->rows;
-    size_t cols = matrix->cols;
     Matrix *adj_matrix = create_matrix(rows, cols);
 
     if (rows == 1) {
@@ -322,9 +323,7 @@ Matrix* adj(const Matrix *matrix) {
     for (size_t i = 0; i < rows; ++i) {
         size_t col = 0;
         for (size_t j = 0; j < cols; ++j) {
-            size_t row_new_matrix = 0;
-
-            Matrix *tmp_matrix = create_matrix(rows - 1, cols - 1);
+            Matrix *tmp_matrix = cross_out(matrix, row, col);
 
             if (tmp_matrix == NULL || tmp_matrix->matrix == NULL) {
                 free_matrix(adj_matrix);
@@ -332,49 +331,19 @@ Matrix* adj(const Matrix *matrix) {
                 return NULL;
             }
 
-            for (size_t i_row = 0; i_row < rows; ++i_row) {
-                size_t col_new_matrix = 0;
-                bool is_set_mat = false;
-
-                for (size_t j_col = 0; j_col < cols; ++j_col) {
-                    // Условие для вычеркивания строки и столбца
-                    if (row != i_row && col != j_col) {
-                        is_set_mat = true;
-                        // Устанавливаем элемент матрицы
-                        set_elem(tmp_matrix,
-                                 row_new_matrix,
-                                 col_new_matrix,
-                                 matrix->matrix[cols * i_row + j_col]);
-                        // Переходим на следующий столбец
-                        col_new_matrix++;
-                    }
-                }
-
-                if (is_set_mat) {
-                    // Переходим на следующую строку
-                    row_new_matrix++;
-                }
-            }
-
-            col++;
             double val = 0;
             // Находим определитель матрицы
             det(tmp_matrix, &val);
-
-            if (i % 2 != 0) {
-                val *= -1;
-            }
-
-            if (j % 2 != 0) {
-                val *= -1;
-            }
-
+            val *= (i % 2 != 0 ? 1 : - 1);
+            val *= (j % 2 != 0 ? 1 : - 1);
             // Добавляем значение присоединенной матрице
             set_elem(adj_matrix, i, j, val);
             free_matrix(tmp_matrix);
+            col++;
         }
         row++;
     }
+
     // Транспонируем матрицу
     Matrix *transp_matrix = transp(adj_matrix);
     free_matrix(adj_matrix);
@@ -385,6 +354,37 @@ Matrix* adj(const Matrix *matrix) {
     }
 
     return transp_matrix;
+}
+Matrix* cross_out(const Matrix *matrix, size_t row, size_t col) {
+    size_t rows = matrix->rows;
+    size_t cols = matrix->cols;
+    size_t row_new_matrix = 0;
+    Matrix *tmp_matrix = create_matrix(rows - 1, cols - 1);
+    
+    for (size_t i_row = 0; i_row < rows; ++i_row) {
+        size_t col_new_matrix = 0;
+        bool is_set_mat = false;
+
+        for (size_t j_col = 0; j_col < cols; ++j_col) {
+            // Условие для вычеркивания строки и столбца
+            if (row != i_row && col != j_col) {
+                is_set_mat = true;
+                // Устанавливаем элемент матрицы
+                set_elem(tmp_matrix,
+                         row_new_matrix,
+                         col_new_matrix,
+                         matrix->matrix[cols * i_row + j_col]);
+                // Переходим на следующий столбец
+                col_new_matrix++;
+            }
+        }
+
+        if (is_set_mat) {
+            // Переходим на следующую строку
+            row_new_matrix++;
+        }
+    }
+    return tmp_matrix;
 }
 
 Matrix* inv(const Matrix *matrix) {
@@ -421,10 +421,6 @@ Matrix* inv(const Matrix *matrix) {
 }
 
 Matrix* create_matrix_from_file(const char *path_file) {
-    if (strlen(path_file) == 0) {
-        return NULL;
-    }
-
     FILE *file_ptr = fopen(path_file, "r");
 
     if (file_ptr == NULL) {

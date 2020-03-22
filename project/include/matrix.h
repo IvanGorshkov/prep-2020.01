@@ -3,7 +3,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include <stdbool.h>
 #include <math.h>
 
@@ -36,5 +35,5 @@ Matrix* mul(const Matrix *l, const Matrix *r);
 int det(const Matrix *matrix, double *val);
 Matrix* adj(const Matrix *matrix);
 Matrix* inv(const Matrix *matrix);
-
+Matrix* cross_out(const Matrix *matrix, size_t row, size_t col);
 #endif  // PROJECT_INCLUDE_MATRIX_H_
