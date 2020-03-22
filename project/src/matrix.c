@@ -1,5 +1,9 @@
 #include "matrix.h"
-#define SWAP(a,b,t) ((t)=(a), (a)=(b), (b)=(t))
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+#include <math.h>
+
 
 Matrix* create_matrix(size_t rows, size_t cols) {
     if (rows == 0 || cols == 0) {
@@ -237,72 +241,89 @@ int det(const Matrix *matrix, double *val) {
         *val = matrix->matrix[0] * matrix->matrix[3] - matrix->matrix[1] * matrix->matrix[2];
     }
 
-    int k = 1;
-
     if (rows > 2) {
-        Matrix *matrix_det = create_matrix(rows-1, cols-1);
+        Matrix *gauss_matrix = gauss_method(matrix);
 
-        if (matrix_det == NULL || matrix_det->matrix == NULL) {
-            free_matrix(matrix_det);
+        if (gauss_matrix == NULL || gauss_matrix->matrix == NULL) {
             return EXIT_FAILURE;
         }
 
-        size_t n = cols;
-        size_t col = 0;
-        double res = 0;
+        *val = 1;
 
-        for (size_t row = 0; row < n; ++row) {
-            double elem_val = 0;
-            // Получем элмент исходной матрицы для нахождения определителя
-            get_elem(matrix, row, col, &elem_val);
-            int row_new_matrix = 0;
-            for (size_t d_row = 0; d_row < n; ++d_row) {
-                int col_new_matrix = 0;
-                bool is_set_mat = false;
-
-                for (size_t d_col = 0; d_col < n; ++d_col) {
-                    // Условие для вычеркивания строки и столбца
-                    if (d_row != row && d_col != 0) {
-                        double val2;
-                        // Получаем элемент из исходной матрицы по d_row, d_col
-                        get_elem(matrix, d_row, d_col, &val2);
-                        // Записываем элемент в матрицу для определителя
-                        set_elem(matrix_det, row_new_matrix, col_new_matrix, val2);
-                        // Переходим на следующий столбец
-                        col_new_matrix++;
-                        is_set_mat = true;
-                    }
-                }
-
-                if (is_set_mat) {
-                    // Переходим на следующую строку
-                    row_new_matrix++;
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                if (i == j) {
+                    *val *= gauss_matrix->matrix[cols * i + j];
                 }
             }
-
-            // храниться значение рекурсии
-            double rec_val = 0;
-            det(matrix_det, &rec_val);
-            // Складываем определители
-            res += elem_val * k * rec_val;
-            k = -k;
         }
 
-        *val = res;
-        free_matrix(matrix_det);
+        free_matrix(gauss_matrix);
     }
 
     return EXIT_SUCCESS;
+}
+
+Matrix* gauss_method(const Matrix *matrix) {
+    size_t rows = matrix->rows;
+    size_t cols = matrix->cols;
+    Matrix *gauss_matrix = create_matrix(rows, rows);
+
+    for (size_t row = 0; row < rows; ++row) {
+        for (size_t col = 0; col < rows; ++col) {
+            gauss_matrix->matrix[cols * row + col] = matrix->matrix[cols * row + col];
+        }
+    }
+
+    for (size_t col = 0; col < rows; ++col) {
+        double elem = 0;
+        get_elem(gauss_matrix, col, col, &elem);
+
+        // Если elem главной диагонали = 0, то находим строку с ненулевым элементом
+        if (elem == 0) {
+            int changed_row = -1;
+
+            for (size_t row = col; row < rows; row++) {
+                get_elem(gauss_matrix, row, col, &elem);
+                if (elem != 0) {
+                    changed_row = row;
+                    break;
+                }
+            }
+
+            if (changed_row == -1) {
+                free_matrix(gauss_matrix);
+                return NULL;
+            }
+
+            // Меняеем порядок
+            for (size_t row = 0; row < rows; row++) {
+                get_elem(gauss_matrix, col, row, &elem);
+                gauss_matrix->matrix[cols * col + row] = -gauss_matrix->matrix[cols * changed_row + row];
+                gauss_matrix->matrix[cols * changed_row + row] = elem;
+            }
+        }
+
+    //Приводим элменты под главной диагонали к 0
+    for (size_t row = col; row < rows - 1; row++) {
+        double coeff = -gauss_matrix->matrix[cols * (row + 1) + col]/gauss_matrix->matrix[cols * col + col];
+            for (size_t k = 0; k < rows; k++) {
+                gauss_matrix->matrix[cols * (row + 1) + k] += gauss_matrix->matrix[cols * col + k] * coeff;
+            }
+        }
+    }
+
+    return gauss_matrix;
 }
 
 Matrix* adj(const Matrix *matrix) {
     if (matrix == NULL || matrix->matrix == NULL) {
         return NULL;
     }
-    
+
     size_t rows = matrix->rows;
     size_t cols = matrix->cols;
-    
+
     if (rows != cols) {
         return NULL;
     }
@@ -360,7 +381,7 @@ Matrix* cross_out(const Matrix *matrix, size_t row, size_t col) {
     size_t cols = matrix->cols;
     size_t row_new_matrix = 0;
     Matrix *tmp_matrix = create_matrix(rows - 1, cols - 1);
-    
+
     for (size_t i_row = 0; i_row < rows; ++i_row) {
         size_t col_new_matrix = 0;
         bool is_set_mat = false;

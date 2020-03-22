@@ -1,10 +1,6 @@
 #ifndef PROJECT_INCLUDE_MATRIX_H_
 #define PROJECT_INCLUDE_MATRIX_H_
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <math.h>
 
 typedef struct Matrix {
     size_t rows;
@@ -36,4 +32,6 @@ int det(const Matrix *matrix, double *val);
 Matrix* adj(const Matrix *matrix);
 Matrix* inv(const Matrix *matrix);
 Matrix* cross_out(const Matrix *matrix, size_t row, size_t col);
+Matrix* gauss_method(const Matrix *matrix);
+
 #endif  // PROJECT_INCLUDE_MATRIX_H_
