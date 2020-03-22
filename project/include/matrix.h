@@ -1,6 +1,7 @@
 #ifndef PROJECT_INCLUDE_MATRIX_H_
 #define PROJECT_INCLUDE_MATRIX_H_
 
+#include <stdlib.h>
 
 typedef struct Matrix {
     size_t rows;
