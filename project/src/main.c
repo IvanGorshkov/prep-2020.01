@@ -5,6 +5,7 @@
 
 int append(char *s, char c);
 
+
 typedef struct {
     char *from;
     char *to;
@@ -12,6 +13,33 @@ typedef struct {
     int part;
 } data_t;
 
+typedef enum {
+    STATE_FROM = 0,
+    STATE_TO,
+    STATE_DATE
+} state_t;
+
+void insert_to_data(data_t *data, char *text, int *flag, state_t state);
+
+void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
+    switch (state) {
+        case STATE_FROM:
+            strcpy(data->from, text);
+            break;
+        case STATE_TO:
+           
+            strcpy(data->to, text);
+            break;
+        case STATE_DATE:
+            strcpy(data->date, text);
+            break;
+        default:
+            break;
+    }
+    
+    *flag = 1;
+    text[0] = '\0';
+}
 
 int main(int argc, const char **argv) {
     if (argc != 2) {
@@ -54,9 +82,7 @@ int main(int argc, const char **argv) {
                     if(next_char == ' ') {
                         continue;
                     }
-                    strcpy(data->from, res_header);
-                    flag_from = 1;
-                    res_header[0] = '\0';
+                    insert_to_data(data, res_header, &flag_from, STATE_FROM);
                 }
                 
                 if (strcasecmp ("To:", s) == 0  && flag_to == 0) {
@@ -65,15 +91,11 @@ int main(int argc, const char **argv) {
                     if(next_char == ' ') {
                         continue;
                     }
-                    strcpy(data->to, res_header);
-                    flag_to = 1;
-                    res_header[0] = '\0';
+                    insert_to_data(data, res_header, &flag_to, STATE_TO);
                 }
                 
                 if (strcasecmp ("Date:", s) == 0  && flag_date == 0) {
-                    strcpy(data->date, res_header);
-                    flag_date = 1;
-                    res_header[0] = '\0';
+                    insert_to_data(data, res_header, &flag_date, STATE_DATE);
                 }
                 
                 if (strcasecmp ("boundary=", boundary) == 0 && flag_boundary == 0) {
@@ -110,10 +132,12 @@ int main(int argc, const char **argv) {
                     }
                     
                     append(s,c);
+                   
                 }
                 
                 if (strcasecmp ("From:", s) == 0 && flag_from == 0) {
                     append(res_header,c);
+                    
                     if (res_header[0] == ' ' || res_header[0] == ':') {
                         res_header[0] = '\0';
                     }
@@ -123,6 +147,7 @@ int main(int argc, const char **argv) {
                 
                 if (strcasecmp ("To:", s) == 0 && flag_to == 0) {
                     append(res_header,c);
+                    
                     if (res_header[0] == ' ' || res_header[0] == ':') {
                         res_header[0] = '\0';
                     }
@@ -132,7 +157,7 @@ int main(int argc, const char **argv) {
                     
                 if (strcasecmp ("Date:", s) == 0 && flag_date == 0) {
                     append(res_header,c);
-                    
+                     
                     if (res_header[0] == ' ' || res_header[0] == ':') {
                         res_header[0] = '\0';
                     }
