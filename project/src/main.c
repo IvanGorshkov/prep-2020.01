@@ -9,19 +9,20 @@ int main(int argc, const char **argv) {
 
     const char *path_to_eml = argv[1];
     FILE *file = fopen(path_to_eml, "r");
-    
+
     if (file == NULL) {
         return -1;
     }
+
     data_t *data = calloc(1, sizeof(data_t));
-    
-    if (parse(data,file) == -1) {
+
+    if (parse(data, file) == -1) {
         free(data);
         return -1;
     }
-    
-    printf("%s|%s|%s|%d",data->from,data->to,data->date,data->part);
-    
+
+    printf("%s|%s|%s|%d", data->from, data->to, data->date, data->part);
+
     free(data->to);
     free(data->from);
     free(data->date);
