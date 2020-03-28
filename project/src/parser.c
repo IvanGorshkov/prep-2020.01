@@ -134,7 +134,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *res_header = calloc(10000000, sizeof(char));
+    char *res_header = calloc(2500000, sizeof(char));
 
     if (res_header == NULL) {
         free(data->to);
