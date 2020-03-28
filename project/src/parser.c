@@ -125,7 +125,6 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char c;
     char *s = calloc(10000, sizeof(char));
 
     if (s == NULL) {
@@ -191,7 +190,13 @@ int parse(data_t *data, FILE *file) {
     int bin_flag = 0;
     int end_flag = 0;
 
-    while ((c = fgetc(file)) != EOF) {
+    while (!feof(file)) {
+        char c =  fgetc(file);
+
+        if (feof(file)) {
+            break;
+        }
+
         if (c == '\n') {
             if (flag == 1) {
                 char next_char = '\0';
@@ -330,8 +335,6 @@ int parse(data_t *data, FILE *file) {
             }
         }
     }
-
-    fclose(file);
 
     if (strstr(s, res4) != NULL && flag_boundary == 1) {
         ++count;

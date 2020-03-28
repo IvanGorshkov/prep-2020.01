@@ -21,6 +21,8 @@ int main(int argc, const char **argv) {
         return -1;
     }
 
+    fclose(file);
+
     printf("%s|%s|%s|%d", data->from, data->to, data->date, data->part);
 
     free(data->to);
