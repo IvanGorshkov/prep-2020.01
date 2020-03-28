@@ -27,8 +27,12 @@ void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
             strcpy(data->from, text);
             break;
         case STATE_TO:
-           
+            if (strlen(text) == 0) {
+                strcpy(data->to, "sdf");
+            }
+            else {
             strcpy(data->to, text);
+            }
             break;
         case STATE_DATE:
             strcpy(data->date, text);
@@ -39,6 +43,15 @@ void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
     
     *flag = 1;
     text[0] = '\0';
+}
+void add_to_text(char *text, char c, int *flag);
+
+void add_to_text(char *text, char c, int *flag) {
+    append(text,c);
+    if (text[0] == ' ' || text[0] == ':') {
+        text[0] = '\0';
+    }
+    *flag = 1;
 }
 
 int main(int argc, const char **argv) {
@@ -55,13 +68,33 @@ int main(int argc, const char **argv) {
     
     char c;
     char *s = calloc(10000, sizeof(char));
-    char *res_header = calloc(1000000000, sizeof(char));
+    char *res_header = calloc(100000000, sizeof(char));
     char *res4 = calloc(1000, sizeof(char));
     char *res_end = calloc(1000, sizeof(char));
     data_t *data = calloc(1, sizeof(data_t));
-    data->from = calloc(1000, sizeof(char));
-    data->to = calloc(1000000000, sizeof(char));
-    data->date = calloc(1000, sizeof(char));
+    
+    if (data == NULL) {
+        return -1;
+    }
+    
+    data->to = (char*)malloc(1);
+    
+    if (data->to == NULL) {
+        return -1;
+    }
+    
+    data->from = (char*)malloc(1);
+    
+    if (data->from == NULL) {
+        return -1;
+    }
+    
+    data->date = (char*)malloc(1);
+    
+    if (data->date == NULL) {
+        return -1;
+    }
+    
     char *boundary = calloc(1000, sizeof(char));
     int flag = 0;
     int flag_from = 0;
@@ -82,19 +115,48 @@ int main(int argc, const char **argv) {
                     if(next_char == ' ') {
                         continue;
                     }
+                    if (strlen(res_header) == 0){
+                        data->from = realloc(data->from,1);
+                    }
+                    else {
+                        data->from = realloc(data->from,sizeof(char) * strlen(res_header)+1);
+                    }
+                    if (data->from == NULL) {
+                        return -1;
+                    }
                     insert_to_data(data, res_header, &flag_from, STATE_FROM);
                 }
                 
                 if (strcasecmp ("To:", s) == 0  && flag_to == 0) {
                     next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
+                    
                     if(next_char == ' ') {
                         continue;
+                    }
+                    
+                    if (strlen(res_header) == 0){
+                        data->to = realloc(data->to,1);
+                    }
+                    else {
+                        data->to = realloc(data->to,sizeof(char) * strlen(res_header)+1);
+                    }
+                    if (data->to == NULL) {
+                        return -1;
                     }
                     insert_to_data(data, res_header, &flag_to, STATE_TO);
                 }
                 
                 if (strcasecmp ("Date:", s) == 0  && flag_date == 0) {
+                    if (strlen(res_header) == 0){
+                        data->date = realloc(data->date,1);
+                    }
+                    else {
+                        data->date = realloc(data->date,sizeof(char) * strlen(res_header)+1);
+                    }
+                    if (data->date == NULL) {
+                        return -1;
+                    }
                     insert_to_data(data, res_header, &flag_date, STATE_DATE);
                 }
                 
@@ -132,37 +194,20 @@ int main(int argc, const char **argv) {
                     }
                     
                     append(s,c);
-                   
                 }
                 
                 if (strcasecmp ("From:", s) == 0 && flag_from == 0) {
-                    append(res_header,c);
-                    
-                    if (res_header[0] == ' ' || res_header[0] == ':') {
-                        res_header[0] = '\0';
-                    }
-                    flag = 1;
+                    add_to_text(res_header, c, &flag);
                     continue;
                 }
                 
                 if (strcasecmp ("To:", s) == 0 && flag_to == 0) {
-                    append(res_header,c);
-                    
-                    if (res_header[0] == ' ' || res_header[0] == ':') {
-                        res_header[0] = '\0';
-                    }
-                    flag = 1;
+                    add_to_text(res_header, c, &flag);
                     continue;
                 }
                     
                 if (strcasecmp ("Date:", s) == 0 && flag_date == 0) {
-                    append(res_header,c);
-                     
-                    if (res_header[0] == ' ' || res_header[0] == ':') {
-                        res_header[0] = '\0';
-                    }
-                    
-                    flag = 1;
+                    add_to_text(res_header, c, &flag);
                     continue;
                 }
                 
@@ -172,6 +217,7 @@ int main(int argc, const char **argv) {
                     }
                     
                     append(res4,c);
+                    
                     if (res4[0] == '='){
                         res4[0] = '\0';
                         append(res4,'-');
@@ -202,18 +248,15 @@ int main(int argc, const char **argv) {
     }
     
     if (count == 0 && end_flag < 3 && bin_flag == 0) {
-           count = 1;
+        count = 1;
     }
     
     data->part = count;
-    
-    if (data->from[strlen(data->from)] != '\0') {
-        data->from[strlen(data->from)-1] = '\0';
-        data->to[strlen(data->to)-1] = '\0';
-        data->date[strlen(data->date)-1] = '\0';
-    }
-        
     printf("%s|%s|%s|%d",data->from,data->to,data->date,data->part);
+    free(data->to);
+    free(data->from);
+    free(data->date);
+    free(data);
     return 0;
 }
 
