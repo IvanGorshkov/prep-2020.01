@@ -22,10 +22,10 @@ int main(int argc, const char **argv) {
     }
 
     if (parse(data, file) == -1) {
-        free(data);
         free(data->to);
         free(data->from);
         free(data->date);
+        free(data);
         fclose(file);
         return -1;
     }
