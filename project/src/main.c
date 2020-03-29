@@ -22,6 +22,9 @@ int main(int argc, const char **argv) {
     }
 
     if (parse(data, file) == -1) {
+        free(data->to);
+        free(data->from);
+        free(data->date);
         free(data);
         fclose(file);
         return -1;
@@ -31,6 +34,9 @@ int main(int argc, const char **argv) {
 
     printf("%s|%s|%s|%d", data->from, data->to, data->date, data->part);
 
+    free(data->to);
+    free(data->from);
+    free(data->date);
     free(data);
     return 0;
 }

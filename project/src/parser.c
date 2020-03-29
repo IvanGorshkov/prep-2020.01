@@ -97,10 +97,6 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 }
 
 int parse(data_t *data, FILE *file) {
-    if (data == NULL) {
-        return -1;
-    }
-
     data->to = (char*)malloc(1);
 
     if (data->to == NULL) {
@@ -110,33 +106,24 @@ int parse(data_t *data, FILE *file) {
     data->from = (char*)malloc(1);
 
     if (data->from == NULL) {
-        free(data->to);
         return -1;
     }
 
     data->date = calloc(1, sizeof(char));
 
     if (data->date == NULL) {
-        free(data->from);
-        free(data->date);
         return -1;
     }
 
     char *s = calloc(10000, sizeof(char));
 
     if (s == NULL) {
-        free(data->to);
-        free(data->from);
-        free(data->date);
         return -1;
     }
 
     char *res_header = calloc(2500000, sizeof(char));
 
     if (res_header == NULL) {
-        free(data->to);
-        free(data->from);
-        free(data->date);
         free(s);
         return -1;
     }
@@ -144,9 +131,6 @@ int parse(data_t *data, FILE *file) {
     char *res4 = calloc(1000, sizeof(char));
 
     if (res4 == NULL) {
-        free(data->to);
-        free(data->from);
-        free(data->date);
         free(s);
         free(res_header);
         return -1;
@@ -155,9 +139,6 @@ int parse(data_t *data, FILE *file) {
     char *res_end = calloc(1000, sizeof(char));
 
     if (res_end == NULL) {
-        free(data->to);
-        free(data->from);
-        free(data->date);
         free(s);
         free(res_header);
         free(res4);
@@ -167,9 +148,6 @@ int parse(data_t *data, FILE *file) {
     char *boundary = calloc(1000, sizeof(char));
 
     if (boundary == NULL) {
-        free(data->to);
-        free(data->from);
-        free(data->date);
         free(s);
         free(res_header);
         free(res4);
@@ -205,9 +183,6 @@ int parse(data_t *data, FILE *file) {
                     }
 
                     if (alloc_mem_struct(data, res_header, STATE_FROM) == -1) {
-                        free(data->to);
-                        free(data->date);
-                        free(data->from);
                         free(s);
                         free(res_header);
                         free(res4);
@@ -228,9 +203,6 @@ int parse(data_t *data, FILE *file) {
                     }
 
                     if (alloc_mem_struct(data, res_header, STATE_TO) == -1) {
-                        free(data->to);
-                        free(data->date);
-                        free(data->from);
                         free(s);
                         free(res_header);
                         free(res4);
@@ -244,9 +216,6 @@ int parse(data_t *data, FILE *file) {
 
                 if (strcasecmp("Date:", s) == 0  && flag_date == 0) {
                     if (alloc_mem_struct(data, res_header, STATE_DATE) == -1) {
-                        free(data->to);
-                        free(data->date);
-                        free(data->from);
                         free(s);
                         free(res_header);
                         free(res4);
