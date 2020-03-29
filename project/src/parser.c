@@ -22,7 +22,7 @@ static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
             if (strlen(text) == 0) {
                 data->to[0] = '\0';
             } else {
-                snprintf(data->to, strlen(text)+1, "%s", text);
+                snprintf(data->to, strlen(text) + 1, "%s", text);
             }
 
             break;
@@ -189,7 +189,6 @@ int parse(data_t *data, FILE *file) {
     int count_bin = 0;
     int bin_flag = 0;
     int end_flag = 0;
-
     while (!feof(file)) {
         char c =  fgetc(file);
 
@@ -264,6 +263,7 @@ int parse(data_t *data, FILE *file) {
 
                 if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
                     flag_boundary = 1;
+                   // res_end = realloc(res_end, strlen(res4)+1);
                     snprintf(res_end, strlen(res4)+1, "%s", res4);
                     append(res_end, '-');
                     append(res_end, '-');
