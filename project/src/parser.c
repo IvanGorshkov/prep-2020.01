@@ -9,28 +9,29 @@ static int append(char *s, char c) {
 }
 
 static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
+    size_t len = strlen(text) + 1;
     switch (state) {
         case STATE_FROM:
-            if (strlen(text) == 0) {
+            if (len - 1 == 0) {
                 data->from[0] = '\0';
             } else {
-                snprintf(data->from, strlen(text)+1, "%s", text);
+                snprintf(data->from,  len, "%s", text);
             }
 
             break;
         case STATE_TO:
-            if (strlen(text) == 0) {
+            if (len - 1 == 0) {
                 data->to[0] = '\0';
             } else {
-                snprintf(data->to, strlen(text) + 1, "%s", text);
+                snprintf(data->to, len, "%s", text);
             }
 
             break;
         case STATE_DATE:
-            if (strlen(text) == 0) {
+            if (len - 1 == 0) {
                 data->date[0] = '\0';
             } else {
-                snprintf(data->date, strlen(text)+1, "%s", text);
+                snprintf(data->date, len, "%s", text);
             }
 
             break;
@@ -57,7 +58,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
     switch (state) {
            case STATE_FROM:
-               if (strlen(res_header) != 0) {
+               if (alloc_mem_size - 1 != 0) {
                    free(data->from);
                    data->from = calloc(alloc_mem_size, sizeof(char));
                }
@@ -68,7 +69,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
                break;
            case STATE_TO:
-                if (strlen(res_header) != 0) {
+                if (alloc_mem_size - 1 != 0) {
                     free(data->to);
                     data->to = calloc(alloc_mem_size, sizeof(char));
                 }
@@ -79,7 +80,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
                break;
            case STATE_DATE:
-                if (strlen(res_header) != 0) {
+                if (alloc_mem_size - 1 != 0) {
                     free(data->date);
                     data->date = calloc(alloc_mem_size, sizeof(char));
                 }
@@ -173,9 +174,8 @@ int parse(data_t *data, FILE *file) {
 
         if (c == '\n') {
             if (flag == 1) {
-                char next_char = '\0';
                 if (strcasecmp("From:", s) == 0 && flag_from == 0) {
-                    next_char = fgetc(file);
+                    char next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
 
                     if (next_char == ' ') {
@@ -195,7 +195,7 @@ int parse(data_t *data, FILE *file) {
                 }
 
                 if (strcasecmp("To:", s) == 0  && flag_to == 0) {
-                    next_char = fgetc(file);
+                    char next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
 
                     if (next_char == ' ') {
@@ -229,7 +229,8 @@ int parse(data_t *data, FILE *file) {
 
                 if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
                     flag_boundary = 1;
-                    snprintf(res_end, strlen(res4)+1, "%s", res4);
+                    size_t len = strlen(res4) + 1;
+                    snprintf(res_end, len, "%s", res4);
                     append(res_end, '-');
                     append(res_end, '-');
                 }
@@ -292,7 +293,8 @@ int parse(data_t *data, FILE *file) {
 
                     if (c == '"' || c == ' ' || c == ';') {
                         ++count_bin;
-                        res4[strlen(res4)-1] = '\0';
+                        size_t len = strlen(res4) - 1;
+                        res4[len] = '\0';
                     }
 
                     flag = 1;
