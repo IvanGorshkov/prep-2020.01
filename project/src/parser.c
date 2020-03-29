@@ -57,10 +57,9 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
     switch (state) {
            case STATE_FROM:
-               if (strlen(res_header) == 0) {
-                   data->from = realloc(data->from, 1);
-               } else {
-                   data->from = realloc(data->from, alloc_mem_size);
+               if (strlen(res_header) != 0) {
+                   free(data->from);
+                   data->from = calloc(alloc_mem_size, sizeof(char));
                }
 
                if (data->from == NULL) {
@@ -69,10 +68,9 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
                break;
            case STATE_TO:
-                if (strlen(res_header) == 0) {
-                    data->to = realloc(data->to, 1);
-                } else {
-                    data->to = realloc(data->to, alloc_mem_size);
+                if (strlen(res_header) != 0) {
+                    free(data->to);
+                    data->to = calloc(alloc_mem_size, sizeof(char));
                 }
 
                 if (data->to == NULL) {
@@ -81,10 +79,9 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
                break;
            case STATE_DATE:
-                if (strlen(res_header) == 0) {
-                    data->date = realloc(data->date, 1);
-                } else {
-                    data->date = realloc(data->date, alloc_mem_size);
+                if (strlen(res_header) != 0) {
+                    free(data->date);
+                    data->date = calloc(alloc_mem_size, sizeof(char));
                 }
 
                 if (data->date == NULL) {
@@ -263,7 +260,6 @@ int parse(data_t *data, FILE *file) {
 
                 if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
                     flag_boundary = 1;
-                   // res_end = realloc(res_end, strlen(res4)+1);
                     snprintf(res_end, strlen(res4)+1, "%s", res4);
                     append(res_end, '-');
                     append(res_end, '-');

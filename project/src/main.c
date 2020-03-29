@@ -16,8 +16,17 @@ int main(int argc, const char **argv) {
 
     data_t *data = calloc(1, sizeof(data_t));
 
+    if (data == NULL) {
+        fclose(file);
+        return -1;
+    }
+
     if (parse(data, file) == -1) {
         free(data);
+        free(data->to);
+        free(data->from);
+        free(data->date);
+        fclose(file);
         return -1;
     }
 
