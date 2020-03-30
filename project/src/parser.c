@@ -95,19 +95,19 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 }
 
 int parse(data_t *data, FILE *file) {
-    data->to = (char*)malloc(1);
+    data->to = (char*)malloc(2);
 
     if (data->to == NULL) {
         return -1;
     }
 
-    data->from = (char*)malloc(1);
+    data->from = (char*)malloc(2);
 
     if (data->from == NULL) {
         return -1;
     }
 
-    data->date = calloc(1, sizeof(char));
+    data->date = calloc(2, sizeof(char));
 
     if (data->date == NULL) {
         return -1;
@@ -126,7 +126,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *res4 = calloc(1, sizeof(char));
+    char *res4 = calloc(2, sizeof(char));
 
     if (res4 == NULL) {
         free(s);
@@ -134,7 +134,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *res_end = calloc(1, sizeof(char));
+    char *res_end = calloc(2, sizeof(char));
 
     if (res_end == NULL) {
         free(s);
@@ -263,10 +263,12 @@ int parse(data_t *data, FILE *file) {
             if (c != '\r') {
                 end_flag = 0;
                 if (flag == 0) {
-                    if (c == ' ' || c == '\t' || c == ';') {
-                        boundary[0] = '\0';
-                    } else {
-                        append(boundary, c);
+                    if (count_res4 == 2) {
+                        if (c == ' ' || c == '\t' || c == ';') {
+                            boundary[0] = '\0';
+                        } else {
+                            append(boundary, c);
+                        }
                     }
 
                     append(s, c);
