@@ -59,8 +59,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
     switch (state) {
            case STATE_FROM:
                if (alloc_mem_size - 1 != 0) {
-                   free(data->from);
-                   data->from = calloc(alloc_mem_size, sizeof(char));
+                   data->from = realloc(data->from, alloc_mem_size * sizeof(char));
                }
 
                if (data->from == NULL) {
@@ -70,8 +69,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
                break;
            case STATE_TO:
                 if (alloc_mem_size - 1 != 0) {
-                    free(data->to);
-                    data->to = calloc(alloc_mem_size, sizeof(char));
+                    data->to = realloc(data->to, alloc_mem_size * sizeof(char));
                 }
 
                 if (data->to == NULL) {
@@ -81,8 +79,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
                break;
            case STATE_DATE:
                 if (alloc_mem_size - 1 != 0) {
-                    free(data->date);
-                    data->date = calloc(alloc_mem_size, sizeof(char));
+                    data->date = realloc(data->date, alloc_mem_size * sizeof(char));
                 }
 
                 if (data->date == NULL) {
@@ -129,7 +126,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *res4 = calloc(1000, sizeof(char));
+    char *res4 = calloc(1, sizeof(char));
 
     if (res4 == NULL) {
         free(s);
@@ -137,7 +134,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *res_end = calloc(1000, sizeof(char));
+    char *res_end = calloc(1, sizeof(char));
 
     if (res_end == NULL) {
         free(s);
@@ -165,6 +162,7 @@ int parse(data_t *data, FILE *file) {
     int count_bin = 0;
     int bin_flag = 0;
     int end_flag = 0;
+    size_t count_res4 = 2;
     while (!feof(file)) {
         char c =  fgetc(file);
 
@@ -230,6 +228,17 @@ int parse(data_t *data, FILE *file) {
                 if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
                     flag_boundary = 1;
                     size_t len = strlen(res4) + 1;
+                    char *tmp_res_end = realloc(res_end, len + 3);
+                    if (tmp_res_end == NULL) {
+                        free(s);
+                        free(res_header);
+                        free(res4);
+                        free(boundary);
+                        return -1;
+                    } else {
+                        res_end = tmp_res_end;
+                    }
+
                     snprintf(res_end, len, "%s", res4);
                     append(res_end, '-');
                     append(res_end, '-');
@@ -281,6 +290,23 @@ int parse(data_t *data, FILE *file) {
                 if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
                     if (count_bin > 2) {
                         continue;
+                    }
+
+                    size_t len_res4 = strlen(res4);
+
+                    if (len_res4 == count_res4) {
+                        count_res4 *= 2 + 1;
+                        char *tmp_res4 = realloc(res4, count_res4);
+                        if (tmp_res4 == NULL) {
+                            free(s);
+                            free(res_header);
+                            free(res4);
+                            free(res_end);
+                            free(boundary);
+                            return -1;
+                        } else {
+                            res4 = tmp_res4;
+                        }
                     }
 
                     append(res4, c);
