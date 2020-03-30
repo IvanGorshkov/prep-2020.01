@@ -58,34 +58,37 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
     switch (state) {
            case STATE_FROM:
-               if (alloc_mem_size - 1 != 0) {
-                   data->from = realloc(data->from, alloc_mem_size * sizeof(char));
-               }
+                if (alloc_mem_size - 1 != 0) {
+                    char *tmp_from = NULL;
 
-               if (data->from == NULL) {
-                   return -1;
-               }
+                    if ((tmp_from = realloc(data->from, alloc_mem_size * sizeof(char))) == NULL) {
+                        return -1;
+                    }
 
-               break;
+                    data->from = tmp_from;
+                }
+                break;
            case STATE_TO:
                 if (alloc_mem_size - 1 != 0) {
-                    data->to = realloc(data->to, alloc_mem_size * sizeof(char));
-                }
+                    char *tmp_to = NULL;
 
-                if (data->to == NULL) {
-                    return -1;
-                }
+                    if ((tmp_to = realloc(data->to, alloc_mem_size * sizeof(char))) == NULL) {
+                        return -1;
+                    }
 
+                    data->to = tmp_to;
+                }
                break;
            case STATE_DATE:
                 if (alloc_mem_size - 1 != 0) {
-                    data->date = realloc(data->date, alloc_mem_size * sizeof(char));
-                }
+                    char *tmp_date = NULL;
 
-                if (data->date == NULL) {
-                    return -1;
-                }
+                    if ((tmp_date = realloc(data->date, alloc_mem_size * sizeof(char))) == NULL) {
+                        return -1;
+                    }
 
+                    data->date = tmp_date;
+                }
                break;
            default:
                break;
@@ -230,17 +233,17 @@ int parse(data_t *data, FILE *file) {
                 if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
                     flag_boundary = 1;
                     size_t len = strlen(res4) + 1;
-                    char *tmp_res_end = realloc(res_end, len + 3);
-                    if (tmp_res_end == NULL) {
+                    char *tmp_res_end = NULL;
+                    if ((tmp_res_end = realloc(res_end, len + 3)) == NULL) {
                         free(s);
                         free(res_header);
                         free(res4);
+                        free(res_end);
                         free(boundary);
                         return -1;
-                    } else {
-                        res_end = tmp_res_end;
                     }
 
+                    res_end = tmp_res_end;
                     snprintf(res_end, len, "%s", res4);
                     append(res_end, '-');
                     append(res_end, '-');
@@ -292,17 +295,18 @@ int parse(data_t *data, FILE *file) {
 
                                 if (len_boundary == count_boundary) {
                                     count_boundary *= 2 + 1;
-                                    char *tmp_boundary = realloc(boundary, count_boundary);
-                                    if (tmp_boundary == NULL) {
+                                    char *tmp_boundary = NULL;
+
+                                    if ((tmp_boundary = realloc(boundary, count_boundary)) == NULL) {
                                         free(s);
                                         free(res_header);
                                         free(res4);
                                         free(res_end);
                                         free(boundary);
                                         return -1;
-                                    } else {
-                                        boundary = tmp_boundary;
                                     }
+
+                                    boundary = tmp_boundary;
                                 }
 
                                 append(boundary, c);
@@ -313,17 +317,18 @@ int parse(data_t *data, FILE *file) {
 
                     if (len_s == count_s) {
                         count_s *= 2 + 1;
-                        char *tmp_s = realloc(s, count_s);
-                        if (tmp_s == NULL) {
+                        char *tmp_s = NULL;
+
+                        if ((tmp_s = realloc(s, count_s)) == NULL) {
                             free(s);
                             free(res_header);
                             free(res4);
                             free(res_end);
                             free(boundary);
                             return -1;
-                        } else {
-                            s = tmp_s;
                         }
+
+                        s = tmp_s;
                     }
 
                     append(s, c);
