@@ -113,7 +113,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *s = calloc(10000, sizeof(char));
+    char *s = calloc(2, sizeof(char));
 
     if (s == NULL) {
         return -1;
@@ -143,7 +143,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *boundary = calloc(1000, sizeof(char));
+    char *boundary = calloc(2, sizeof(char));
 
     if (boundary == NULL) {
         free(s);
@@ -163,6 +163,8 @@ int parse(data_t *data, FILE *file) {
     int bin_flag = 0;
     int end_flag = 0;
     size_t count_res4 = 2;
+    size_t count_s = 2;
+    size_t count_boundary = 2;
     while (!feof(file)) {
         char c =  fgetc(file);
 
@@ -255,8 +257,27 @@ int parse(data_t *data, FILE *file) {
                 bin_flag = 1;
             }
 
-            s[0] = '\0';
-            boundary[0] = '\0';
+            count_s = 2;
+            free(s);
+            s = calloc(count_s,sizeof(char));
+            if (s == NULL) {
+                free(res_header);
+                free(res4);
+                free(res_end);
+                free(boundary);
+                return -1;
+            }
+            
+            count_boundary = 2;
+            free(boundary);
+            boundary = calloc(count_boundary,sizeof(char));
+            if (s == NULL) {
+                free(res_header);
+                free(res4);
+                free(res_end);
+                free(boundary);
+                return -1;
+            }
             flag = 0;
             end_flag++;
         } else {
@@ -267,10 +288,44 @@ int parse(data_t *data, FILE *file) {
                         if (c == ' ' || c == '\t' || c == ';') {
                             boundary[0] = '\0';
                         } else {
-                            append(boundary, c);
+                                size_t len_boundary = strlen(boundary);
+
+                                if (len_boundary == count_boundary) {
+                                    count_boundary *= 2 + 1;
+                                    char *tmp_boundary = realloc(boundary, count_boundary);
+                                    if (tmp_boundary == NULL) {
+                                        free(s);
+                                        free(res_header);
+                                        free(res4);
+                                        free(res_end);
+                                        free(boundary);
+                                        return -1;
+                                    } else {
+                                        boundary = tmp_boundary;
+                                    }
+                                }
+
+                                append(boundary, c);
+                            }
+                        }
+
+                    size_t len_s = strlen(s);
+
+                    if (len_s == count_s) {
+                        count_s *= 2 + 1;
+                        char *tmp_s = realloc(s, count_s);
+                        if (tmp_s == NULL) {
+                            free(s);
+                            free(res_header);
+                            free(res4);
+                            free(res_end);
+                            free(boundary);
+                            return -1;
+                        } else {
+                            s = tmp_s;
                         }
                     }
-
+                    
                     append(s, c);
                 }
 
