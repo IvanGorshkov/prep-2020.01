@@ -275,7 +275,7 @@ int parse(data_t *data, FILE *file) {
                 free(res_header);
                 free(res4);
                 free(res_end);
-                free(boundary);
+                free(s);
                 return -1;
             }
             flag = 0;
