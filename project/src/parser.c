@@ -259,7 +259,7 @@ int parse(data_t *data, FILE *file) {
 
             count_s = 2;
             free(s);
-            s = calloc(count_s,sizeof(char));
+            s = calloc(count_s, sizeof(char));
             if (s == NULL) {
                 free(res_header);
                 free(res4);
@@ -267,11 +267,11 @@ int parse(data_t *data, FILE *file) {
                 free(boundary);
                 return -1;
             }
-            
+
             count_boundary = 2;
             free(boundary);
-            boundary = calloc(count_boundary,sizeof(char));
-            if (s == NULL) {
+            boundary = calloc(count_boundary, sizeof(char));
+            if (boundary == NULL) {
                 free(res_header);
                 free(res4);
                 free(res_end);
@@ -325,7 +325,7 @@ int parse(data_t *data, FILE *file) {
                             s = tmp_s;
                         }
                     }
-                    
+
                     append(s, c);
                 }
 
