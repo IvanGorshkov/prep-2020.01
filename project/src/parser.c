@@ -78,25 +78,25 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 }
 
 int parse(data_t *data, FILE *file) {
-    data->to = calloc(2, sizeof(char));
+    data->to = calloc(4, sizeof(char));
 
     if (data->to == NULL) {
         return -1;
     }
 
-    data->from = calloc(2, sizeof(char));
+    data->from = calloc(4, sizeof(char));
 
     if (data->from == NULL) {
         return -1;
     }
 
-    data->date = calloc(2, sizeof(char));
+    data->date = calloc(4, sizeof(char));
 
     if (data->date == NULL) {
         return -1;
     }
 
-    char *s = calloc(2, sizeof(char));
+    char *s = calloc(4, sizeof(char));
 
     if (s == NULL) {
         return -1;
@@ -109,7 +109,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *res4 = calloc(2, sizeof(char));
+    char *res4 = calloc(4, sizeof(char));
 
     if (res4 == NULL) {
         free(s);
@@ -117,7 +117,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *res_end = calloc(2, sizeof(char));
+    char *res_end = calloc(4, sizeof(char));
 
     if (res_end == NULL) {
         free(s);
@@ -126,7 +126,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *boundary = calloc(2, sizeof(char));
+    char *boundary = calloc(4, sizeof(char));
 
     if (boundary == NULL) {
         free(s);
@@ -145,9 +145,9 @@ int parse(data_t *data, FILE *file) {
     int count_bin = 0;
     int bin_flag = 0;
     int end_flag = 0;
-    size_t count_res4 = 2;
-    size_t count_s = 2;
-    size_t count_boundary = 2;
+    size_t count_res4 = 4;
+    size_t count_s = 4;
+    size_t count_boundary = 4;
     while (!feof(file)) {
         char c =  fgetc(file);
 
@@ -247,7 +247,7 @@ int parse(data_t *data, FILE *file) {
                 bin_flag = 1;
             }
 
-            count_s = 2;
+            count_s = 4;
             free(s);
             s = calloc(count_s, sizeof(char));
             if (s == NULL) {
@@ -258,7 +258,7 @@ int parse(data_t *data, FILE *file) {
                 return -1;
             }
 
-            count_boundary = 2;
+            count_boundary = 4;
             free(boundary);
             boundary = calloc(count_boundary, sizeof(char));
             if (boundary == NULL) {
@@ -274,9 +274,9 @@ int parse(data_t *data, FILE *file) {
             if (c != '\r') {
                 end_flag = 0;
                 if (!flag) {
-                    if (count_res4 == 2) {
+                    if (count_res4 == 4) {
                         if (c == ' ' || c == '\t' || c == ';') {
-                            count_boundary = 2;
+                            count_boundary = 4;
                             free(boundary);
                             boundary = calloc(count_boundary, sizeof(char));
                             if (boundary == NULL) {
@@ -374,7 +374,7 @@ int parse(data_t *data, FILE *file) {
                     append(res4, c);
 
                     if (res4[0] == '=') {
-                        count_res4 = 2;
+                        count_res4 = 4;
                         free(res4);
                         res4 = calloc(count_res4, sizeof(char));
                         if (res4 == NULL) {
