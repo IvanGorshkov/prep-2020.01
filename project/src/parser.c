@@ -11,20 +11,18 @@ static int append(char *s, char c) {
 static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
     size_t len = strlen(text) + 1;
 
-    if (len - 1) {
-        switch (state) {
-            case STATE_FROM:
-                snprintf(data->from,  len, "%s", text);
-                break;
-            case STATE_TO:
-                snprintf(data->to, len, "%s", text);
-                break;
-            case STATE_DATE:
-                snprintf(data->date, len, "%s", text);
-                break;
-            default:
-                break;
-        }
+    switch (state) {
+        case STATE_FROM:
+            snprintf(data->from,  len, "%s", text);
+            break;
+        case STATE_TO:
+            snprintf(data->to, len, "%s", text);
+            break;
+        case STATE_DATE:
+            snprintf(data->date, len, "%s", text);
+            break;
+        default:
+            break;
     }
 
     *flag = 1;
@@ -44,33 +42,31 @@ static void add_to_text(char *text, char c, int *flag) {
 static int alloc_mem_struct(data_t *data, const char *res_header, state_t state) {
     size_t alloc_mem_size = sizeof(char) * strlen(res_header) + 1;
 
-    if (alloc_mem_size - 1) {
-        char *tmp_ptr = NULL;
-        switch (state) {
-               case STATE_FROM:
-                    if ((tmp_ptr = realloc(data->from, alloc_mem_size * sizeof(char))) == NULL) {
-                        return -1;
-                    }
+    char *tmp_ptr = NULL;
+    switch (state) {
+            case STATE_FROM:
+                if ((tmp_ptr = realloc(data->from, alloc_mem_size * sizeof(char))) == NULL) {
+                    return -1;
+                }
 
-                    data->from = tmp_ptr;
-                    break;
-               case STATE_TO:
-                    if ((tmp_ptr = realloc(data->to, alloc_mem_size * sizeof(char))) == NULL) {
-                        return -1;
-                    }
+                data->from = tmp_ptr;
+                break;
+            case STATE_TO:
+                if ((tmp_ptr = realloc(data->to, alloc_mem_size * sizeof(char))) == NULL) {
+                    return -1;
+                }
 
-                    data->to = tmp_ptr;
-                    break;
-               case STATE_DATE:
-                    if ((tmp_ptr = realloc(data->date, alloc_mem_size * sizeof(char))) == NULL) {
-                        return -1;
-                    }
+                data->to = tmp_ptr;
+                break;
+            case STATE_DATE:
+                if ((tmp_ptr = realloc(data->date, alloc_mem_size * sizeof(char))) == NULL) {
+                    return -1;
+                }
 
-                    data->date = tmp_ptr;
-                   break;
-               default:
-                   break;
-           }
+                data->date = tmp_ptr;
+                break;
+            default:
+                break;
     }
     return 0;
 }
@@ -261,7 +257,7 @@ int parse(data_t *data, FILE *file) {
                 return -1;
             }
             flag = 0;
-            end_flag++;
+            ++end_flag;
         } else {
             if (c != '\r') {
                 end_flag = 0;
