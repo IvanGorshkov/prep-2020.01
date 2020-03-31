@@ -10,30 +10,22 @@ static int append(char *s, char c) {
 
 static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
     size_t len = strlen(text) + 1;
+
     switch (state) {
         case STATE_FROM:
-            if (len - 1 == 0) {
-                data->from[0] = '\0';
-            } else {
+            if (len - 1 != 0) {
                 snprintf(data->from,  len, "%s", text);
             }
-
             break;
         case STATE_TO:
-            if (len - 1 == 0) {
-                data->to[0] = '\0';
-            } else {
+            if (len - 1 != 0) {
                 snprintf(data->to, len, "%s", text);
             }
-
             break;
         case STATE_DATE:
-            if (len - 1 == 0) {
-                data->date[0] = '\0';
-            } else {
+            if (len - 1 != 0) {
                 snprintf(data->date, len, "%s", text);
             }
-
             break;
         default:
             break;
@@ -176,7 +168,7 @@ int parse(data_t *data, FILE *file) {
         }
 
         if (c == '\n') {
-            if (flag == 1) {
+            if (flag) {
                 if (strcasecmp("From:", s) == 0 && flag_from == 0) {
                     char next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
@@ -234,6 +226,7 @@ int parse(data_t *data, FILE *file) {
                     flag_boundary = 1;
                     size_t len = strlen(res4) + 1;
                     char *tmp_res_end = NULL;
+
                     if ((tmp_res_end = realloc(res_end, len + 3)) == NULL) {
                         free(s);
                         free(res_header);
@@ -250,12 +243,12 @@ int parse(data_t *data, FILE *file) {
                 }
             }
 
-            if (strstr(s, res4) != NULL && flag_boundary == 1) {
+            if (strstr(s, res4) && flag_boundary) {
                 ++count;
                 bin_flag = 1;
             }
 
-            if (strstr(s, res_end) != NULL && flag_boundary == 1) {
+            if (strstr(s, res_end) && flag_boundary) {
                 --count;
                 bin_flag = 1;
             }
@@ -370,7 +363,6 @@ int parse(data_t *data, FILE *file) {
                         }
 
                         res4 = tmp_res4;
-
                     }
 
                     append(res4, c);
@@ -393,12 +385,12 @@ int parse(data_t *data, FILE *file) {
         }
     }
 
-    if (strstr(s, res4) != NULL && flag_boundary == 1) {
+    if (strstr(s, res4) && flag_boundary) {
         ++count;
         bin_flag = 1;
     }
 
-    if (strstr(s, res_end) != NULL && flag_boundary == 1) {
+    if (strstr(s, res_end) && flag_boundary) {
         --count;
         bin_flag = 1;
     }
