@@ -1,11 +1,17 @@
 #include <string.h>
 #include "parser.h"
+#include <ctype.h>
 
 static int append(char *s, char c) {
     int len = strlen(s);
     s[len] = c;
     s[len + 1] = '\0';
     return 0;
+}
+static void to_low_case(char *s) {
+    for (int i = 0; i < s[i]; i++) {
+        s[i] = tolower(s[i]);
+    }
 }
 
 static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
@@ -72,13 +78,13 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 }
 
 int parse(data_t *data, FILE *file) {
-    data->to = (char*)malloc(2);
+    data->to = calloc(2, sizeof(char));
 
     if (data->to == NULL) {
         return -1;
     }
 
-    data->from = (char*)malloc(2);
+    data->from = calloc(2, sizeof(char));
 
     if (data->from == NULL) {
         return -1;
@@ -151,7 +157,9 @@ int parse(data_t *data, FILE *file) {
 
         if (c == '\n') {
             if (flag) {
-                if (!strcasecmp("From:", s) && !flag_from) {
+                to_low_case(s);
+
+                if (!strncmp(s, "from:", strlen(s)) && !flag_from) {
                     char next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
 
@@ -171,7 +179,7 @@ int parse(data_t *data, FILE *file) {
                     insert_to_data(data, res_header, &flag_from, STATE_FROM);
                 }
 
-                if (!strcasecmp("To:", s)  && !flag_to) {
+                if (!strncmp(s, "to:", strlen(s))  && !flag_to) {
                     char next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
 
@@ -191,7 +199,7 @@ int parse(data_t *data, FILE *file) {
                     insert_to_data(data, res_header, &flag_to, STATE_TO);
                 }
 
-                if (!strcasecmp("Date:", s)  && !flag_date) {
+                if (!strncmp(s, "date:", strlen(s))  && !flag_date) {
                     if (alloc_mem_struct(data, res_header, STATE_DATE) == -1) {
                         free(s);
                         free(res_header);
@@ -204,7 +212,9 @@ int parse(data_t *data, FILE *file) {
                     insert_to_data(data, res_header, &flag_date, STATE_DATE);
                 }
 
-                if (!strcasecmp("boundary=", boundary) && !flag_boundary) {
+                to_low_case(boundary);
+
+                if (!strncmp(boundary, "boundary=", strlen(boundary)) && !flag_boundary) {
                     flag_boundary = 1;
                     size_t len = strlen(res4) + 1;
                     char *tmp_res_end = NULL;
@@ -219,17 +229,19 @@ int parse(data_t *data, FILE *file) {
                     }
 
                     res_end = tmp_res_end;
-                    snprintf(res_end, len, "%s", res4);
+                   snprintf(res_end, len, "%s", res4);
                     append(res_end, '-');
                     append(res_end, '-');
                 }
             }
 
+            to_low_case(res4);
             if (strstr(s, res4) && flag_boundary) {
                 ++count;
                 bin_flag = 1;
             }
 
+            to_low_case(res_end);
             if (strstr(s, res_end) && flag_boundary) {
                 --count;
                 bin_flag = 1;
@@ -308,23 +320,26 @@ int parse(data_t *data, FILE *file) {
 
                     append(s, c);
                 }
+                to_low_case(s);
 
-                if (!strcasecmp("From:", s) && !flag_from) {
+                if (!strncmp(s, "from:", 5) && !flag_from) {
                     add_to_text(res_header, c, &flag);
                     continue;
                 }
 
-                if (!strcasecmp("To:", s) && !flag_to) {
+                if (!strncmp(s, "to:", 3) && !flag_to) {
                     add_to_text(res_header, c, &flag);
                     continue;
                 }
 
-                if (!strcasecmp("Date:", s) && !flag_date) {
+                if (!strncmp(s, "date:", 5) && !flag_date) {
                     add_to_text(res_header, c, &flag);
                     continue;
                 }
 
-                if (!strcasecmp("boundary=", boundary) && !flag_boundary) {
+                to_low_case(boundary);
+
+                if (!strncmp(boundary, "boundary=", 9) && !flag_boundary) {
                     if (count_bin > 2) {
                         continue;
                     }
