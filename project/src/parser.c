@@ -276,7 +276,16 @@ int parse(data_t *data, FILE *file) {
                 if (!flag) {
                     if (count_res4 == 2) {
                         if (c == ' ' || c == '\t' || c == ';') {
-                            boundary[0] = '\0';
+                            count_boundary = 2;
+                            free(boundary);
+                            boundary = calloc(count_boundary, sizeof(char));
+                            if (boundary == NULL) {
+                                free(res_header);
+                                free(res4);
+                                free(res_end);
+                                free(s);
+                                return -1;
+                            }
                         } else {
                                 size_t len_boundary = strlen(boundary);
 
@@ -365,7 +374,17 @@ int parse(data_t *data, FILE *file) {
                     append(res4, c);
 
                     if (res4[0] == '=') {
-                        res4[0] = '\0';
+                        count_res4 = 2;
+                        free(res4);
+                        res4 = calloc(count_res4, sizeof(char));
+                        if (res4 == NULL) {
+                            free(res_header);
+                            free(res4);
+                            free(res_end);
+                            free(s);
+                            return -1;
+                        }
+
                         append(res4, '-');
                         append(res4, '-');
                     }
