@@ -11,24 +11,20 @@ static int append(char *s, char c) {
 static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
     size_t len = strlen(text) + 1;
 
-    switch (state) {
-        case STATE_FROM:
-            if (len - 1 != 0) {
+    if (len - 1) {
+        switch (state) {
+            case STATE_FROM:
                 snprintf(data->from,  len, "%s", text);
-            }
-            break;
-        case STATE_TO:
-            if (len - 1 != 0) {
+                break;
+            case STATE_TO:
                 snprintf(data->to, len, "%s", text);
-            }
-            break;
-        case STATE_DATE:
-            if (len - 1 != 0) {
+                break;
+            case STATE_DATE:
                 snprintf(data->date, len, "%s", text);
-            }
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
+        }
     }
 
     *flag = 1;
@@ -48,44 +44,34 @@ static void add_to_text(char *text, char c, int *flag) {
 static int alloc_mem_struct(data_t *data, const char *res_header, state_t state) {
     size_t alloc_mem_size = sizeof(char) * strlen(res_header) + 1;
 
-    switch (state) {
-           case STATE_FROM:
-                if (alloc_mem_size - 1 != 0) {
-                    char *tmp_from = NULL;
-
-                    if ((tmp_from = realloc(data->from, alloc_mem_size * sizeof(char))) == NULL) {
+    if (alloc_mem_size - 1) {
+        char *tmp_ptr = NULL;
+        switch (state) {
+               case STATE_FROM:
+                    if ((tmp_ptr = realloc(data->from, alloc_mem_size * sizeof(char))) == NULL) {
                         return -1;
                     }
 
-                    data->from = tmp_from;
-                }
-                break;
-           case STATE_TO:
-                if (alloc_mem_size - 1 != 0) {
-                    char *tmp_to = NULL;
-
-                    if ((tmp_to = realloc(data->to, alloc_mem_size * sizeof(char))) == NULL) {
+                    data->from = tmp_ptr;
+                    break;
+               case STATE_TO:
+                    if ((tmp_ptr = realloc(data->to, alloc_mem_size * sizeof(char))) == NULL) {
                         return -1;
                     }
 
-                    data->to = tmp_to;
-                }
-               break;
-           case STATE_DATE:
-                if (alloc_mem_size - 1 != 0) {
-                    char *tmp_date = NULL;
-
-                    if ((tmp_date = realloc(data->date, alloc_mem_size * sizeof(char))) == NULL) {
+                    data->to = tmp_ptr;
+                    break;
+               case STATE_DATE:
+                    if ((tmp_ptr = realloc(data->date, alloc_mem_size * sizeof(char))) == NULL) {
                         return -1;
                     }
 
-                    data->date = tmp_date;
-                }
-               break;
-           default:
-               break;
-       }
-
+                    data->date = tmp_ptr;
+                   break;
+               default:
+                   break;
+           }
+    }
     return 0;
 }
 
@@ -169,7 +155,7 @@ int parse(data_t *data, FILE *file) {
 
         if (c == '\n') {
             if (flag) {
-                if (strcasecmp("From:", s) == 0 && flag_from == 0) {
+                if (!strcasecmp("From:", s) && !flag_from) {
                     char next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
 
@@ -189,7 +175,7 @@ int parse(data_t *data, FILE *file) {
                     insert_to_data(data, res_header, &flag_from, STATE_FROM);
                 }
 
-                if (strcasecmp("To:", s) == 0  && flag_to == 0) {
+                if (!strcasecmp("To:", s)  && !flag_to) {
                     char next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
 
@@ -209,7 +195,7 @@ int parse(data_t *data, FILE *file) {
                     insert_to_data(data, res_header, &flag_to, STATE_TO);
                 }
 
-                if (strcasecmp("Date:", s) == 0  && flag_date == 0) {
+                if (!strcasecmp("Date:", s)  && !flag_date) {
                     if (alloc_mem_struct(data, res_header, STATE_DATE) == -1) {
                         free(s);
                         free(res_header);
@@ -222,7 +208,7 @@ int parse(data_t *data, FILE *file) {
                     insert_to_data(data, res_header, &flag_date, STATE_DATE);
                 }
 
-                if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
+                if (!strcasecmp("boundary=", boundary) && !flag_boundary) {
                     flag_boundary = 1;
                     size_t len = strlen(res4) + 1;
                     char *tmp_res_end = NULL;
@@ -279,7 +265,7 @@ int parse(data_t *data, FILE *file) {
         } else {
             if (c != '\r') {
                 end_flag = 0;
-                if (flag == 0) {
+                if (!flag) {
                     if (count_res4 == 2) {
                         if (c == ' ' || c == '\t' || c == ';') {
                             boundary[0] = '\0';
@@ -327,22 +313,22 @@ int parse(data_t *data, FILE *file) {
                     append(s, c);
                 }
 
-                if (strcasecmp("From:", s) == 0 && flag_from == 0) {
+                if (!strcasecmp("From:", s) && !flag_from) {
                     add_to_text(res_header, c, &flag);
                     continue;
                 }
 
-                if (strcasecmp("To:", s) == 0 && flag_to == 0) {
+                if (!strcasecmp("To:", s) && !flag_to) {
                     add_to_text(res_header, c, &flag);
                     continue;
                 }
 
-                if (strcasecmp("Date:", s) == 0 && flag_date == 0) {
+                if (!strcasecmp("Date:", s) && !flag_date) {
                     add_to_text(res_header, c, &flag);
                     continue;
                 }
 
-                if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
+                if (!strcasecmp("boundary=", boundary) && !flag_boundary) {
                     if (count_bin > 2) {
                         continue;
                     }
@@ -395,7 +381,7 @@ int parse(data_t *data, FILE *file) {
         bin_flag = 1;
     }
 
-    if (count == 0 && end_flag < 3 && bin_flag == 0) {
+    if (!count && end_flag < 3 && !bin_flag) {
         count = 1;
     }
 
