@@ -2,12 +2,17 @@
 #include "parser.h"
 #include <ctype.h>
 
-static int append(char *s, char c) {
+static int append(char *s, char c, int size) {
     int len = strlen(s);
-    s[len] = c;
-    s[len + 1] = '\0';
+    
+    if (len >= 0 && len < size) {
+        s[len] = c;
+        s[len + 1] = '\0';
+    }
+    
     return 0;
 }
+
 static void to_low_case(char *s) {
     for (int i = 0; i < s[i]; i++) {
         s[i] = tolower(s[i]);
@@ -35,8 +40,8 @@ static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
     text[0] = '\0';
 }
 
-static void add_to_text(char *text, char c, int *flag) {
-    append(text, c);
+static void add_to_text(char *text, char c, int *flag, int count) {
+    append(text, c, count);
 
     if (text[0] == ' ' || text[0] == ':') {
         text[0] = '\0';
@@ -230,8 +235,8 @@ int parse(data_t *data, FILE *file) {
 
                     res_end = tmp_res_end;
                    snprintf(res_end, len, "%s", res4);
-                    append(res_end, '-');
-                    append(res_end, '-');
+                    append(res_end, '-', len + 3);
+                    append(res_end, '-', len + 3);
                 }
             }
 
@@ -305,7 +310,7 @@ int parse(data_t *data, FILE *file) {
                                     boundary = tmp_boundary;
                                 }
 
-                                append(boundary, c);
+                                append(boundary, c, count_boundary);
                             }
                         }
 
@@ -327,22 +332,22 @@ int parse(data_t *data, FILE *file) {
                         s = tmp_s;
                     }
 
-                    append(s, c);
+                    append(s, c, count_s);
                 }
                 to_low_case(s);
 
                 if (!strncmp(s, "from:", 5) && !flag_from) {
-                    add_to_text(res_header, c, &flag);
+                    add_to_text(res_header, c, &flag, 2500000);
                     continue;
                 }
 
                 if (!strncmp(s, "to:", 3) && !flag_to) {
-                    add_to_text(res_header, c, &flag);
+                    add_to_text(res_header, c, &flag, 2500000);
                     continue;
                 }
 
                 if (!strncmp(s, "date:", 5) && !flag_date) {
-                    add_to_text(res_header, c, &flag);
+                    add_to_text(res_header, c, &flag, 2500000);
                     continue;
                 }
 
@@ -371,7 +376,7 @@ int parse(data_t *data, FILE *file) {
                         res4 = tmp_res4;
                     }
 
-                    append(res4, c);
+                    append(res4, c, count_res4);
 
                     if (res4[0] == '=') {
                         count_res4 = 4;
@@ -385,8 +390,8 @@ int parse(data_t *data, FILE *file) {
                             return -1;
                         }
 
-                        append(res4, '-');
-                        append(res4, '-');
+                        append(res4, '-', count_res4);
+                        append(res4, '-', count_res4);
                     }
 
                     if (c == '"' || c == ' ' || c == ';') {
