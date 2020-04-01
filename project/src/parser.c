@@ -5,9 +5,12 @@
 static int append(char *s, char c, int size) {
     int len = strlen(s);
 
-    if (len >= 0 && len < size) {
+    if (len > 0 && len < size) {
         s[len] = c;
         s[len + 1] = '\0';
+    } else {
+        s[0] = c;
+        s[1] = '\0';
     }
 
     return 0;
