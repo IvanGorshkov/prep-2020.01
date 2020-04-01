@@ -25,22 +25,24 @@ static void to_low_case(char *s) {
 static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
     size_t len = strlen(text) + 1;
 
-    switch (state) {
-        case STATE_FROM:
-            snprintf(data->from,  len, "%s", text);
-            break;
-        case STATE_TO:
-            snprintf(data->to, len, "%s", text);
-            break;
-        case STATE_DATE:
-            snprintf(data->date, len, "%s", text);
-            break;
-        default:
-            break;
-    }
+    if (strlen(text) > 0 && strlen(text) < 2500000) {
+        switch (state) {
+            case STATE_FROM:
+                snprintf(data->from,  len, "%s", text);
+                break;
+            case STATE_TO:
+                snprintf(data->to, len, "%s", text);
+                break;
+            case STATE_DATE:
+                snprintf(data->date, len, "%s", text);
+                break;
+            default:
+                break;
+        }
 
-    *flag = 1;
-    text[0] = '\0';
+        *flag = 1;
+        text[0] = '\0';
+    }
 }
 
 static void add_to_text(char *text, char c, int *flag, int count) {
@@ -53,34 +55,36 @@ static void add_to_text(char *text, char c, int *flag, int count) {
     *flag = 1;
 }
 
-static int alloc_mem_struct(data_t *data, const char *res_header, state_t state) {
+static int alloc_mem_struct(data_t *data, const char *res_header, state_t state, size_t size) {
     size_t alloc_mem_size = sizeof(char) * strlen(res_header) + 1;
 
-    char *tmp_ptr = NULL;
-    switch (state) {
-            case STATE_FROM:
-                if ((tmp_ptr = realloc(data->from, alloc_mem_size * sizeof(char))) == NULL) {
-                    return -1;
-                }
+    if (strlen(res_header) > 0 && strlen(res_header) < size) {
+        char *tmp_ptr = NULL;
+        switch (state) {
+                case STATE_FROM:
+                    if ((tmp_ptr = realloc(data->from, alloc_mem_size * sizeof(char))) == NULL) {
+                        return -1;
+                    }
 
-                data->from = tmp_ptr;
-                break;
-            case STATE_TO:
-                if ((tmp_ptr = realloc(data->to, alloc_mem_size * sizeof(char))) == NULL) {
-                    return -1;
-                }
+                    data->from = tmp_ptr;
+                    break;
+                case STATE_TO:
+                    if ((tmp_ptr = realloc(data->to, alloc_mem_size * sizeof(char))) == NULL) {
+                        return -1;
+                    }
 
-                data->to = tmp_ptr;
-                break;
-            case STATE_DATE:
-                if ((tmp_ptr = realloc(data->date, alloc_mem_size * sizeof(char))) == NULL) {
-                    return -1;
-                }
+                    data->to = tmp_ptr;
+                    break;
+                case STATE_DATE:
+                    if ((tmp_ptr = realloc(data->date, alloc_mem_size * sizeof(char))) == NULL) {
+                        return -1;
+                    }
 
-                data->date = tmp_ptr;
-                break;
-            default:
-                break;
+                    data->date = tmp_ptr;
+                    break;
+                default:
+                    break;
+        }
     }
     return 0;
 }
@@ -166,80 +170,83 @@ int parse(data_t *data, FILE *file) {
         if (c == '\n') {
             if (flag) {
                 to_low_case(s);
+                if (strlen(s) > 0 && strlen(s) < count_s) {
+                    if (!strncmp(s, "from:", strlen(s)) && !flag_from) {
+                        char next_char = fgetc(file);
+                        fseek(file, -1, SEEK_CUR);
 
-                if (!strncmp(s, "from:", strlen(s)) && !flag_from) {
-                    char next_char = fgetc(file);
-                    fseek(file, -1, SEEK_CUR);
+                        if (next_char == ' ') {
+                            continue;
+                        }
 
-                    if (next_char == ' ') {
-                        continue;
+                        if (alloc_mem_struct(data, res_header, STATE_FROM, 2500000) == -1) {
+                            free(s);
+                            free(res_header);
+                            free(res4);
+                            free(res_end);
+                            free(boundary);
+                            return -1;
+                        }
+
+                        insert_to_data(data, res_header, &flag_from, STATE_FROM);
                     }
 
-                    if (alloc_mem_struct(data, res_header, STATE_FROM) == -1) {
-                        free(s);
-                        free(res_header);
-                        free(res4);
-                        free(res_end);
-                        free(boundary);
-                        return -1;
+                    if (!strncmp(s, "to:", strlen(s))  && !flag_to) {
+                        char next_char = fgetc(file);
+                        fseek(file, -1, SEEK_CUR);
+
+                        if (next_char == ' ') {
+                            continue;
+                        }
+
+                        if (alloc_mem_struct(data, res_header, STATE_TO, 2500000) == -1) {
+                            free(s);
+                            free(res_header);
+                            free(res4);
+                            free(res_end);
+                            free(boundary);
+                            return -1;
+                        }
+
+                        insert_to_data(data, res_header, &flag_to, STATE_TO);
                     }
 
-                    insert_to_data(data, res_header, &flag_from, STATE_FROM);
+                    if (!strncmp(s, "date:", strlen(s))  && !flag_date) {
+                        if (alloc_mem_struct(data, res_header, STATE_DATE, 2500000) == -1) {
+                            free(s);
+                            free(res_header);
+                            free(res4);
+                            free(res_end);
+                            free(boundary);
+                            return -1;
+                        }
+
+                        insert_to_data(data, res_header, &flag_date, STATE_DATE);
+                    }
                 }
-
-                if (!strncmp(s, "to:", strlen(s))  && !flag_to) {
-                    char next_char = fgetc(file);
-                    fseek(file, -1, SEEK_CUR);
-
-                    if (next_char == ' ') {
-                        continue;
-                    }
-
-                    if (alloc_mem_struct(data, res_header, STATE_TO) == -1) {
-                        free(s);
-                        free(res_header);
-                        free(res4);
-                        free(res_end);
-                        free(boundary);
-                        return -1;
-                    }
-
-                    insert_to_data(data, res_header, &flag_to, STATE_TO);
-                }
-
-                if (!strncmp(s, "date:", strlen(s))  && !flag_date) {
-                    if (alloc_mem_struct(data, res_header, STATE_DATE) == -1) {
-                        free(s);
-                        free(res_header);
-                        free(res4);
-                        free(res_end);
-                        free(boundary);
-                        return -1;
-                    }
-
-                    insert_to_data(data, res_header, &flag_date, STATE_DATE);
-                }
-
                 to_low_case(boundary);
+                if (strlen(boundary) > 0 && strlen(boundary) < count_boundary) {
+                    if (!strncmp(boundary, "boundary=", strlen(boundary)) && !flag_boundary) {
+                        flag_boundary = 1;
+                        if (strlen(res4) > 0 && strlen(res4) < count_res4) {
+                            size_t len = strlen(res4) + 1;
+                            char *tmp_res_end = NULL;
 
-                if (!strncmp(boundary, "boundary=", strlen(boundary)) && !flag_boundary) {
-                    flag_boundary = 1;
-                    size_t len = strlen(res4) + 1;
-                    char *tmp_res_end = NULL;
+                            if ((tmp_res_end = realloc(res_end, len + 3)) == NULL) {
+                                free(s);
+                                free(res_header);
+                                free(res4);
+                                free(res_end);
+                                free(boundary);
+                                return -1;
+                            }
 
-                    if ((tmp_res_end = realloc(res_end, len + 3)) == NULL) {
-                        free(s);
-                        free(res_header);
-                        free(res4);
-                        free(res_end);
-                        free(boundary);
-                        return -1;
+                            res_end = tmp_res_end;
+                           snprintf(res_end, len, "%s", res4);
+                            append(res_end, '-', len + 3);
+                            append(res_end, '-', len + 3);
+                        }
                     }
-
-                    res_end = tmp_res_end;
-                   snprintf(res_end, len, "%s", res4);
-                    append(res_end, '-', len + 3);
-                    append(res_end, '-', len + 3);
                 }
             }
 
