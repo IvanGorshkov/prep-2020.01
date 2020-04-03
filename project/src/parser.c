@@ -266,6 +266,7 @@ int parse(data_t *data, FILE *file) {
                     snprintf(res_header, strlen(buffer_2) + 1, "%s", buffer_2);
                     flag = 1;
                     free(buffer);
+                    free(buffer_2);
                     continue;
                 }
 
