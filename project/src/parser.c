@@ -24,6 +24,7 @@ static void to_low_case(char *s) {
 
 static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
     size_t len = strlen(text) + 1;
+<<<<<<< HEAD
 
     if (strlen(text) > 0 && strlen(text) < 2500000) {
         switch (state) {
@@ -42,6 +43,20 @@ static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
 
         *flag = 1;
         text[0] = '\0';
+=======
+    switch (state) {
+        case STATE_FROM:
+                snprintf(data->from,  len, "%s", text);
+            break;
+        case STATE_TO:
+                snprintf(data->to, len, "%s", text);
+            break;
+        case STATE_DATE:
+                snprintf(data->date, len, "%s", text);
+            break;
+        default:
+            break;
+>>>>>>> all tested passed
     }
 }
 
@@ -58,6 +73,7 @@ static void add_to_text(char *text, char c, int *flag, int count) {
 static int alloc_mem_struct(data_t *data, const char *res_header, state_t state, size_t size) {
     size_t alloc_mem_size = sizeof(char) * strlen(res_header) + 1;
 
+<<<<<<< HEAD
     if (strlen(res_header) > 0 && strlen(res_header) < size) {
         char *tmp_ptr = NULL;
         switch (state) {
@@ -79,6 +95,37 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state,
                     if ((tmp_ptr = realloc(data->date, alloc_mem_size * sizeof(char))) == NULL) {
                         return -1;
                     }
+=======
+    switch (state) {
+           case STATE_FROM:
+                free(data->from);
+                data->from = calloc(alloc_mem_size, sizeof(char));
+
+                if (data->from == NULL) {
+                    return -1;
+                }
+
+               break;
+           case STATE_TO:
+                free(data->to);
+                data->to = calloc(alloc_mem_size, sizeof(char));
+
+                if (data->to == NULL) {
+                    return -1;
+                }
+               break;
+           case STATE_DATE:
+                free(data->date);
+                data->date = calloc(alloc_mem_size, sizeof(char));
+
+                if (data->date == NULL) {
+                    return -1;
+                }
+               break;
+           default:
+               break;
+       }
+>>>>>>> all tested passed
 
                     data->date = tmp_ptr;
                     break;
@@ -90,13 +137,21 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state,
 }
 
 int parse(data_t *data, FILE *file) {
+<<<<<<< HEAD
     data->to = calloc(4, sizeof(char));
+=======
+    data->to = calloc(1, sizeof(char));
+>>>>>>> all tested passed
 
     if (data->to == NULL) {
         return -1;
     }
 
+<<<<<<< HEAD
     data->from = calloc(4, sizeof(char));
+=======
+    data->from = calloc(1, sizeof(char));
+>>>>>>> all tested passed
 
     if (data->from == NULL) {
         return -1;
@@ -288,6 +343,7 @@ int parse(data_t *data, FILE *file) {
         } else {
             if (c != '\r') {
                 end_flag = 0;
+<<<<<<< HEAD
                 if (!flag) {
                     if (count_res4 == 4) {
                         if (c == ' ' || c == '\t' || c == ';') {
@@ -340,6 +396,15 @@ int parse(data_t *data, FILE *file) {
                         }
 
                         s = tmp_s;
+=======
+                if (flag == 0) {
+                    if (flag_boundary == 0) {
+                        if (c == ' ' || c == '\t' || c == ';') {
+                            boundary[0] = '\0';
+                        } else {
+                            append(boundary, c);
+                        }
+>>>>>>> all tested passed
                     }
 
                     append(s, c, count_s);
