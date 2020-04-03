@@ -176,6 +176,7 @@ int parse(data_t *data, FILE *file) {
                     fseek(file, -1, SEEK_CUR);
 
                     if (next_char == ' ') {
+                        append(res_header, ' ');
                         continue;
                     }
 
@@ -248,7 +249,23 @@ int parse(data_t *data, FILE *file) {
                 }
 
                 if (strcasecmp("To:", s) == 0 && flag_to == 0) {
-                    add_to_text(res_header, c, &flag);
+                    int i = 0;
+
+                    while (c != '\n' && c != '\r') {
+                        i++;
+                        c = fgetc(file);
+                    }
+
+                    fseek(file, -i + 1 - flag, SEEK_CUR);
+
+                    char *buffer = calloc(2500000, sizeof(char));
+                    char *buffer_2 = calloc(2500000, sizeof(char));
+
+                    fgets(buffer, i - 1 + flag, file);
+                    snprintf(buffer_2, strlen(res_header) + strlen(buffer) + 1, "%s%s", res_header, buffer);
+                    snprintf(res_header, strlen(buffer_2) + 1, "%s", buffer_2);
+                    flag = 1;
+                    free(buffer);
                     continue;
                 }
 
