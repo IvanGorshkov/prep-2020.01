@@ -142,7 +142,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *res_end = calloc(1000, sizeof(char));
+    char *res_end = calloc(1, sizeof(char));
 
     if (res_end == NULL) {
         free(s);
@@ -235,7 +235,9 @@ int parse(data_t *data, FILE *file) {
 
                 if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
                     flag_boundary = 1;
-                    size_t len = strlen(res4) + 1;
+                    size_t len = strlen(res4) + 3;
+                    free(res_end);
+                    res_end  = calloc(len, sizeof(char));
                     snprintf(res_end, len, "%s", res4);
                     append(res_end, '-');
                     append(res_end, '-');
@@ -253,6 +255,7 @@ int parse(data_t *data, FILE *file) {
             }
 
             s[0] = '\0';
+            free(boundary);
             boundary = calloc(2, sizeof(char));
 
             if (boundary == NULL) {
@@ -286,6 +289,7 @@ int parse(data_t *data, FILE *file) {
                             boundary = tmp_boundary;
                         }
                         if (c == ' ' || c == '\t' || c == ';') {
+                            free(boundary);
                             boundary = calloc(2, sizeof(char));
                             count_boundary = 2;
 
@@ -311,7 +315,7 @@ int parse(data_t *data, FILE *file) {
                         free(res4);
                         free(res_end);
                         free(boundary);
-                        return  -1;
+                        return -1;
                     }
 
                     continue;
@@ -324,7 +328,7 @@ int parse(data_t *data, FILE *file) {
                         free(res4);
                         free(res_end);
                         free(boundary);
-                        return  -1;
+                        return -1;
                     }
 
                     continue;
@@ -337,7 +341,7 @@ int parse(data_t *data, FILE *file) {
                         free(res4);
                         free(res_end);
                         free(boundary);
-                        return  -1;
+                        return -1;
                     }
 
                     continue;
