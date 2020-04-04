@@ -134,7 +134,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *res4 = calloc(1000, sizeof(char));
+    char *res4 = calloc(3, sizeof(char));
 
     if (res4 == NULL) {
         free(s);
@@ -169,6 +169,7 @@ int parse(data_t *data, FILE *file) {
     int count = 0;
     int count_bin = 0;
     size_t count_boundary = 2;
+    size_t count_res4 = 3;
     int bin_flag = 0;
     int end_flag = 0;
     while (!feof(file)) {
@@ -351,7 +352,20 @@ int parse(data_t *data, FILE *file) {
                     if (count_bin > 2) {
                         continue;
                     }
+                    if (strlen(res4) + 1 >= count_res4) {
+                        count_res4 *= 2;
+                        char *tmp_res4 = realloc(res4, count_res4*sizeof(char));
 
+                        if (tmp_res4 == NULL) {
+                            free(boundary);
+                            free(s);
+                            free(res_header);
+                            free(res4);
+                            free(res_end);
+                            return -1;
+                        }
+                        res4 = tmp_res4;
+                    }
                     append(res4, c);
 
                     if (res4[0] == '=') {
