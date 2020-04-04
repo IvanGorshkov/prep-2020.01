@@ -37,7 +37,7 @@ static int add_to_text(char *res_header, char c, int *flag, FILE* file) {
     if (c == ' ') {
         space = 1;
     }
-    
+
     while (c != '\n' && c != '\r') {
         i++;
         c = fgetc(file);
@@ -46,9 +46,11 @@ static int add_to_text(char *res_header, char c, int *flag, FILE* file) {
     fseek(file, -i + space - *flag, SEEK_CUR);
 
     char *buffer = calloc(i - space + *flag, sizeof(char));
+
     if (buffer == NULL) {
         return 0;
     }
+
     fgets(buffer, i - space + *flag, file);
     char *buffer_2 = calloc(strlen(res_header) + strlen(buffer) + space + 1, sizeof(char));
 
@@ -56,6 +58,7 @@ static int add_to_text(char *res_header, char c, int *flag, FILE* file) {
         free(buffer);
         return 0;
     }
+
     snprintf(buffer_2, strlen(res_header) + strlen(buffer) + space + 1, "%s%s", res_header, buffer);
     snprintf(res_header, strlen(buffer_2) + 1, "%s", buffer_2);
     *flag = 1;
@@ -75,8 +78,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
                 if (data->from == NULL) {
                     return -1;
                 }
-
-               break;
+                break;
            case STATE_TO:
                 free(data->to);
                 data->to = calloc(alloc_mem_size, sizeof(char));
@@ -84,7 +86,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
                 if (data->to == NULL) {
                     return -1;
                 }
-               break;
+                break;
            case STATE_DATE:
                 free(data->date);
                 data->date = calloc(alloc_mem_size, sizeof(char));
@@ -92,7 +94,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
                 if (data->date == NULL) {
                     return -1;
                 }
-               break;
+                break;
            default:
                break;
        }
@@ -149,7 +151,7 @@ int parse(data_t *data, FILE *file) {
         return -1;
     }
 
-    char *boundary = calloc(1000, sizeof(char));
+    char *boundary = calloc(2, sizeof(char));
 
     if (boundary == NULL) {
         free(s);
@@ -166,6 +168,7 @@ int parse(data_t *data, FILE *file) {
     int flag_boundary = 0;
     int count = 0;
     int count_bin = 0;
+    size_t count_boundary = 2;
     int bin_flag = 0;
     int end_flag = 0;
     while (!feof(file)) {
@@ -250,7 +253,17 @@ int parse(data_t *data, FILE *file) {
             }
 
             s[0] = '\0';
-            boundary[0] = '\0';
+            boundary = calloc(2, sizeof(char));
+
+            if (boundary == NULL) {
+                   free(s);
+                   free(res_header);
+                   free(res4);
+                   free(res_end);
+                   return -1;
+            }
+
+            count_boundary = 2;
             flag = 0;
             end_flag++;
         } else {
@@ -258,8 +271,31 @@ int parse(data_t *data, FILE *file) {
                 end_flag = 0;
                 if (flag == 0) {
                     if (flag_boundary == 0) {
+                        if (strlen(boundary) + 1 >= count_boundary) {
+                            count_boundary *= 2;
+                            char *tmp_boundary = realloc(boundary, count_boundary*sizeof(char));
+
+                            if (tmp_boundary == NULL) {
+                                free(boundary);
+                                free(s);
+                                free(res_header);
+                                free(res4);
+                                free(res_end);
+                                return -1;
+                            }
+                            boundary = tmp_boundary;
+                        }
                         if (c == ' ' || c == '\t' || c == ';') {
-                            boundary[0] = '\0';
+                            boundary = calloc(2, sizeof(char));
+                            count_boundary = 2;
+
+                            if (boundary == NULL) {
+                                free(s);
+                                free(res_header);
+                                free(res4);
+                                free(res_end);
+                                return -1;
+                            }
                         } else {
                             append(boundary, c);
                         }
