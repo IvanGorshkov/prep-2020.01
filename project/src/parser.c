@@ -28,14 +28,40 @@ static void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
     text[0] = '\0';
 }
 
-static void add_to_text(char *text, char c, int *flag) {
-    append(text, c);
+static int add_to_text(char *res_header, char c, int *flag, FILE* file) {
+    int i = 0;
+    int space = 0;
+    c = fgetc(file);
+    fseek(file, -1, SEEK_CUR);
 
-    if (text[0] == ' ' || text[0] == ':') {
-        text[0] = '\0';
+    if (c == ' ') {
+        space = 1;
+    }
+    
+    while (c != '\n' && c != '\r') {
+        i++;
+        c = fgetc(file);
     }
 
+    fseek(file, -i + space - *flag, SEEK_CUR);
+
+    char *buffer = calloc(i - space + *flag, sizeof(char));
+    if (buffer == NULL) {
+        return 0;
+    }
+    fgets(buffer, i - space + *flag, file);
+    char *buffer_2 = calloc(strlen(res_header) + strlen(buffer) + space + 1, sizeof(char));
+
+    if (buffer_2 == NULL) {
+        free(buffer);
+        return 0;
+    }
+    snprintf(buffer_2, strlen(res_header) + strlen(buffer) + space + 1, "%s%s", res_header, buffer);
+    snprintf(res_header, strlen(buffer_2) + 1, "%s", buffer_2);
     *flag = 1;
+    free(buffer);
+    free(buffer_2);
+    return 1;
 }
 
 static int alloc_mem_struct(data_t *data, const char *res_header, state_t state) {
@@ -176,7 +202,6 @@ int parse(data_t *data, FILE *file) {
                     fseek(file, -1, SEEK_CUR);
 
                     if (next_char == ' ') {
-                        append(res_header, ' ');
                         continue;
                     }
 
@@ -244,34 +269,41 @@ int parse(data_t *data, FILE *file) {
                 }
 
                 if (strcasecmp("From:", s) == 0 && flag_from == 0) {
-                    add_to_text(res_header, c, &flag);
+                    if (!add_to_text(res_header, c, &flag, file)) {
+                        free(s);
+                        free(res_header);
+                        free(res4);
+                        free(res_end);
+                        free(boundary);
+                        return  -1;
+                    }
+
                     continue;
                 }
 
                 if (strcasecmp("To:", s) == 0 && flag_to == 0) {
-                    int i = 0;
-
-                    while (c != '\n' && c != '\r') {
-                        i++;
-                        c = fgetc(file);
+                    if (!add_to_text(res_header, c, &flag, file)) {
+                        free(s);
+                        free(res_header);
+                        free(res4);
+                        free(res_end);
+                        free(boundary);
+                        return  -1;
                     }
 
-                    fseek(file, -i + 1 - flag, SEEK_CUR);
-
-                    char *buffer = calloc(2500000, sizeof(char));
-                    char *buffer_2 = calloc(2500000, sizeof(char));
-
-                    fgets(buffer, i - 1 + flag, file);
-                    snprintf(buffer_2, strlen(res_header) + strlen(buffer) + 1, "%s%s", res_header, buffer);
-                    snprintf(res_header, strlen(buffer_2) + 1, "%s", buffer_2);
-                    flag = 1;
-                    free(buffer);
-                    free(buffer_2);
                     continue;
                 }
 
                 if (strcasecmp("Date:", s) == 0 && flag_date == 0) {
-                    add_to_text(res_header, c, &flag);
+                    if (!add_to_text(res_header, c, &flag, file)) {
+                        free(s);
+                        free(res_header);
+                        free(res4);
+                        free(res_end);
+                        free(boundary);
+                        return  -1;
+                    }
+
                     continue;
                 }
 
