@@ -268,7 +268,7 @@ int parse(data_t *data, FILE *file) {
             }
 
             count_s = 2;
-            
+
             free(boundary);
             boundary = calloc(2, sizeof(char));
 
@@ -321,7 +321,7 @@ int parse(data_t *data, FILE *file) {
                             append(boundary, c);
                         }
                     }
-                    
+
                     if (strlen(s) + 1 >= count_s) {
                         count_s *= 2;
                         char *tmp_s = realloc(s, count_s * sizeof(char));
