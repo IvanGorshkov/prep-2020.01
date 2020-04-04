@@ -55,6 +55,7 @@ static char* add_to_text(char *res, char c, int *flag, FILE* file) {
 
     if (buffer_2 == NULL) {
         free(buffer);
+        free(res);
         return NULL;
     }
 
@@ -64,6 +65,7 @@ static char* add_to_text(char *res, char c, int *flag, FILE* file) {
     if (return_str == NULL) {
         free(buffer);
         free(buffer_2);
+        free(res);
         return NULL;
     }
 
@@ -71,6 +73,7 @@ static char* add_to_text(char *res, char c, int *flag, FILE* file) {
     *flag = 1;
     free(buffer);
     free(buffer_2);
+    free(res);
     return return_str;
 }
 
@@ -209,6 +212,14 @@ int parse(data_t *data, FILE *file) {
                     insert_to_data(data, res_header, &flag_from, STATE_FROM);
                     free(res_header);
                     res_header = calloc(2, sizeof(char));
+
+                    if (res_header == NULL) {
+                        free(s);
+                        free(boundary);
+                        free(res4);
+                        free(res_end);
+                        return EXIT_FAILURE;
+                    }
                 }
 
                 if (strcasecmp("To:", s) == 0  && flag_to == 0) {
@@ -231,6 +242,14 @@ int parse(data_t *data, FILE *file) {
                     insert_to_data(data, res_header, &flag_to, STATE_TO);
                     free(res_header);
                     res_header = calloc(2, sizeof(char));
+
+                    if (res_header == NULL) {
+                        free(s);
+                        free(boundary);
+                        free(res4);
+                        free(res_end);
+                        return EXIT_FAILURE;
+                    }
                 }
 
                 if (strcasecmp("Date:", s) == 0  && flag_date == 0) {
@@ -246,6 +265,14 @@ int parse(data_t *data, FILE *file) {
                     insert_to_data(data, res_header, &flag_date, STATE_DATE);
                     free(res_header);
                     res_header = calloc(2, sizeof(char));
+
+                    if (res_header == NULL) {
+                        free(s);
+                        free(boundary);
+                        free(res4);
+                        free(res_end);
+                        return EXIT_FAILURE;
+                    }
                 }
 
                 if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
