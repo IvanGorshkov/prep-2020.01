@@ -325,7 +325,7 @@ namespace prep {
                 if (row != i_row && col != j_col) {
                     is_set_mat = true;
                     // Устанавливаем элемент матрицы
-                    tmp_matrix(row_new_matrix, col_new_matrix) = (i_row, j_col);
+                    tmp_matrix(row_new_matrix, col_new_matrix) = matrix[i_row][j_col];
                     // Переходим на следующий столбец
                     col_new_matrix++;
                 }
