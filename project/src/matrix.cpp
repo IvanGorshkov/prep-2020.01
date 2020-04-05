@@ -15,6 +15,48 @@ namespace prep {
             matrix.push_back(mat_vector);
         }
     }
+
+    Matrix::Matrix(std::istream& is) {
+        if (!is) {
+            throw InvalidMatrixStream();
+        }
+        is >> rows >> cols;
+
+        if(rows == 0 || cols == 0) {
+            throw InvalidMatrixStream();
+        }
+
+        double value = 0;
+        size_t i = 0;
+        size_t j = 0;
+        std::vector<double> mat_vector;
+
+        while (is >> value) {
+            if(std::isalpha(value)){
+                throw InvalidMatrixStream();
+            }
+
+            if (j == cols) {
+                j = 0;
+                matrix.push_back(mat_vector);
+                mat_vector.clear();
+                i++;
+            }
+
+            mat_vector.push_back(value);
+            j++;
+        }
+
+        if (j == cols) {
+            matrix.push_back(mat_vector);
+            i++;
+        }
+
+        if (i*j != cols*rows) {
+            throw InvalidMatrixStream();
+        }
+    }
+
     std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
         for (size_t i = 0; i < matrix.rows; ++i) {
             for (size_t j = 0; j < matrix.cols; ++j) {
@@ -52,7 +94,6 @@ namespace prep {
     }
 
     Matrix Matrix::operator+(const Matrix& rhs) const {
-
         if (rhs.cols != cols || rhs.rows != rows) {
             throw DimensionMismatch(*this, rhs);
         }
@@ -100,6 +141,8 @@ namespace prep {
                 }
             }
         }
+
+        return  mul_mat;
     }
 
     Matrix Matrix::transp() const {
@@ -155,6 +198,7 @@ namespace prep {
 
         return true;
     }
+
     bool Matrix::operator!=(const Matrix& rhs) const {
         if (rhs.rows != rows || rhs.cols != cols) {
             return true;
@@ -170,4 +214,76 @@ namespace prep {
 
         return false;
     }
+    double Matrix::det() const {
+        if (rows != cols) {
+            throw DimensionMismatch(*this);
+        }
+
+        if (rows == 1) {
+            return matrix[0][0];
+        }
+
+        if (rows == 2) {
+            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+        }
+        double val = 1;
+        if (rows > 2) {
+            Matrix gauss_matrix = gauss_method();
+
+            for (size_t i = 0; i < rows; i++) {
+                val *= gauss_matrix.matrix[i][i];
+            }
+        }
+        return val;
+    }
+
+    Matrix Matrix::gauss_method() const {
+        Matrix gauss_matrix(rows,cols);
+
+        for (size_t row = 0; row < rows; ++row) {
+            for (size_t col = 0; col < rows; ++col) {
+                gauss_matrix.matrix[row][col] = matrix[row][col];
+            }
+        }
+
+        for (size_t col = 0; col < rows; ++col) {
+            double elem = gauss_matrix(col, col);
+
+            // Если elem главной диагонали = 0, то находим строку с ненулевым элементом
+            if (elem == 0) {
+                int changed_row = -1;
+
+                for (size_t row = col; row < rows; row++) {
+                    elem = gauss_matrix(row, col);
+
+                    if (elem != 0) {
+                        changed_row = row;
+                        break;
+                    }
+                }
+
+                if (changed_row == -1) {
+                    break;
+                }
+
+                // Меняеем порядок
+                for (size_t row = 0; row < rows; row++) {
+                    elem = gauss_matrix(col, row);
+                    gauss_matrix.matrix[col][row] = -gauss_matrix.matrix[changed_row][row];
+                    gauss_matrix.matrix[changed_row][row] = elem;
+                }
+            }
+
+            //Приводим элменты под главной диагонали к 0
+            for (size_t row = col; row < rows - 1; row++) {
+                double coeff = -gauss_matrix.matrix[row + 1][col] / gauss_matrix.matrix[col][col];
+                for (size_t k = 0; k < rows; k++) {
+                    gauss_matrix.matrix[row + 1][k] += gauss_matrix.matrix[col][k] * coeff;
+                }
+            }
+        }
+
+        return gauss_matrix;
+    }
+
 }
