@@ -1,14 +1,14 @@
-#include "matrix.h"
-#include "exceptions.h"
 #include <math.h>
 #include <iomanip>
+#include "matrix.h"
+#include "exceptions.h"
 
 namespace prep {
     Matrix::Matrix(size_t rows, size_t cols): rows(rows), cols(cols) {
-        for(size_t i = 0; i < rows; ++i) {
+        for (size_t i = 0; i < rows; ++i) {
             std::vector<double> mat_vector;
 
-            for(size_t j = 0; j < cols; ++j) {
+            for (size_t j = 0; j < cols; ++j) {
                 mat_vector.push_back(0);
             }
 
@@ -22,7 +22,7 @@ namespace prep {
         }
         is >> rows >> cols;
 
-        if(rows == 0 || cols == 0) {
+        if (rows == 0 || cols == 0) {
             throw InvalidMatrixStream();
         }
 
@@ -32,7 +32,7 @@ namespace prep {
         std::vector<double> mat_vector;
 
         while (is >> value) {
-            if(std::isalpha(value)){
+            if (std::isalpha(value)) {
                 throw InvalidMatrixStream();
             }
 
@@ -79,7 +79,7 @@ namespace prep {
 
     double Matrix::operator()(size_t i, size_t j) const {
         if (cols <= i || rows <= j) {
-            throw OutOfRange(i,j, this);
+            throw OutOfRange(i, j, this);
         }
 
         return matrix[i][j];
@@ -87,7 +87,7 @@ namespace prep {
 
     double& Matrix::operator()(size_t i, size_t j) {
         if (cols <= i || rows <= j) {
-            throw OutOfRange(i,j, this);
+            throw OutOfRange(i, j, this);
         }
 
         return matrix[i][j];
@@ -238,13 +238,7 @@ namespace prep {
     }
 
     Matrix Matrix::gauss_method() const {
-        Matrix gauss_matrix(rows,cols);
-
-        for (size_t row = 0; row < rows; ++row) {
-            for (size_t col = 0; col < rows; ++col) {
-                gauss_matrix.matrix[row][col] = matrix[row][col];
-            }
-        }
+        Matrix gauss_matrix = *this;
 
         for (size_t col = 0; col < rows; ++col) {
             double elem = gauss_matrix(col, col);
@@ -286,4 +280,76 @@ namespace prep {
         return gauss_matrix;
     }
 
-}
+    Matrix Matrix::adj() const {
+        if (rows != cols) {
+            throw DimensionMismatch(*this);
+        }
+
+        Matrix adj_matrix(rows, cols);
+
+        if (rows == 1) {
+            adj_matrix(0, 0) = 1;
+            return adj_matrix;
+        }
+
+        size_t row = 0;
+        for (size_t i = 0; i < rows; ++i) {
+            size_t col = 0;
+
+            for (size_t j = 0; j < cols; ++j) {
+                Matrix tmp_matrix = cross_out(row, col);
+                // Находим определитель матрицы
+                double val = tmp_matrix.det();
+                val *= (i % 2 != 0 ? 1 : - 1);
+                val *= (j % 2 != 0 ? 1 : - 1);
+                // Добавляем значение присоединенной матрице
+                adj_matrix(i, j) = val;
+                col++;
+            }
+            row++;
+        }
+
+        return adj_matrix.transp();
+    }
+
+    Matrix Matrix::cross_out(size_t row, size_t col) const {
+        size_t row_new_matrix = 0;
+        Matrix tmp_matrix(rows - 1, cols - 1);
+
+        for (size_t i_row = 0; i_row < rows; ++i_row) {
+            size_t col_new_matrix = 0;
+            bool is_set_mat = false;
+
+            for (size_t j_col = 0; j_col < cols; ++j_col) {
+                // Условие для вычеркивания строки и столбца
+                if (row != i_row && col != j_col) {
+                    is_set_mat = true;
+                    // Устанавливаем элемент матрицы
+                    tmp_matrix(row_new_matrix, col_new_matrix) = (i_row, j_col);
+                    // Переходим на следующий столбец
+                    col_new_matrix++;
+                }
+            }
+
+            if (is_set_mat) {
+                // Переходим на следующую строку
+                row_new_matrix++;
+            }
+        }
+
+        return tmp_matrix;
+    }
+
+    Matrix Matrix::inv() const {
+        if (rows != cols) {
+            throw DimensionMismatch(*this);
+        }
+
+        double val = det();
+        if (abs(val) < 0.0001) {
+            throw SingularMatrix();
+        }
+
+        return  adj() * (1 / val);
+    }
+}  // namespace prep
