@@ -49,6 +49,7 @@ namespace prep {
     }
 
     std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
+        os << matrix.rows << " " << matrix.cols << std::endl;
         for (size_t i = 0; i < matrix.rows; ++i) {
             for (size_t j = 0; j < matrix.cols; ++j) {
                 os << std::setprecision(std::numeric_limits<double>::max_digits10);
