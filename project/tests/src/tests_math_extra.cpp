@@ -33,6 +33,8 @@ TEST(MatrixMathExtraSuite, Adj) {
     is.close();
 
     prep::Matrix m_adj{};
+      std::cout << m.adj() << std::endl;
+      std::cout << expected_adj << std::endl;
     ASSERT_NO_THROW(m_adj = m.adj());
     ASSERT_EQ(expected_adj, m_adj);
   }
