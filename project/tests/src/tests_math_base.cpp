@@ -81,7 +81,6 @@ TEST(MatrixMathBaseSuite, MatrixMul) {
                 << m1 << m2;
 
   const auto res = m1 * m2;
-  std::cout << m1 << m2 << std::endl;
   ASSERT_EQ(m1.getRows(), res.getRows());
   ASSERT_EQ(m2.getCols(), res.getCols());
 
