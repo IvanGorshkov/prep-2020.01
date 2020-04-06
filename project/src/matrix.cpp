@@ -109,7 +109,7 @@ namespace prep {
 
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                sub_mat.matrix[i][j] = matrix[i][j] + rhs.matrix[i][j];
+                sub_mat.matrix[i][j] = matrix[i][j] - rhs.matrix[i][j];
             }
         }
 
