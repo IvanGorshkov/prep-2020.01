@@ -78,7 +78,7 @@ namespace prep {
     }
 
     double Matrix::operator()(size_t i, size_t j) const {
-        if (cols <= i || rows <= j) {
+        if (cols <= j || rows <= i) {
             throw OutOfRange(i, j, this);
         }
 
@@ -86,7 +86,7 @@ namespace prep {
     }
 
     double& Matrix::operator()(size_t i, size_t j) {
-        if (cols <= i || rows <= j) {
+        if (cols <= j || rows <= i) {
             throw OutOfRange(i, j, this);
         }
 
