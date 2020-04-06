@@ -122,16 +122,7 @@ namespace prep {
         }
 
         Matrix mul_matrix(rhs.cols, rows);
-        size_t mul_row = mul_matrix.rows;
-        size_t mul_col = mul_matrix.cols;
-        for (size_t i = 0; i < mul_row; ++i) {
-            for (size_t j = 0; j < mul_col; ++j) {
-                for (size_t k = 0; k < rhs.rows; ++k) {
-                    mul_matrix.matrix[i][j] += matrix[i][k] * rhs.matrix[k][j];
-                }
-            }
-        }
-
+        
         return  mul_matrix;
     }
 
