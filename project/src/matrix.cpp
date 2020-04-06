@@ -17,12 +17,12 @@ namespace prep {
     }
 
     Matrix::Matrix(std::istream& is) {
-        if (!is) {
-            throw InvalidMatrixStream();
-        }
+        rows = 0;
+        cols = 0;
+
         is >> rows >> cols;
 
-        if (rows == 0 || cols == 0) {
+        if (!is) {
             throw InvalidMatrixStream();
         }
 
@@ -34,10 +34,6 @@ namespace prep {
                 is >> value;
 
                 if (!is) {
-                    throw InvalidMatrixStream();
-                }
-
-                if (std::isalpha(value)) {
                     throw InvalidMatrixStream();
                 }
 
