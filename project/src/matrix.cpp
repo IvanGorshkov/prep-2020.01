@@ -26,34 +26,25 @@ namespace prep {
             throw InvalidMatrixStream();
         }
 
-        double value = 0;
-        size_t i = 0;
-        size_t j = 0;
-        std::vector<double> mat_vector;
+        for (size_t i = 0; i < rows; ++i) {
+            std::vector<double> mat_vector;
 
-        while (is >> value) {
-            if (std::isalpha(value)) {
-                throw InvalidMatrixStream();
+            for (size_t j = 0; j < cols; ++j) {
+                double value = 0;
+                is >> value;
+
+                if (!is) {
+                    throw InvalidMatrixStream();
+                }
+
+                if (std::isalpha(value)) {
+                    throw InvalidMatrixStream();
+                }
+
+                mat_vector.push_back(value);
             }
 
-            if (j == cols) {
-                j = 0;
-                matrix.push_back(mat_vector);
-                mat_vector.clear();
-                i++;
-            }
-
-            mat_vector.push_back(value);
-            j++;
-        }
-
-        if (j == cols) {
             matrix.push_back(mat_vector);
-            i++;
-        }
-
-        if (i*j != cols*rows) {
-            throw InvalidMatrixStream();
         }
     }
 
