@@ -122,7 +122,7 @@ namespace prep {
         }
 
         Matrix mul_matrix(rhs.cols, rows);
-        
+
         return  mul_matrix;
     }
 
