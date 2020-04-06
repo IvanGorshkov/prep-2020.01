@@ -121,7 +121,7 @@ namespace prep {
             throw DimensionMismatch(*this, rhs);
         }
 
-        Matrix mul_mat(rhs.rows, cols);
+        Matrix mul_mat(rhs.cols, rhs.rows);
         size_t mul_row = mul_mat.rows;
         size_t mul_col = mul_mat.cols;
 
@@ -170,7 +170,6 @@ namespace prep {
                 mul_matrix.matrix[i][j] = matrix.matrix[i][j] * val;
             }
         }
-
         return mul_matrix;
     }
 
