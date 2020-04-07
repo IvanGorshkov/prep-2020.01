@@ -31,7 +31,7 @@ namespace prep {
 
             for (size_t j = 0; j < cols; ++j) {
                 double value = 0;
-                is >> std::setprecision(std::numeric_limits<double>::max_digits10);
+                is >> std::fixed >> std::setprecision(7);
                 is >> value;
 
                 if (!is) {
