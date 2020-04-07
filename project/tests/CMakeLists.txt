@@ -12,7 +12,7 @@ ADD_EXECUTABLE(
         src/tests_math_base.cpp src/tests_math_base_neg.cpp
         src/tests_math_extra.cpp src/tests_math_extra_neg.cpp
 )
-TARGET_LINK_LIBRARIES(tests ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} prepmatrix stdc++fs)
+TARGET_LINK_LIBRARIES(tests ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} prepmatrix)
 
 ADD_TEST(
         NAME BaseTest
