@@ -31,8 +31,8 @@ namespace prep {
 
             for (size_t j = 0; j < cols; ++j) {
                 double value = 0;
+                is >> std::fixed >> std::setprecision(7);
                 is >> value;
-                is >> std::setprecision(7);
 
                 if (!is) {
                     throw InvalidMatrixStream();
@@ -49,8 +49,8 @@ namespace prep {
         os << matrix.rows << " " << matrix.cols << std::endl;
         for (size_t i = 0; i < matrix.rows; ++i) {
             for (size_t j = 0; j < matrix.cols; ++j) {
+                os << std::fixed << std::setprecision(7);
                 os << matrix.matrix[i][j];
-                os << std::setprecision(7);
                 os << " ";
             }
             os << std::endl;
