@@ -31,7 +31,6 @@ namespace prep {
 
             for (size_t j = 0; j < cols; ++j) {
                 double value = 0;
-                is >> std::fixed >> std::setprecision(7);
                 is >> value;
 
                 if (!is) {
@@ -49,7 +48,6 @@ namespace prep {
         os << matrix.rows << " " << matrix.cols << std::endl;
         for (size_t i = 0; i < matrix.rows; ++i) {
             for (size_t j = 0; j < matrix.cols; ++j) {
-                os << std::setprecision(std::numeric_limits<double>::max_digits10);
                 os << matrix.matrix[i][j];
                 os << " ";
             }
