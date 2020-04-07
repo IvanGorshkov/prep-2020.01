@@ -32,6 +32,7 @@ namespace prep {
             for (size_t j = 0; j < cols; ++j) {
                 double value = 0;
                 is >> value;
+                is >> std::setprecision(7);
 
                 if (!is) {
                     throw InvalidMatrixStream();
