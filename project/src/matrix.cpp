@@ -48,6 +48,7 @@ namespace prep {
         os << matrix.rows << " " << matrix.cols << std::endl;
         for (size_t i = 0; i < matrix.rows; ++i) {
             for (size_t j = 0; j < matrix.cols; ++j) {
+                os << std::setprecision(std::numeric_limits<double>::max_digits10);
                 os << matrix.matrix[i][j];
                 os << " ";
             }
@@ -176,7 +177,9 @@ namespace prep {
 
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                if (abs(matrix[i][j] - rhs.matrix[i][j]) > std::numeric_limits<double>::epsilon() * pow(10, -7)) {
+                double val1 = abs(matrix[i][j] - rhs.matrix[i][j]);
+                double  val2 = std::numeric_limits<double>::epsilon() * pow(10, 9);
+                if (val1 > val2) {
                     return false;
                 }
             }
@@ -192,7 +195,9 @@ namespace prep {
 
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                if (abs(matrix[i][j] - rhs.matrix[i][j]) > std::numeric_limits<double>::epsilon() * pow(10, -7)) {
+                double val1 = abs(matrix[i][j] - rhs.matrix[i][j]);
+                double  val2 = std::numeric_limits<double>::epsilon() * pow(10, 9);
+                if (val1 > val2) {
                     return true;
                 }
             }
