@@ -17,6 +17,7 @@ typedef enum {
     STATE_DATE
 } state_t;
 
-int parse(const char *path_to_eml);
-
+data_t* parse(const char *path_to_eml);
+void print_parser(data_t *data);
+void free_data(data_t *data);
 #endif  // PROJECT_INCLUDE_PARSER_H_

@@ -8,10 +8,11 @@ int main(int argc, const char **argv) {
     }
 
     const char *path_to_eml = argv[1];
-
-    if (parse(path_to_eml)) {
+    data_t *data = parse(path_to_eml);
+    if (data == NULL) {
         return EXIT_FAILURE;
     }
-
+    print_parser(data);
+    free_data(data);
     return 0;
 }

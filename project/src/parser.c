@@ -111,7 +111,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
     return EXIT_SUCCESS;
 }
-static data_t* createData() {
+static data_t* create_data() {
     data_t *data = calloc(1, sizeof(data_t));
     if (data == NULL) {
         return NULL;
@@ -148,16 +148,17 @@ void free_data(data_t *data) {
      free(data);
 }
 
-int parse(const char *path_to_eml) {
+data_t* parse(const char *path_to_eml) {
     FILE *file = fopen(path_to_eml, "r");
 
     if (file == NULL) {
-        return EXIT_FAILURE;
+        return NULL;
     }
 
-    data_t *data = createData();
+    data_t *data = create_data();
     if (data == NULL) {
         fclose(file);
+        return NULL;
     }
 
     char *str = calloc(2, sizeof(char));
@@ -165,7 +166,7 @@ int parse(const char *path_to_eml) {
     if (str == NULL) {
         free_data(data);
         fclose(file);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     char *res_header = calloc(2, sizeof(char));
@@ -174,7 +175,7 @@ int parse(const char *path_to_eml) {
         free(str);
         free_data(data);
         fclose(file);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     char *res_boundary = calloc(3, sizeof(char));
@@ -184,7 +185,7 @@ int parse(const char *path_to_eml) {
         free(res_header);
         free_data(data);
         fclose(file);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     char *boundary_end = calloc(1, sizeof(char));
@@ -195,7 +196,7 @@ int parse(const char *path_to_eml) {
         free(res_boundary);
         free_data(data);
         fclose(file);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     char *boundary = calloc(2, sizeof(char));
@@ -207,7 +208,7 @@ int parse(const char *path_to_eml) {
         free(boundary_end);
         free_data(data);
         fclose(file);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     int flag = 0;
@@ -222,8 +223,11 @@ int parse(const char *path_to_eml) {
     size_t count_boundary = 2;
     size_t count_res_boundary = 3;
     size_t count_str = 2;
-    char c;
-    while ((c = fgetc(file)) != EOF) {
+    while (!feof(file)) {
+        char c =  fgetc(file);
+        if (feof(file)) {
+            break;
+        }
 
         if (c == '\n') {
             if (flag == 1) {
@@ -243,7 +247,7 @@ int parse(const char *path_to_eml) {
                         free(boundary);
                         free_data(data);
                         fclose(file);
-                        return EXIT_FAILURE;
+                        return NULL;
                     }
 
                     insert_to_data(data, res_header, &flag_from, STATE_FROM);
@@ -265,7 +269,7 @@ int parse(const char *path_to_eml) {
                         free(boundary);
                         free_data(data);
                         fclose(file);
-                        return EXIT_FAILURE;
+                        return NULL;
                     }
 
                     insert_to_data(data, res_header, &flag_to, STATE_TO);
@@ -280,7 +284,7 @@ int parse(const char *path_to_eml) {
                         free(boundary);
                         free_data(data);
                         fclose(file);
-                        return EXIT_FAILURE;
+                        return NULL;
                     }
 
                     insert_to_data(data, res_header, &flag_date, STATE_DATE);
@@ -306,7 +310,7 @@ int parse(const char *path_to_eml) {
                     free(boundary_end);
                     free_data(data);
                     fclose(file);
-                    return EXIT_FAILURE;
+                    return NULL;
                 }
             }
 
@@ -331,7 +335,7 @@ int parse(const char *path_to_eml) {
                    free(boundary_end);
                    free_data(data);
                    fclose(file);
-                   return EXIT_FAILURE;
+                   return NULL;
             }
 
             count_boundary = 2;
@@ -345,21 +349,20 @@ int parse(const char *path_to_eml) {
                    free(boundary_end);
                    free_data(data);
                    fclose(file);
-                   return EXIT_FAILURE;
+                   return NULL;
             }
 
             flag = 0;
             end_flag++;
-        } else {
-            if (c != '\r') {
-                end_flag = 0;
-                if (flag == 0) {
-                    if (flag_boundary == 0) {
-                        if (strlen(boundary) + 1 >= count_boundary) {
-                            count_boundary *= 2;
-                            char *tmp_boundary = realloc(boundary, count_boundary * sizeof(char));
+        } else if (c != '\r') {
+            end_flag = 0;
+            if (flag == 0) {
+                if (flag_boundary == 0) {
+                    if (strlen(boundary) + 1 >= count_boundary) {
+                        count_boundary *= 2;
+                        char *tmp_boundary = realloc(boundary, count_boundary * sizeof(char));
 
-                            if (tmp_boundary == NULL) {
+                        if (tmp_boundary == NULL) {
                                 free(boundary);
                                 free(str);
                                 free(res_header);
@@ -367,25 +370,25 @@ int parse(const char *path_to_eml) {
                                 free(boundary_end);
                                 fclose(file);
                                 free_data(data);
-                                return EXIT_FAILURE;
+                                return NULL;
                             }
 
-                            boundary = tmp_boundary;
-                        }
+                        boundary = tmp_boundary;
+                    }
 
-                        if (c == ' ' || c == '\t' || c == ';') {
-                            free(boundary);
-                            count_boundary = 2;
-                            boundary = calloc(count_boundary, sizeof(char));
+                    if (c == ' ' || c == '\t' || c == ';') {
+                        free(boundary);
+                        count_boundary = 2;
+                        boundary = calloc(count_boundary, sizeof(char));
 
-                            if (boundary == NULL) {
+                        if (boundary == NULL) {
                                 free(str);
                                 free(res_header);
                                 free(res_boundary);
                                 free(boundary_end);
                                 fclose(file);
                                 free_data(data);
-                                return EXIT_FAILURE;
+                                return NULL;
                             }
 
                         } else {
@@ -393,11 +396,11 @@ int parse(const char *path_to_eml) {
                         }
                     }
 
-                    if (strlen(str) + 1 >= count_str) {
-                        count_str *= 2;
-                        char *tmp_str = realloc(str, count_str * sizeof(char));
+                if (strlen(str) + 1 >= count_str) {
+                    count_str *= 2;
+                    char *tmp_str = realloc(str, count_str * sizeof(char));
 
-                        if (tmp_str == NULL) {
+                    if (tmp_str == NULL) {
                             free(boundary);
                             free(str);
                             free(res_header);
@@ -405,14 +408,14 @@ int parse(const char *path_to_eml) {
                             free(boundary_end);
                             fclose(file);
                             free_data(data);
-                            return EXIT_FAILURE;
+                            return NULL;
                         }
 
-                        str = tmp_str;
-                    }
-
-                    append(str, c);
+                    str = tmp_str;
                 }
+
+                append(str, c);
+            }
 
                 if (strcasecmp("From:", str) == 0 && flag_from == 0) {
                     res_header = add_to_text(res_header, c, &flag, file);
@@ -424,7 +427,7 @@ int parse(const char *path_to_eml) {
                         free(boundary);
                         free_data(data);
                         fclose(file);
-                        return EXIT_FAILURE;
+                        return NULL;
                     }
 
                     continue;
@@ -439,7 +442,7 @@ int parse(const char *path_to_eml) {
                         free(boundary_end);
                         free(boundary);
                         fclose(file);
-                        return EXIT_FAILURE;
+                        return NULL;
                     }
 
                     continue;
@@ -454,7 +457,7 @@ int parse(const char *path_to_eml) {
                         free(boundary);
                         free_data(data);
                         fclose(file);
-                        return EXIT_FAILURE;
+                        return NULL;
                     }
 
                     continue;
@@ -464,6 +467,7 @@ int parse(const char *path_to_eml) {
                     if (count_bin > 2) {
                         continue;
                     }
+
                     if (strlen(res_boundary) + 1 >= count_res_boundary) {
                         count_res_boundary *= 2;
                         char *tmp_res_boundary = realloc(res_boundary, count_res_boundary * sizeof(char));
@@ -476,7 +480,7 @@ int parse(const char *path_to_eml) {
                             free_data(data);
                             free(boundary_end);
                             fclose(file);
-                            return EXIT_FAILURE;
+                            return NULL;
                         }
 
                         res_boundary = tmp_res_boundary;
@@ -498,7 +502,6 @@ int parse(const char *path_to_eml) {
 
                     flag = 1;
                 }
-            }
         }
     }
 
@@ -517,7 +520,6 @@ int parse(const char *path_to_eml) {
     }
 
     data->part = count;
-    printf("%s|%s|%s|%d", data->from, data->to, data->date, data->part);
 
     free(str);
     free(res_header);
@@ -525,6 +527,8 @@ int parse(const char *path_to_eml) {
     free(boundary_end);
     free(boundary);
     fclose(file);
-    free_data(data);
-    return EXIT_SUCCESS;
+    return data;
+}
+void print_parser(data_t *data) {
+    printf("%s|%s|%s|%d", data->from, data->to, data->date, data->part);
 }
