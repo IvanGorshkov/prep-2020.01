@@ -160,13 +160,38 @@ static int check_header(const char *search, char *str, int *flag,
             }
 
             if (alloc_mem_struct(data, res_header, st)) {
-                return 1;
+                return EXIT_FAILURE;
             }
 
             insert_to_data(data, res_header, flag, st);
         }
     }
-    return 0;
+    return EXIT_SUCCESS;
+}
+
+static int realloc_mem_str(char **str, size_t *count) {
+    if (strlen(*str) + 1 >= *count) {
+        *count *= 2;
+        char *tmp_str = realloc(*str, *count * sizeof(char) + 1);
+
+        if (tmp_str == NULL) {
+            return EXIT_FAILURE;
+        }
+
+        *str = tmp_str;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+static int delete_str(char **str, size_t *count) {
+    free(*str);
+    *count = 2;
+    *str = calloc(*count, sizeof(char));
+    if (*str == NULL) {
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
 }
 
 data_t* parse(const char *path_to_eml) {
@@ -240,7 +265,7 @@ data_t* parse(const char *path_to_eml) {
     int been_flag = 0;
     int end_flag = 0;
     int count = 0;
-    int count_bin = 0;
+    int count_been = 0;
     size_t count_boundary = 2;
     size_t count_res_boundary = 3;
     size_t count_str = 2;
@@ -300,7 +325,7 @@ data_t* parse(const char *path_to_eml) {
             }
 
 
-            if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0 && flag == 1) {
+            if (!strcasecmp("boundary=", boundary) && !flag_boundary && flag) {
                 flag_boundary = 1;
                 size_t len = strlen(res_boundary) + 3;
                 free(boundary_end);
@@ -316,12 +341,40 @@ data_t* parse(const char *path_to_eml) {
                     return NULL;
                 }
 
-                snprintf(boundary_end, len, "%s", res_boundary);
-                append(boundary_end, '-');
-                append(boundary_end, '-');
+                snprintf(boundary_end, len, "%s--", res_boundary);
             }
 
-            if (flag == 1) {
+            if (strstr(str, res_boundary) != NULL && flag_boundary) {
+                ++count;
+                been_flag = 1;
+            }
+
+            if (strstr(str, boundary_end) != NULL && flag_boundary) {
+                --count;
+                been_flag = 1;
+            }
+
+            if (delete_str(&str, &count_str)) {
+                free(boundary);
+                free(res_header);
+                free(res_boundary);
+                free(boundary_end);
+                free_data(data);
+                fclose(file);
+                return NULL;
+            }
+
+            if (delete_str(&boundary, &count_boundary)) {
+                free(str);
+                free(res_header);
+                free(res_boundary);
+                free(boundary_end);
+                free_data(data);
+                fclose(file);
+                return NULL;
+            }
+
+            if (flag) {
                 free(res_header);
                 res_header = calloc(2, sizeof(char));
                 if (res_header == NULL) {
@@ -335,109 +388,52 @@ data_t* parse(const char *path_to_eml) {
                 }
             }
 
-            if (strstr(str, res_boundary) != NULL && flag_boundary == 1) {
-                ++count;
-                been_flag = 1;
-            }
-
-            if (strstr(str, boundary_end) != NULL && flag_boundary == 1) {
-                --count;
-                been_flag = 1;
-            }
-
-            free(str);
-            count_str = 2;
-            str = calloc(count_str, sizeof(char));
-
-            if (str == NULL) {
-                free(boundary);
-                free(res_header);
-                free(res_boundary);
-                free(boundary_end);
-                free_data(data);
-                fclose(file);
-                return NULL;
-            }
-
-            count_boundary = 2;
-            free(boundary);
-            boundary = calloc(count_boundary, sizeof(char));
-
-            if (boundary == NULL) {
-                free(str);
-                free(res_header);
-                free(res_boundary);
-                free(boundary_end);
-                free_data(data);
-                fclose(file);
-                return NULL;
-            }
-
             flag = 0;
             end_flag++;
         } else if (c != '\r') {
             end_flag = 0;
-            if (flag == 0) {
-                if (strlen(boundary) + 1 >= count_boundary) {
-                    count_boundary *= 2;
-                    char *tmp_boundary = realloc(boundary, count_boundary * sizeof(char));
-
-                    if (tmp_boundary == NULL) {
-                        free(boundary);
-                        free(str);
-                        free(res_header);
-                        free(res_boundary);
-                        free(boundary_end);
-                        fclose(file);
-                        free_data(data);
-                        return NULL;
-                    }
-
-                    boundary = tmp_boundary;
+            if (!flag) {
+                if (realloc_mem_str(&boundary, &count_boundary)){
+                    free(boundary);
+                    free(str);
+                    free(res_header);
+                    free(res_boundary);
+                    free(boundary_end);
+                    fclose(file);
+                    free_data(data);
+                    return NULL;
                 }
 
                 if (c == ' ' || c == '\t' || c == ';') {
-                    free(boundary);
-                    count_boundary = 2;
-                    boundary = calloc(count_boundary, sizeof(char));
-
-                    if (boundary == NULL) {
-                        free(str);
+                    if (delete_str(&boundary, &count_boundary)) {
+                        free(boundary);
                         free(res_header);
                         free(res_boundary);
                         free(boundary_end);
-                        fclose(file);
                         free_data(data);
+                        fclose(file);
                         return NULL;
                     }
-
                 } else {
                     append(boundary, c);
                 }
 
-                if (strlen(str) + 1 >= count_str) {
-                    count_str *= 2;
-                    char *tmp_str = realloc(str, count_str * sizeof(char));
-
-                    if (tmp_str == NULL) {
-                        free(boundary);
-                        free(str);
-                        free(res_header);
-                        free(res_boundary);
-                        free(boundary_end);
-                        fclose(file);
-                        free_data(data);
-                        return NULL;
-                    }
-
-                    str = tmp_str;
+                if (realloc_mem_str(&str, &count_str)){
+                    free(boundary);
+                    free(str);
+                    free(res_header);
+                    free(res_boundary);
+                    free(boundary_end);
+                    fclose(file);
+                    free_data(data);
+                    return NULL;
                 }
 
                 append(str, c);
             }
 
 
-            if (strcasecmp("From:", str) == 0 && flag_from == 0) {
+            if (!strcasecmp("From:", str) && !flag_from) {
                 res_header = add_to_text(res_header, c, &flag, file);
 
                 if (res_header == NULL) {
@@ -453,7 +449,7 @@ data_t* parse(const char *path_to_eml) {
                 continue;
             }
 
-            if (strcasecmp("To:", str) == 0 && flag_to == 0) {
+            if (!strcasecmp("To:", str) && !flag_to) {
                 res_header = add_to_text(res_header, c, &flag, file);
 
                 if (res_header == NULL) {
@@ -468,7 +464,7 @@ data_t* parse(const char *path_to_eml) {
                 continue;
             }
 
-            if (strcasecmp("Date:", str) == 0 && flag_date == 0) {
+            if (!strcasecmp("Date:", str) && !flag_date) {
                 res_header = add_to_text(res_header, c, &flag, file);
                 if (res_header == NULL) {
                     free(str);
@@ -483,27 +479,20 @@ data_t* parse(const char *path_to_eml) {
                 continue;
             }
 
-            if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
-                if (count_bin > 2) {
+            if (!strcasecmp("boundary=", boundary) && !flag_boundary) {
+                if (count_been > 2) {
                     continue;
                 }
 
-                if (strlen(res_boundary) + 1 >= count_res_boundary) {
-                    count_res_boundary *= 2;
-                    char *tmp_res_boundary = realloc(res_boundary, count_res_boundary * sizeof(char));
-
-                    if (tmp_res_boundary == NULL) {
-                        free(boundary);
-                        free(str);
-                        free(res_header);
-                        free(res_boundary);
-                        free_data(data);
-                        free(boundary_end);
-                        fclose(file);
-                        return NULL;
-                    }
-
-                    res_boundary = tmp_res_boundary;
+                if (realloc_mem_str(&res_boundary, &count_res_boundary)){
+                    free(boundary);
+                    free(str);
+                    free(res_header);
+                    free(res_boundary);
+                    free(boundary_end);
+                    fclose(file);
+                    free_data(data);
+                    return NULL;
                 }
 
                 append(res_boundary, c);
@@ -515,7 +504,7 @@ data_t* parse(const char *path_to_eml) {
                 }
 
                 if (c == '"' || c == ' ' || c == ';') {
-                    ++count_bin;
+                    ++count_been;
                     size_t len = strlen(res_boundary) - 1;
                     res_boundary[len] = '\0';
                 }
@@ -525,17 +514,17 @@ data_t* parse(const char *path_to_eml) {
         }
     }
 
-    if (strstr(str, res_boundary) != NULL && flag_boundary == 1) {
+    if (strstr(str, res_boundary) != NULL && flag_boundary) {
         ++count;
         been_flag = 1;
     }
 
-    if (strstr(str, boundary_end) != NULL && flag_boundary == 1) {
+    if (strstr(str, boundary_end) != NULL && flag_boundary) {
         --count;
         been_flag = 1;
     }
 
-    if (count == 0 && end_flag < 3 && been_flag == 0) {
+    if (!count && end_flag < 3 && !been_flag) {
         count = 1;
     }
 
