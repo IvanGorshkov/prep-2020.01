@@ -12,11 +12,11 @@ typedef struct {
 } data_t;
 
 typedef enum {
-    STATE_FROM = 0,
+    STATE_FROM,
     STATE_TO,
     STATE_DATE
 } state_t;
 
-int parse(data_t *data, FILE *file);
+int parse(const char *path_to_eml);
 
 #endif  // PROJECT_INCLUDE_PARSER_H_

@@ -111,63 +111,102 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
     return EXIT_SUCCESS;
 }
+static data_t* createData() {
+    data_t *data = calloc(1, sizeof(data_t));
+    if (data == NULL) {
+        return NULL;
+    }
 
-int parse(data_t *data, FILE *file) {
     data->to = calloc(1, sizeof(char));
-
     if (data->to == NULL) {
-        return EXIT_FAILURE;
+        free(data);
+        return NULL;
     }
 
     data->from = calloc(1, sizeof(char));
-
     if (data->from == NULL) {
-        return EXIT_FAILURE;
+        free(data->to);
+        free(data);
+        return NULL;
     }
 
     data->date = calloc(1, sizeof(char));
-
     if (data->date == NULL) {
+        free(data->to);
+        free(data->from);
+        free(data);
+        return NULL;
+    }
+
+    return data;
+}
+
+void free_data(data_t *data) {
+     free(data->to);
+     free(data->from);
+     free(data->date);
+     free(data);
+}
+
+int parse(const char *path_to_eml) {
+    FILE *file = fopen(path_to_eml, "r");
+
+    if (file == NULL) {
         return EXIT_FAILURE;
     }
 
-    char *s = calloc(2, sizeof(char));
+    data_t *data = createData();
+    if (data == NULL) {
+        fclose(file);
+    }
 
-    if (s == NULL) {
+    char *str = calloc(2, sizeof(char));
+
+    if (str == NULL) {
+        free_data(data);
+        fclose(file);
         return EXIT_FAILURE;
     }
 
     char *res_header = calloc(2, sizeof(char));
 
     if (res_header == NULL) {
-        free(s);
+        free(str);
+        free_data(data);
+        fclose(file);
         return EXIT_FAILURE;
     }
 
-    char *res4 = calloc(3, sizeof(char));
+    char *res_boundary = calloc(3, sizeof(char));
 
-    if (res4 == NULL) {
-        free(s);
+    if (res_boundary == NULL) {
+        free(str);
         free(res_header);
+        free_data(data);
+        fclose(file);
         return EXIT_FAILURE;
     }
 
-    char *res_end = calloc(1, sizeof(char));
+    char *boundary_end = calloc(1, sizeof(char));
 
-    if (res_end == NULL) {
-        free(s);
+    if (boundary_end == NULL) {
+        free(str);
         free(res_header);
-        free(res4);
+        free(res_boundary);
+        free_data(data);
+        fclose(file);
         return EXIT_FAILURE;
     }
 
     char *boundary = calloc(2, sizeof(char));
 
     if (boundary == NULL) {
-        free(s);
+        free(str);
         free(res_header);
-        free(res4);
-        free(res_end);
+        free(res_boundary);
+        free(boundary_end);
+        free_data(data);
+        fclose(file);
         return EXIT_FAILURE;
     }
 
@@ -176,23 +215,19 @@ int parse(data_t *data, FILE *file) {
     int flag_to = 0;
     int flag_date = 0;
     int flag_boundary = 0;
-    int bin_flag = 0;
+    int been_flag = 0;
     int end_flag = 0;
     int count = 0;
     int count_bin = 0;
     size_t count_boundary = 2;
-    size_t count_res4 = 3;
-    size_t count_s = 2;
-    while (!feof(file)) {
-        char c =  fgetc(file);
-
-        if (feof(file)) {
-            break;
-        }
+    size_t count_res_boundary = 3;
+    size_t count_str = 2;
+    char c;
+    while ((c = fgetc(file)) != EOF) {
 
         if (c == '\n') {
             if (flag == 1) {
-                if (strcasecmp("From:", s) == 0 && flag_from == 0) {
+                if (strcasecmp("From:", str) == 0 && flag_from == 0) {
                     char next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
 
@@ -201,28 +236,20 @@ int parse(data_t *data, FILE *file) {
                     }
 
                     if (alloc_mem_struct(data, res_header, STATE_FROM)) {
-                        free(s);
+                        free(str);
                         free(res_header);
-                        free(res4);
-                        free(res_end);
+                        free(res_boundary);
+                        free(boundary_end);
                         free(boundary);
+                        free_data(data);
+                        fclose(file);
                         return EXIT_FAILURE;
                     }
 
                     insert_to_data(data, res_header, &flag_from, STATE_FROM);
-                    free(res_header);
-                    res_header = calloc(2, sizeof(char));
-
-                    if (res_header == NULL) {
-                        free(s);
-                        free(boundary);
-                        free(res4);
-                        free(res_end);
-                        return EXIT_FAILURE;
-                    }
                 }
 
-                if (strcasecmp("To:", s) == 0  && flag_to == 0) {
+                if (strcasecmp("To:", str) == 0  && flag_to == 0) {
                     char next_char = fgetc(file);
                     fseek(file, -1, SEEK_CUR);
 
@@ -231,80 +258,79 @@ int parse(data_t *data, FILE *file) {
                     }
 
                     if (alloc_mem_struct(data, res_header, STATE_TO)) {
-                        free(s);
+                        free(str);
                         free(res_header);
-                        free(res4);
-                        free(res_end);
+                        free(res_boundary);
+                        free(boundary_end);
                         free(boundary);
+                        free_data(data);
+                        fclose(file);
                         return EXIT_FAILURE;
                     }
 
                     insert_to_data(data, res_header, &flag_to, STATE_TO);
-                    free(res_header);
-                    res_header = calloc(2, sizeof(char));
-
-                    if (res_header == NULL) {
-                        free(s);
-                        free(boundary);
-                        free(res4);
-                        free(res_end);
-                        return EXIT_FAILURE;
-                    }
                 }
 
-                if (strcasecmp("Date:", s) == 0  && flag_date == 0) {
+                if (strcasecmp("Date:", str) == 0  && flag_date == 0) {
                     if (alloc_mem_struct(data, res_header, STATE_DATE)) {
-                        free(s);
+                        free(str);
                         free(res_header);
-                        free(res4);
-                        free(res_end);
+                        free(res_boundary);
+                        free(boundary_end);
                         free(boundary);
+                        free_data(data);
+                        fclose(file);
                         return EXIT_FAILURE;
                     }
 
                     insert_to_data(data, res_header, &flag_date, STATE_DATE);
-                    free(res_header);
-                    res_header = calloc(2, sizeof(char));
-
-                    if (res_header == NULL) {
-                        free(s);
-                        free(boundary);
-                        free(res4);
-                        free(res_end);
-                        return EXIT_FAILURE;
-                    }
                 }
 
                 if (strcasecmp("boundary=", boundary) == 0 && flag_boundary == 0) {
                     flag_boundary = 1;
-                    size_t len = strlen(res4) + 3;
-                    free(res_end);
-                    res_end  = calloc(len, sizeof(char));
-                    snprintf(res_end, len, "%s", res4);
-                    append(res_end, '-');
-                    append(res_end, '-');
+                    size_t len = strlen(res_boundary) + 3;
+                    free(boundary_end);
+                    boundary_end  = calloc(len, sizeof(char));
+                    snprintf(boundary_end, len, "%s", res_boundary);
+                    append(boundary_end, '-');
+                    append(boundary_end, '-');
+                }
+
+                free(res_header);
+                res_header = calloc(2, sizeof(char));
+
+                if (res_header == NULL) {
+                    free(str);
+                    free(boundary);
+                    free(res_boundary);
+                    free(boundary_end);
+                    free_data(data);
+                    fclose(file);
+                    return EXIT_FAILURE;
                 }
             }
 
-            if (strstr(s, res4) != NULL && flag_boundary == 1) {
+            if (strstr(str, res_boundary) != NULL && flag_boundary == 1) {
                 ++count;
-                bin_flag = 1;
+                been_flag = 1;
             }
 
-            if (strstr(s, res_end) != NULL && flag_boundary == 1) {
+            if (strstr(str, boundary_end) != NULL && flag_boundary == 1) {
                 --count;
-                bin_flag = 1;
+                been_flag = 1;
             }
 
-            free(s);
-            count_s = 2;
-            s = calloc(count_s, sizeof(char));
+            free(str);
+            count_str = 2;
+            str = calloc(count_str, sizeof(char));
 
-            if (s == NULL) {
+            if (str == NULL) {
                    free(boundary);
                    free(res_header);
-                   free(res4);
-                   free(res_end);
+                   free(res_boundary);
+                   free(boundary_end);
+                   free_data(data);
+                   fclose(file);
                    return EXIT_FAILURE;
             }
 
@@ -313,10 +339,12 @@ int parse(data_t *data, FILE *file) {
             boundary = calloc(count_boundary, sizeof(char));
 
             if (boundary == NULL) {
-                   free(s);
+                   free(str);
                    free(res_header);
-                   free(res4);
-                   free(res_end);
+                   free(res_boundary);
+                   free(boundary_end);
+                   free_data(data);
+                   fclose(file);
                    return EXIT_FAILURE;
             }
 
@@ -333,10 +361,12 @@ int parse(data_t *data, FILE *file) {
 
                             if (tmp_boundary == NULL) {
                                 free(boundary);
-                                free(s);
+                                free(str);
                                 free(res_header);
-                                free(res4);
-                                free(res_end);
+                                free(res_boundary);
+                                free(boundary_end);
+                                fclose(file);
+                                free_data(data);
                                 return EXIT_FAILURE;
                             }
 
@@ -349,10 +379,12 @@ int parse(data_t *data, FILE *file) {
                             boundary = calloc(count_boundary, sizeof(char));
 
                             if (boundary == NULL) {
-                                free(s);
+                                free(str);
                                 free(res_header);
-                                free(res4);
-                                free(res_end);
+                                free(res_boundary);
+                                free(boundary_end);
+                                fclose(file);
+                                free_data(data);
                                 return EXIT_FAILURE;
                             }
 
@@ -361,60 +393,67 @@ int parse(data_t *data, FILE *file) {
                         }
                     }
 
-                    if (strlen(s) + 1 >= count_s) {
-                        count_s *= 2;
-                        char *tmp_s = realloc(s, count_s * sizeof(char));
+                    if (strlen(str) + 1 >= count_str) {
+                        count_str *= 2;
+                        char *tmp_str = realloc(str, count_str * sizeof(char));
 
-                        if (tmp_s == NULL) {
+                        if (tmp_str == NULL) {
                             free(boundary);
-                            free(s);
+                            free(str);
                             free(res_header);
-                            free(res4);
-                            free(res_end);
+                            free(res_boundary);
+                            free(boundary_end);
+                            fclose(file);
+                            free_data(data);
                             return EXIT_FAILURE;
                         }
 
-                        s = tmp_s;
+                        str = tmp_str;
                     }
 
-                    append(s, c);
+                    append(str, c);
                 }
 
-                if (strcasecmp("From:", s) == 0 && flag_from == 0) {
+                if (strcasecmp("From:", str) == 0 && flag_from == 0) {
                     res_header = add_to_text(res_header, c, &flag, file);
 
                     if (res_header == NULL) {
-                        free(s);
-                        free(res4);
-                        free(res_end);
+                        free(str);
+                        free(res_boundary);
+                        free(boundary_end);
                         free(boundary);
+                        free_data(data);
+                        fclose(file);
                         return EXIT_FAILURE;
                     }
 
                     continue;
                 }
 
-                if (strcasecmp("To:", s) == 0 && flag_to == 0) {
+                if (strcasecmp("To:", str) == 0 && flag_to == 0) {
                     res_header = add_to_text(res_header, c, &flag, file);
 
                     if (res_header == NULL) {
-                        free(s);
-                        free(res4);
-                        free(res_end);
+                        free(str);
+                        free(res_boundary);
+                        free(boundary_end);
                         free(boundary);
+                        fclose(file);
                         return EXIT_FAILURE;
                     }
 
                     continue;
                 }
 
-                if (strcasecmp("Date:", s) == 0 && flag_date == 0) {
+                if (strcasecmp("Date:", str) == 0 && flag_date == 0) {
                     res_header = add_to_text(res_header, c, &flag, file);
                     if (res_header == NULL) {
-                        free(s);
-                        free(res4);
-                        free(res_end);
+                        free(str);
+                        free(res_boundary);
+                        free(boundary_end);
                         free(boundary);
+                        free_data(data);
+                        fclose(file);
                         return EXIT_FAILURE;
                     }
 
@@ -425,34 +464,36 @@ int parse(data_t *data, FILE *file) {
                     if (count_bin > 2) {
                         continue;
                     }
-                    if (strlen(res4) + 1 >= count_res4) {
-                        count_res4 *= 2;
-                        char *tmp_res4 = realloc(res4, count_res4 * sizeof(char));
+                    if (strlen(res_boundary) + 1 >= count_res_boundary) {
+                        count_res_boundary *= 2;
+                        char *tmp_res_boundary = realloc(res_boundary, count_res_boundary * sizeof(char));
 
-                        if (tmp_res4 == NULL) {
+                        if (tmp_res_boundary == NULL) {
                             free(boundary);
-                            free(s);
+                            free(str);
                             free(res_header);
-                            free(res4);
-                            free(res_end);
+                            free(res_boundary);
+                            free_data(data);
+                            free(boundary_end);
+                            fclose(file);
                             return EXIT_FAILURE;
                         }
 
-                        res4 = tmp_res4;
+                        res_boundary = tmp_res_boundary;
                     }
 
-                    append(res4, c);
+                    append(res_boundary, c);
 
-                    if (res4[0] == '=') {
-                        res4[0] = '\0';
-                        append(res4, '-');
-                        append(res4, '-');
+                    if (res_boundary[0] == '=') {
+                        res_boundary[0] = '\0';
+                        append(res_boundary, '-');
+                        append(res_boundary, '-');
                     }
 
                     if (c == '"' || c == ' ' || c == ';') {
                         ++count_bin;
-                        size_t len = strlen(res4) - 1;
-                        res4[len] = '\0';
+                        size_t len = strlen(res_boundary) - 1;
+                        res_boundary[len] = '\0';
                     }
 
                     flag = 1;
@@ -461,26 +502,29 @@ int parse(data_t *data, FILE *file) {
         }
     }
 
-    if (strstr(s, res4) != NULL && flag_boundary == 1) {
+    if (strstr(str, res_boundary) != NULL && flag_boundary == 1) {
         ++count;
-        bin_flag = 1;
+        been_flag = 1;
     }
 
-    if (strstr(s, res_end) != NULL && flag_boundary == 1) {
+    if (strstr(str, boundary_end) != NULL && flag_boundary == 1) {
         --count;
-        bin_flag = 1;
+        been_flag = 1;
     }
 
-    if (count == 0 && end_flag < 3 && bin_flag == 0) {
+    if (count == 0 && end_flag < 3 && been_flag == 0) {
         count = 1;
     }
 
     data->part = count;
+    printf("%s|%s|%s|%d", data->from, data->to, data->date, data->part);
 
-    free(s);
+    free(str);
     free(res_header);
-    free(res4);
-    free(res_end);
+    free(res_boundary);
+    free(boundary_end);
     free(boundary);
+    fclose(file);
+    free_data(data);
     return EXIT_SUCCESS;
 }

@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../project/include/exceptions.h
+exception
+-
+string
+-
+matrix.h
+../project/include/matrix.h
+
+../project/include/matrix.h
+vector
+-
+istream
+-
+
+/Users/ivangorshkov/prep-2020.01/project/src/matrix.cpp
+math.h
+-
+iomanip
+-
+matrix.h
+/Users/ivangorshkov/prep-2020.01/project/src/matrix.h
+exceptions.h
+/Users/ivangorshkov/prep-2020.01/project/src/exceptions.h
+
