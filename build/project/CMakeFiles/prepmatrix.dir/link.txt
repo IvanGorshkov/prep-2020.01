@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc libprepmatrix.a  CMakeFiles/prepmatrix.dir/src/matrix.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib libprepmatrix.a
