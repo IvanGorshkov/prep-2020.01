@@ -12,6 +12,7 @@ int main(int argc, const char **argv) {
     if (data == NULL) {
         return EXIT_FAILURE;
     }
+
     print_parser(data);
     free_data(data);
     return 0;
