@@ -146,7 +146,9 @@ void free_data(data_t *data) {
      free(data);
 }
 
-static int check_header(const char *search, char *str, int *flag, int flag_enable, FILE *file, char *res_header, data_t *data, state_t st) {
+static int check_header(const char *search, char *str, int *flag,
+                        int flag_enable, FILE *file, char *res_header,
+                        data_t *data, state_t st) {
     if (flag_enable == 1) {
         if (strcasecmp(search, str) == 0 && *flag == 0) {
             char next_char = fgetc(file);
@@ -248,7 +250,7 @@ data_t* parse(const char *path_to_eml) {
         }
 
         if (c == '\n') {
-            int check_err = check_header("From:",str, &flag_from, flag, file, res_header, data, STATE_FROM);
+            int check_err = check_header("From:", str, &flag_from, flag, file, res_header, data, STATE_FROM);
             if (check_err == 1) {
                 free(str);
                 free(res_header);
@@ -264,7 +266,7 @@ data_t* parse(const char *path_to_eml) {
                 continue;
             }
 
-            check_err = check_header("To:",str, &flag_to, flag, file, res_header, data, STATE_TO);
+            check_err = check_header("To:", str, &flag_to, flag, file, res_header, data, STATE_TO);
 
             if (check_err == 1) {
                 free(str);
@@ -281,7 +283,7 @@ data_t* parse(const char *path_to_eml) {
                 continue;
             }
 
-            check_err = check_header("Date:",str, &flag_date, flag, file, res_header, data, STATE_DATE);
+            check_err = check_header("Date:", str, &flag_date, flag, file, res_header, data, STATE_DATE);
 
             if (check_err == 1) {
                 free(str);
