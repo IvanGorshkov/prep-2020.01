@@ -522,7 +522,6 @@ data_t* parse(const char *path_to_eml) {
 
                 flag = 1;
             }
-
         }
     }
 
