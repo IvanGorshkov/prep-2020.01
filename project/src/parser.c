@@ -393,7 +393,7 @@ data_t* parse(const char *path_to_eml) {
         } else if (c != '\r') {
             end_flag = 0;
             if (!flag) {
-                if (realloc_mem_str(&boundary, &count_boundary)){
+                if (realloc_mem_str(&boundary, &count_boundary)) {
                     free(boundary);
                     free(str);
                     free(res_header);
@@ -418,7 +418,7 @@ data_t* parse(const char *path_to_eml) {
                     append(boundary, c);
                 }
 
-                if (realloc_mem_str(&str, &count_str)){
+                if (realloc_mem_str(&str, &count_str)) {
                     free(boundary);
                     free(str);
                     free(res_header);
@@ -484,7 +484,7 @@ data_t* parse(const char *path_to_eml) {
                     continue;
                 }
 
-                if (realloc_mem_str(&res_boundary, &count_res_boundary)){
+                if (realloc_mem_str(&res_boundary, &count_res_boundary)) {
                     free(boundary);
                     free(str);
                     free(res_header);
