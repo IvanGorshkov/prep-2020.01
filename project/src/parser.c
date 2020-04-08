@@ -109,6 +109,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
     return EXIT_SUCCESS;
 }
+
 static data_t* create_data() {
     data_t *data = calloc(1, sizeof(data_t));
     if (data == NULL) {
@@ -267,7 +268,6 @@ data_t* parse(const char *path_to_eml) {
             }
 
             check_err = check_header("To:", str, &flag_to, flag, file, res_header, data, STATE_TO);
-
             if (check_err == 1) {
                 free(str);
                 free(res_header);
@@ -284,7 +284,6 @@ data_t* parse(const char *path_to_eml) {
             }
 
             check_err = check_header("Date:", str, &flag_date, flag, file, res_header, data, STATE_DATE);
-
             if (check_err == 1) {
                 free(str);
                 free(res_header);
@@ -379,43 +378,41 @@ data_t* parse(const char *path_to_eml) {
         } else if (c != '\r') {
             end_flag = 0;
             if (flag == 0) {
-                if (flag_boundary == 0) {
-                    if (strlen(boundary) + 1 >= count_boundary) {
-                        count_boundary *= 2;
-                        char *tmp_boundary = realloc(boundary, count_boundary * sizeof(char));
+                if (strlen(boundary) + 1 >= count_boundary) {
+                    count_boundary *= 2;
+                    char *tmp_boundary = realloc(boundary, count_boundary * sizeof(char));
 
-                        if (tmp_boundary == NULL) {
-                            free(boundary);
-                            free(str);
-                            free(res_header);
-                            free(res_boundary);
-                            free(boundary_end);
-                            fclose(file);
-                            free_data(data);
-                            return NULL;
-                        }
-
-                        boundary = tmp_boundary;
-                    }
-
-                    if (c == ' ' || c == '\t' || c == ';') {
+                    if (tmp_boundary == NULL) {
                         free(boundary);
-                        count_boundary = 2;
-                        boundary = calloc(count_boundary, sizeof(char));
-
-                        if (boundary == NULL) {
-                            free(str);
-                            free(res_header);
-                            free(res_boundary);
-                            free(boundary_end);
-                            fclose(file);
-                            free_data(data);
-                            return NULL;
-                        }
-
-                    } else {
-                        append(boundary, c);
+                        free(str);
+                        free(res_header);
+                        free(res_boundary);
+                        free(boundary_end);
+                        fclose(file);
+                        free_data(data);
+                        return NULL;
                     }
+
+                    boundary = tmp_boundary;
+                }
+
+                if (c == ' ' || c == '\t' || c == ';') {
+                    free(boundary);
+                    count_boundary = 2;
+                    boundary = calloc(count_boundary, sizeof(char));
+
+                    if (boundary == NULL) {
+                        free(str);
+                        free(res_header);
+                        free(res_boundary);
+                        free(boundary_end);
+                        fclose(file);
+                        free_data(data);
+                        return NULL;
+                    }
+
+                } else {
+                    append(boundary, c);
                 }
 
                 if (strlen(str) + 1 >= count_str) {
@@ -431,13 +428,14 @@ data_t* parse(const char *path_to_eml) {
                         fclose(file);
                         free_data(data);
                         return NULL;
-                        }
+                    }
 
                     str = tmp_str;
                 }
 
                 append(str, c);
             }
+
 
             if (strcasecmp("From:", str) == 0 && flag_from == 0) {
                 res_header = add_to_text(res_header, c, &flag, file);
@@ -524,6 +522,7 @@ data_t* parse(const char *path_to_eml) {
 
                 flag = 1;
             }
+
         }
     }
 
