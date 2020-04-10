@@ -17,8 +17,8 @@ namespace prep {
             throw InvalidMatrixStream();
         }
 
-        std::vector<double> matVector(cols);
         for (size_t i = 0; i < rows; ++i) {
+            std::vector<double> matVector;
             for (size_t j = 0; j < cols; ++j) {
                 double value = 0;
                 is >> value;
@@ -27,7 +27,7 @@ namespace prep {
                     throw InvalidMatrixStream();
                 }
 
-                matVector[j] = value;
+                matVector.push_back(value);
             }
 
             matrix.push_back(matVector);
