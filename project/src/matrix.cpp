@@ -17,7 +17,7 @@ namespace prep {
             throw InvalidMatrixStream();
         }
 
-        std::vector<double> mat_vector(cols);
+        std::vector<double> matVector(cols);
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
                 double value = 0;
@@ -27,10 +27,10 @@ namespace prep {
                     throw InvalidMatrixStream();
                 }
 
-                mat_vector[j] = value;
+                matVector[j] = value;
             }
 
-            matrix.push_back(mat_vector);
+            matrix.push_back(matVector);
         }
     }
 
@@ -74,15 +74,15 @@ namespace prep {
             throw DimensionMismatch(*this, rhs);
         }
 
-        Matrix sum_mat(rows, cols);
+        Matrix sumMat(rows, cols);
 
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                sum_mat.matrix[i][j] = matrix[i][j] + rhs.matrix[i][j];
+                sumMat.matrix[i][j] = matrix[i][j] + rhs.matrix[i][j];
             }
         }
 
-        return sum_mat;
+        return sumMat;
     }
 
     Matrix Matrix::operator-(const Matrix& rhs) const {
@@ -90,15 +90,15 @@ namespace prep {
             throw DimensionMismatch(*this, rhs);
         }
 
-        Matrix sub_mat(rows, cols);
+        Matrix subMat(rows, cols);
 
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                sub_mat.matrix[i][j] = matrix[i][j] - rhs.matrix[i][j];
+                subMat.matrix[i][j] = matrix[i][j] - rhs.matrix[i][j];
             }
         }
 
-        return sub_mat;
+        return subMat;
     }
 
     Matrix Matrix::operator*(const Matrix& rhs) const {
@@ -106,56 +106,56 @@ namespace prep {
             throw DimensionMismatch(*this, rhs);
         }
 
-        Matrix mul_matrix(rows, rhs.cols);
-        size_t mul_row = mul_matrix.rows;
-        size_t mul_col = mul_matrix.cols;
-        for (size_t i = 0; i < mul_row; ++i) {
-            for (size_t j = 0; j < mul_col; ++j) {
+        Matrix mulMatrix(rows, rhs.cols);
+        size_t mulRow = mulMatrix.rows;
+        size_t mulCol = mulMatrix.cols;
+        for (size_t i = 0; i < mulRow; ++i) {
+            for (size_t j = 0; j < mulCol; ++j) {
                 for (size_t k = 0; k < rhs.rows; ++k) {
-                    mul_matrix.matrix[i][j] += matrix[i][k] * rhs.matrix[k][j];
+                    mulMatrix.matrix[i][j] += matrix[i][k] * rhs.matrix[k][j];
                 }
             }
         }
 
-        return  mul_matrix;
+        return  mulMatrix;
     }
 
 
     Matrix Matrix::transp() const {
-        Matrix transp_mat(cols, rows);
+        Matrix transpMat(cols, rows);
 
         for (size_t i = 0; i < cols; ++i) {
             for (size_t j = 0; j < rows; ++j) {
-                transp_mat.matrix[i][j] = matrix[j][i];
+                transpMat.matrix[i][j] = matrix[j][i];
             }
         }
 
-        return transp_mat;
+        return transpMat;
     }
 
     Matrix Matrix::operator*(double val) const {
-        Matrix mul_matrix(rows, cols);
+        Matrix mulMatrix(rows, cols);
 
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < cols; ++j) {
-                mul_matrix.matrix[i][j] = matrix[i][j] * val;
+                mulMatrix.matrix[i][j] = matrix[i][j] * val;
             }
         }
 
-        return mul_matrix;
+        return mulMatrix;
     }
 
     Matrix operator*(double val, const Matrix& matrix) {
-        Matrix mul_matrix(matrix.rows, matrix.cols);
-        size_t mul_row = mul_matrix.rows;
-        size_t mul_col = mul_matrix.cols;
+        Matrix mulMatrix(matrix.rows, matrix.cols);
+        size_t mulRow = mulMatrix.rows;
+        size_t mulCol = mulMatrix.cols;
 
-        for (size_t i = 0; i < mul_row; ++i) {
-            for (size_t j = 0; j < mul_col; ++j) {
-                mul_matrix.matrix[i][j] = matrix.matrix[i][j] * val;
+        for (size_t i = 0; i < mulRow; ++i) {
+            for (size_t j = 0; j < mulCol; ++j) {
+                mulMatrix.matrix[i][j] = matrix.matrix[i][j] * val;
             }
         }
-        return mul_matrix;
+        return mulMatrix;
     }
 
     bool Matrix::operator==(const Matrix& rhs) const {
@@ -207,56 +207,56 @@ namespace prep {
         }
         double val = 1;
         if (rows > 2) {
-            Matrix gauss_matrix = gauss_method();
+            Matrix gaussMatrix = gaussMethod();
 
             for (size_t i = 0; i < rows; i++) {
-                val *= gauss_matrix.matrix[i][i];
+                val *= gaussMatrix.matrix[i][i];
             }
         }
         return val;
     }
 
-    Matrix Matrix::gauss_method() const {
-        Matrix gauss_matrix = *this;
+    Matrix Matrix::gaussMethod() const {
+        Matrix gaussMatrix = *this;
 
         for (size_t col = 0; col < rows; ++col) {
-            double elem = gauss_matrix(col, col);
+            double elem = gaussMatrix(col, col);
 
             // Если elem главной диагонали = 0, то находим строку с ненулевым элементом
             if (elem == 0) {
-                int changed_row = -1;
+                int changedRow = -1;
 
                 for (size_t row = col; row < rows; row++) {
-                    elem = gauss_matrix(row, col);
+                    elem = gaussMatrix(row, col);
 
                     if (elem != 0) {
-                        changed_row = row;
+                        changedRow = row;
                         break;
                     }
                 }
 
-                if (changed_row == -1) {
+                if (changedRow == -1) {
                     break;
                 }
 
                 // Меняеем порядок
                 for (size_t row = 0; row < rows; row++) {
-                    elem = gauss_matrix(col, row);
-                    gauss_matrix.matrix[col][row] = -gauss_matrix.matrix[changed_row][row];
-                    gauss_matrix.matrix[changed_row][row] = elem;
+                    elem = gaussMatrix(col, row);
+                    gaussMatrix.matrix[col][row] = -gaussMatrix.matrix[changedRow][row];
+                    gaussMatrix.matrix[changedRow][row] = elem;
                 }
             }
 
             //Приводим элменты под главной диагонали к 0
             for (size_t row = col; row < rows - 1; row++) {
-                double coeff = -gauss_matrix.matrix[row + 1][col] / gauss_matrix.matrix[col][col];
+                double coeff = -gaussMatrix.matrix[row + 1][col] / gaussMatrix.matrix[col][col];
                 for (size_t k = 0; k < rows; k++) {
-                    gauss_matrix.matrix[row + 1][k] += gauss_matrix.matrix[col][k] * coeff;
+                    gaussMatrix.matrix[row + 1][k] += gaussMatrix.matrix[col][k] * coeff;
                 }
             }
         }
 
-        return gauss_matrix;
+        return gaussMatrix;
     }
 
     Matrix Matrix::adj() const {
@@ -264,11 +264,11 @@ namespace prep {
             throw DimensionMismatch(*this);
         }
 
-        Matrix adj_matrix(rows, cols);
+        Matrix adjMatrix(rows, cols);
 
         if (rows == 1) {
-            adj_matrix(0, 0) = 1;
-            return adj_matrix;
+            adjMatrix(0, 0) = 1;
+            return adjMatrix;
         }
 
         size_t row = 0;
@@ -276,47 +276,47 @@ namespace prep {
             size_t col = 0;
 
             for (size_t j = 0; j < cols; ++j) {
-                Matrix tmp_matrix = cross_out(row, col);
+                Matrix tmp_matrix = crossOut(row, col);
                 // Находим определитель матрицы
                 double val = tmp_matrix.det();
                 val *= (i % 2 != 0 ? 1 : - 1);
                 val *= (j % 2 != 0 ? 1 : - 1);
                 // Добавляем значение присоединенной матрице
-                adj_matrix(i, j) = val;
+                adjMatrix(i, j) = val;
                 col++;
             }
             row++;
         }
 
-        return adj_matrix.transp();
+        return adjMatrix.transp();
     }
 
-    Matrix Matrix::cross_out(size_t row, size_t col) const {
-        size_t row_new_matrix = 0;
-        Matrix tmp_matrix(rows - 1, cols - 1);
+    Matrix Matrix::crossOut(size_t row, size_t col) const {
+        size_t rowNewMatrix = 0;
+        Matrix tmpMatrix(rows - 1, cols - 1);
 
-        for (size_t i_row = 0; i_row < rows; ++i_row) {
-            size_t col_new_matrix = 0;
-            bool is_set_mat = false;
+        for (size_t iRow = 0; iRow < rows; ++iRow) {
+            size_t colNewMatrix = 0;
+            bool isSetMat = false;
 
-            for (size_t j_col = 0; j_col < cols; ++j_col) {
+            for (size_t jCol = 0; jCol < cols; ++jCol) {
                 // Условие для вычеркивания строки и столбца
-                if (row != i_row && col != j_col) {
-                    is_set_mat = true;
+                if (row != iRow && col != jCol) {
+                    isSetMat = true;
                     // Устанавливаем элемент матрицы
-                    tmp_matrix(row_new_matrix, col_new_matrix) = matrix[i_row][j_col];
+                    tmpMatrix(rowNewMatrix, colNewMatrix) = matrix[iRow][jCol];
                     // Переходим на следующий столбец
-                    col_new_matrix++;
+                    colNewMatrix++;
                 }
             }
 
-            if (is_set_mat) {
+            if (isSetMat) {
                 // Переходим на следующую строку
-                row_new_matrix++;
+                rowNewMatrix++;
             }
         }
 
-        return tmp_matrix;
+        return tmpMatrix;
     }
 
     Matrix Matrix::inv() const {
