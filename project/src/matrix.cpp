@@ -26,9 +26,8 @@ namespace prep {
             throw InvalidMatrixStream();
         }
 
+        std::vector<double> mat_vector(cols);
         for (size_t i = 0; i < rows; ++i) {
-            std::vector<double> mat_vector;
-
             for (size_t j = 0; j < cols; ++j) {
                 double value = 0;
                 is >> value;
@@ -37,7 +36,7 @@ namespace prep {
                     throw InvalidMatrixStream();
                 }
 
-                mat_vector.push_back(value);
+                mat_vector[cols] = value;
             }
 
             matrix.push_back(mat_vector);
@@ -48,9 +47,7 @@ namespace prep {
         os << matrix.rows << " " << matrix.cols << std::endl;
         for (size_t i = 0; i < matrix.rows; ++i) {
             for (size_t j = 0; j < matrix.cols; ++j) {
-                os << std::setprecision(std::numeric_limits<double>::max_digits10);
-                os << matrix.matrix[i][j];
-                os << " ";
+                os << std::setprecision(std::numeric_limits<double>::max_digits10) << matrix.matrix[i][j] << " ";
             }
             os << std::endl;
         }
