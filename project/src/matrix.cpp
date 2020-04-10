@@ -31,7 +31,7 @@ namespace prep {
                 matVector[j] = value;
             }
 
-            matrix.push_back(matVector);
+            matrix.emplace_back(matVector);
         }
     }
 
