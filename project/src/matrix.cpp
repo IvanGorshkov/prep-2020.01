@@ -4,8 +4,18 @@
 #include "exceptions.h"
 
 namespace prep {
-    Matrix::Matrix(size_t rows, size_t cols): rows(rows), cols(cols), matrix(cols, std::vector<double> (rows, 0)) {
+    Matrix::Matrix(size_t rows, size_t cols): rows(rows), cols(cols) {
+        for (size_t i = 0; i < rows; ++i) {
+            std::vector<double> mat_vector;
+
+            for (size_t j = 0; j < cols; ++j) {
+                mat_vector.push_back(0);
+            }
+
+            matrix.push_back(mat_vector);
+        }
     }
+
 
     Matrix::Matrix(std::istream& is) {
         rows = 0;
@@ -17,8 +27,8 @@ namespace prep {
             throw InvalidMatrixStream();
         }
 
+        std::vector<double> matVector(cols);
         for (size_t i = 0; i < rows; ++i) {
-            std::vector<double> matVector;
             for (size_t j = 0; j < cols; ++j) {
                 double value = 0;
                 is >> value;
@@ -27,7 +37,7 @@ namespace prep {
                     throw InvalidMatrixStream();
                 }
 
-                matVector.push_back(value);
+                matVector[j] = value;
             }
 
             matrix.push_back(matVector);
