@@ -27,7 +27,7 @@ namespace prep {
                     throw InvalidMatrixStream();
                 }
 
-                mat_vector[cols] = value;
+                mat_vector[j] = value;
             }
 
             matrix.push_back(mat_vector);
