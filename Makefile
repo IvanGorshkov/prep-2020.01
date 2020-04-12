@@ -5,7 +5,10 @@ HDRS = \
 	   project/include
 
 SRCS = \
-       project/src/main.cpp
+       project/src/main.cpp\
+       project/src/Map.cpp\
+       project/src/Player.cpp\
+       project/src/Enemy.cpp
 
 .PHONY: all clean
 
