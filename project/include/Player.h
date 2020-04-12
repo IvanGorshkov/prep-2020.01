@@ -2,19 +2,21 @@
 // Created by Ivan Gorshkov on 11.04.2020.
 //
 
-#ifndef PREP_2020_01_PLAYER_H
-#define PREP_2020_01_PLAYER_H
+#ifndef PROJECT_INCLUDE_PLAYER_H_
+#define PROJECT_INCLUDE_PLAYER_H_
+#include <utility>
+#include <string>
 #include "Map.h"
 #include "interface.h"
 
-typedef struct Position{
+typedef struct Position {
     Position(size_t x, size_t y);
     size_t x;
     size_t y;
 } Position;
 
 class Player: public Fighter {
-public:
+ public:
     explicit Player(size_t x, size_t y);
     void move(std::string move, Map map);
     Position getPosition() const;
@@ -23,7 +25,7 @@ public:
     bool take_hit(int dmg) override;
     int get_damage() override;
     void stopFight();
-private:
+ private:
     int hp;
     unsigned int dmg;
     Position position;
@@ -32,4 +34,4 @@ private:
 
 
 
-#endif //PREP_2020_01_PLAYER_H
+#endif  // PROJECT_INCLUDE_PLAYER_H_

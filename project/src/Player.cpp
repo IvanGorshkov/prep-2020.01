@@ -9,39 +9,50 @@ Position::Position(size_t x, size_t y) {
     this->y = y;
 }
 
-Player::Player(size_t x, size_t y): hp(100), dmg(1), position(x,y) {}
+Player::Player(size_t x, size_t y): hp(100), dmg(1), position(x, y) {}
+
 void Player::move(std::string move, Map map) {
     int i = 0;
+
     if (move.compare("move left") == 0) {
         i++;
+
         if (position.x == 0) {
             return;
         }
+
         this->position.x--;
     }
+
     if (move.compare("move right") == 0) {
         i++;
+
         if (position.x == map.getCols() - 1) {
             return;
         }
+
         this->position.x++;
     }
     if (move.compare("move down") == 0) {
         i++;
+
         if (position.y == 0) {
             return;
         }
+
         this->position.y--;
     }
     if (move.compare("move up") == 0) {
         i++;
+
         if (position.y == map.getRows() - 1) {
             return;
         }
+
         this->position.y++;
     }
 
-    if (map(position.y, position.x).getName().compare("") != 0 ) {
+    if (map(position.y, position.x).getName().compare("") != 0) {
         std::cout << std::endl << map(position.y, position.x).getName() << " found, " << map(position.y, position.x).getHp() << " hp" << std::endl;
         isFighting = true;
         return;
@@ -52,25 +63,26 @@ void Player::move(std::string move, Map map) {
     }
 }
 
-Position Player::getPosition() const{
+Position Player::getPosition() const {
     return position;
 }
 
-int Player::getHp() const{
+int Player::getHp() const {
     return hp;
 }
 
-bool Player::isFight() const{
+bool Player::isFight() const {
     return isFighting;
 }
 
 bool Player::take_hit(int dmg) {
     hp -= dmg;
+
     if (hp > 0) {
         return false;
-    } else {
-        return true;
     }
+
+    return true;
 }
 
 int Player::get_damage() {

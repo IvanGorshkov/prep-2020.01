@@ -3,15 +3,19 @@
 //
 
 #include "Enemy.h"
-Enemy::Enemy(std::string name, int hp, unsigned int dmg): name(name), hp(hp), dmg(dmg){}
+
+Enemy::Enemy(std::string name, int hp, unsigned int dmg): name(name), hp(hp), dmg(dmg) {}
+
 bool Enemy::take_hit(int dmg) {
     hp -= dmg;
+
     if (hp > 0) {
         return false;
-    } else {
-        return true;
     }
+
+    return true;
 }
+
 int Enemy::get_damage() {
     return dmg;
 }
@@ -20,6 +24,6 @@ std::string Enemy::getName() const {
     return name;
 }
 
-unsigned int Enemy::getHp() const{
+unsigned int Enemy::getHp() const {
     return hp;
 }
