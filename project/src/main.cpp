@@ -1,5 +1,4 @@
 #include "Player.h"
-#include <memory>
 
 bool fight(Fighter& attacker, Fighter& defender) {
     return defender.take_hit(attacker.get_damage());

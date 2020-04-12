@@ -9,7 +9,6 @@
 #include <iostream>
 #include <fstream>
 #include "Enemy.h"
-#include <memory>
 
 class Map {
  public:
