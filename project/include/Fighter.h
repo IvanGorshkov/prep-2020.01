@@ -7,9 +7,13 @@
 
 class Fighter {
  public:
-    virtual bool take_hit(int dmg) = 0;
-    virtual int get_damage() = 0;
-    virtual ~Fighter() {}
+  explicit Fighter(int hp, unsigned int dmg);
+  bool take_hit(int dmg);
+  int get_damage();
+  int getHp() const;
+ protected:
+  int hp;
+  unsigned int dmg;
 };
 
 #endif  // PROJECT_INCLUDE_INTERFACE_H_

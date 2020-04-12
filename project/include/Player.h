@@ -7,7 +7,7 @@
 #include <utility>
 #include <string>
 #include "Map.h"
-#include "interface.h"
+#include "Fighter.h"
 
 typedef struct Position {
     Position(size_t x, size_t y);
@@ -20,14 +20,9 @@ class Player: public Fighter {
     explicit Player(size_t x, size_t y);
     void move(std::string move, Map map);
     Position getPosition() const;
-    int getHp() const;
     bool isFight() const;
-    bool take_hit(int dmg) override;
-    int get_damage() override;
     void stopFight();
  private:
-    int hp;
-    unsigned int dmg;
     Position position;
     bool isFighting = false;
 };

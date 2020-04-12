@@ -9,7 +9,7 @@ Position::Position(size_t x, size_t y) {
     this->y = y;
 }
 
-Player::Player(size_t x, size_t y): hp(100), dmg(1), position(x, y) {}
+Player::Player(size_t x, size_t y): Fighter(100, 1), position(x, y) {}
 
 void Player::move(std::string move, Map map) {
     int i = 0;
@@ -67,27 +67,10 @@ Position Player::getPosition() const {
     return position;
 }
 
-int Player::getHp() const {
-    return hp;
-}
-
 bool Player::isFight() const {
     return isFighting;
 }
 
-bool Player::take_hit(int dmg) {
-    hp -= dmg;
-
-    if (hp > 0) {
-        return false;
-    }
-
-    return true;
-}
-
-int Player::get_damage() {
-    return dmg;
-}
 void Player::stopFight() {
     isFighting = false;
 }

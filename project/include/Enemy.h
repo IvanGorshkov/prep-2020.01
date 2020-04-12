@@ -6,19 +6,14 @@
 #define PROJECT_INCLUDE_ENEMY_H_
 #include <string>
 #include <iostream>
-#include "interface.h"
+#include "Fighter.h"
 
 class Enemy: public Fighter {
  public:
     explicit Enemy(std::string name, int hp, unsigned int dmg);
     std::string getName() const;
-    bool take_hit(int dmg) override;
-    int get_damage() override;
-    unsigned int getHp() const;
  private:
     std::string name;
-    int hp;
-    unsigned int dmg;
 };
 
 
