@@ -70,6 +70,7 @@ static char* add_to_text(char *res, char c, int *flag, FILE* file) {
   char *return_str = calloc(len_buffer_2, sizeof(char));
 
   if (return_str == NULL) {
+    free(res);
     free(buffer);
     free(buffer_2);
     return NULL;
@@ -77,6 +78,7 @@ static char* add_to_text(char *res, char c, int *flag, FILE* file) {
 
   snprintf(return_str, len_buffer_2, "%s", buffer_2);
   *flag = 1;
+  free(res);
   free(buffer);
   free(buffer_2);
   return return_str;
