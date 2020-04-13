@@ -237,7 +237,7 @@ data_t* parse(const char *path_to_eml) {
   size_t count_boundary = 2;
   size_t count_res_boundary = 3;
   size_t count_str = 2;
-  state_t state_header;
+  state_t state_header = STATE_START;
   while (!feof(file)) {
     char c =  fgetc(file);
     if (feof(file)) {
