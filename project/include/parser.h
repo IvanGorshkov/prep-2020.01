@@ -22,6 +22,7 @@ typedef struct {
 } flags_t;
 
 typedef enum {
+    STATE_START,
     STATE_FROM,
     STATE_TO,
     STATE_DATE
