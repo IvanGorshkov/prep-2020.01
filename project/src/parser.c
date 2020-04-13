@@ -96,7 +96,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
       break;
 
     case STATE_TO:
-      free(data->from);
+      free(data->to);
       data->to = calloc(alloc_mem_size, sizeof(char));
 
       if (data->to == NULL) {
@@ -105,7 +105,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
       break;
 
     case STATE_DATE:
-      free(data->from);
+      free(data->date);
       data->date = calloc(alloc_mem_size, sizeof(char));
 
       if (data->date == NULL) {
