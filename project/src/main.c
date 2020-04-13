@@ -13,7 +13,10 @@ int main(int argc, const char **argv) {
         return EXIT_FAILURE;
     }
 
-    print_parser(data);
+    if (print_parser(data)) {
+      return EXIT_FAILURE;
+    }
+
     free_data(data);
     return 0;
 }

@@ -11,6 +11,16 @@ typedef struct {
     int part;
 } data_t;
 
+typedef struct {
+  int flag;
+  int flag_from;
+  int flag_to;
+  int flag_date;
+  int flag_boundary;
+  int been_flag;
+  int end_flag;
+} flags_t;
+
 typedef enum {
     STATE_FROM,
     STATE_TO,
@@ -18,6 +28,6 @@ typedef enum {
 } state_t;
 
 data_t* parse(const char *path_to_eml);
-void print_parser(data_t *data);
+int print_parser(data_t *data);
 void free_data(data_t *data);
 #endif  // PROJECT_INCLUDE_PARSER_H_
