@@ -501,9 +501,9 @@ int print_parser(data_t *data) {
   if (data->date == NULL) {
     data->date = calloc(1, sizeof(char));
     if (data->date == NULL) {
-      free(data);
       free(data->to);
       free(data->from);
+      free(data);
       return EXIT_FAILURE;
     }
   }
