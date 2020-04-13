@@ -324,6 +324,7 @@ data_t* parse(const char *path_to_eml) {
       }
 
       if (flags.flag) {
+        free(res_header);
         res_header = calloc(2, sizeof(char));
         if (res_header == NULL) {
           free(str);
