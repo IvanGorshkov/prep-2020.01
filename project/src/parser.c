@@ -138,7 +138,6 @@ void free_data(data_t *data) {
 
 static int check_header(const char *search, char *str, int *flag, FILE *file, char *res_header,
                         data_t *data, state_t st) {
-
     if (strcasecmp(search, str) == 0 && *flag == 0) {
       char next_char = fgetc(file);
       fseek(file, -1, SEEK_CUR);
@@ -157,7 +156,8 @@ static int check_header(const char *search, char *str, int *flag, FILE *file, ch
   return EXIT_SUCCESS;
 }
 
-static int insert_to_header(char *res_header, char *str, FILE *file, flags_t *flags, data_t *data, state_t state) {
+static int insert_to_header(char *res_header, char *str, FILE *file
+    , flags_t *flags, data_t *data, state_t state) {
   int check_err = 0;
   if (flags->flag == 1) {
     switch (state) {
