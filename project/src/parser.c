@@ -61,7 +61,7 @@ static char* add_to_text(char *res, char c, int *flag, FILE* file) {
   }
 
   if (res == NULL) {
-    snprintf(buffer_2, len_buffer_2, "%s", buffer);
+    memmove(buffer_2, buffer, len);
   } else {
     snprintf(buffer_2, len_buffer_2, "%s%s", res, buffer);
   }
@@ -75,8 +75,7 @@ static char* add_to_text(char *res, char c, int *flag, FILE* file) {
     free(buffer_2);
     return NULL;
   }
-
-  snprintf(return_str, len_buffer_2, "%s", buffer_2);
+  memmove(return_str, buffer_2, --len_buffer_2);
   *flag = 1;
   free(res);
   free(buffer);
@@ -137,10 +136,9 @@ void free_data(data_t *data) {
   free(data);
 }
 
-static int check_header(const char *search, char *str, int *flag,
-                        int flag_enable, FILE *file, char *res_header,
+static int check_header(const char *search, char *str, int *flag, FILE *file, char *res_header,
                         data_t *data, state_t st) {
-  if (flag_enable == 1) {
+
     if (strcasecmp(search, str) == 0 && *flag == 0) {
       char next_char = fgetc(file);
       fseek(file, -1, SEEK_CUR);
@@ -155,8 +153,31 @@ static int check_header(const char *search, char *str, int *flag,
 
       insert_to_data(data, res_header, flag, st);
     }
-  }
+
   return EXIT_SUCCESS;
+}
+
+static int insert_to_header(char *res_header, char *str, FILE *file, flags_t *flags, data_t *data, state_t state) {
+  int check_err = 0;
+  if (flags->flag == 1) {
+    switch (state) {
+      case STATE_FROM:
+        check_err = check_header("From:", str, &flags->flag_from, file, res_header, data, state);
+        break;
+
+      case STATE_TO:
+        check_err = check_header("To:", str, &flags->flag_to, file, res_header, data, state);
+        break;
+
+      case STATE_DATE:
+        check_err = check_header("Date:", str, &flags->flag_date, file, res_header, data, state);
+        break;
+      default:
+        break;
+    }
+  }
+
+  return check_err;
 }
 
 static int alloc_mem_str(char **str, size_t *count) {
@@ -204,6 +225,7 @@ data_t* parse(const char *path_to_eml) {
     fclose(file);
     return NULL;
   }
+
   flags_t flags = {0};
   char *res_header = NULL;
   char *str = NULL;
@@ -215,7 +237,7 @@ data_t* parse(const char *path_to_eml) {
   size_t count_boundary = 2;
   size_t count_res_boundary = 3;
   size_t count_str = 2;
-
+  state_t state_header;
   while (!feof(file)) {
     char c =  fgetc(file);
     if (feof(file)) {
@@ -223,42 +245,7 @@ data_t* parse(const char *path_to_eml) {
     }
 
     if (c == '\n') {
-      int check_err = check_header("From:", str, &flags.flag_from
-          , flags.flag, file, res_header, data, STATE_FROM);
-      if (check_err == 1) {
-        free(str);
-        free(res_header);
-        free(res_boundary);
-        free(boundary_end);
-        free(boundary);
-        free_data(data);
-        fclose(file);
-        return NULL;
-      }
-
-      if (check_err == 2) {
-        continue;
-      }
-
-      check_err = check_header("To:", str, &flags.flag_to
-          , flags.flag, file, res_header, data, STATE_TO);
-      if (check_err == 1) {
-        free(str);
-        free(res_header);
-        free(res_boundary);
-        free(boundary_end);
-        free(boundary);
-        free_data(data);
-        fclose(file);
-        return NULL;
-      }
-
-      if (check_err == 2) {
-        continue;
-      }
-
-      check_err = check_header("Date:", str, &flags.flag_date
-          , flags.flag, file, res_header, data, STATE_DATE);
+      int check_err = insert_to_header(res_header, str, file, &flags, data, state_header);
       if (check_err == 1) {
         free(str);
         free(res_header);
@@ -277,7 +264,6 @@ data_t* parse(const char *path_to_eml) {
       if (!strcasecmp("boundary=", boundary) && !flags.flag_boundary && flags.flag) {
         flags.flag_boundary = 1;
         size_t len = strlen(res_boundary) + 3;
-        free(boundary_end);
         boundary_end  = calloc(len, sizeof(char));
 
         if (boundary_end == NULL) {
@@ -292,12 +278,14 @@ data_t* parse(const char *path_to_eml) {
 
         snprintf(boundary_end, len, "%s--", res_boundary);
       }
+
       if (res_boundary != NULL) {
         if (strstr(str, res_boundary) != NULL && flags.flag_boundary) {
           ++count;
           flags.been_flag = 1;
         }
       }
+
       if (boundary_end != NULL) {
         if (strstr(str, boundary_end) != NULL && flags.flag_boundary) {
           --count;
@@ -385,6 +373,7 @@ data_t* parse(const char *path_to_eml) {
 
       if (!strcasecmp("From:", str) && !flags.flag_from) {
         res_header = add_to_text(res_header, c, &flags.flag, file);
+        state_header = STATE_FROM;
         if (res_header == NULL) {
           free(str);
           free(res_boundary);
@@ -398,12 +387,14 @@ data_t* parse(const char *path_to_eml) {
       }
 
       if (!strcasecmp("To:", str) && !flags.flag_to) {
+        state_header = STATE_TO;
         res_header = add_to_text(res_header, c, &flags.flag, file);
         if (res_header == NULL) {
           free(str);
           free(res_boundary);
           free(boundary_end);
           free(boundary);
+          free_data(data);
           fclose(file);
           return NULL;
         }
@@ -412,6 +403,7 @@ data_t* parse(const char *path_to_eml) {
 
       if (!strcasecmp("Date:", str) && !flags.flag_date) {
         res_header = add_to_text(res_header, c, &flags.flag, file);
+        state_header = STATE_DATE;
         if (res_header == NULL) {
           free(str);
           free(res_boundary);
