@@ -203,6 +203,41 @@ static int alloc_mem_str(char **str, size_t *count) {
   return EXIT_SUCCESS;
 }
 
+static int find_header(char *str, flags_t *flags, state_t *state_header
+    , char **res_header, char c, FILE *file) {
+  if (!strcasecmp("From:", str) && !flags->flag_from) {
+    *res_header = add_to_text(*res_header, c, &flags->flag, file);
+    *state_header = STATE_FROM;
+    if (res_header == NULL) {
+      return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+  }
+
+  if (!strcasecmp("To:", str) && !flags->flag_to) {
+    *state_header = STATE_TO;
+    *res_header = add_to_text(*res_header, c, &flags->flag, file);
+    if (res_header == NULL) {
+      return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+  }
+
+  if (!strcasecmp("Date:", str) && !flags->flag_date) {
+    *res_header = add_to_text(*res_header, c, &flags->flag, file);
+    *state_header = STATE_DATE;
+    if (res_header == NULL) {
+      return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+  }
+
+  return EXIT_SUCCESS;
+}
+
 static int delete_str(char **str, size_t *count) {
   free(*str);
   *count = 2;
@@ -371,49 +406,14 @@ data_t* parse(const char *path_to_eml) {
         append(str, c);
       }
 
-      if (!strcasecmp("From:", str) && !flags.flag_from) {
-        res_header = add_to_text(res_header, c, &flags.flag, file);
-        state_header = STATE_FROM;
-        if (res_header == NULL) {
-          free(str);
-          free(res_boundary);
-          free(boundary_end);
-          free(boundary);
-          free_data(data);
-          fclose(file);
-          return NULL;
-        }
-        continue;
-      }
-
-      if (!strcasecmp("To:", str) && !flags.flag_to) {
-        state_header = STATE_TO;
-        res_header = add_to_text(res_header, c, &flags.flag, file);
-        if (res_header == NULL) {
-          free(str);
-          free(res_boundary);
-          free(boundary_end);
-          free(boundary);
-          free_data(data);
-          fclose(file);
-          return NULL;
-        }
-        continue;
-      }
-
-      if (!strcasecmp("Date:", str) && !flags.flag_date) {
-        res_header = add_to_text(res_header, c, &flags.flag, file);
-        state_header = STATE_DATE;
-        if (res_header == NULL) {
-          free(str);
-          free(res_boundary);
-          free(boundary_end);
-          free(boundary);
-          free_data(data);
-          fclose(file);
-          return NULL;
-        }
-        continue;
+      if (find_header(str, &flags, &state_header, &res_header, c, file)) {
+        free(str);
+        free(res_boundary);
+        free(boundary_end);
+        free(boundary);
+        free_data(data);
+        fclose(file);
+        return NULL;
       }
 
       if (!strcasecmp("boundary=", boundary) && !flags.flag_boundary) {
