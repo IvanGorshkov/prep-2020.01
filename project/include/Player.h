@@ -10,21 +10,21 @@
 #include "Fighter.h"
 
 typedef struct Position {
-    Position(size_t x, size_t y);
-    size_t x;
-    size_t y;
+  Position(size_t x, size_t y);
+  size_t x;
+  size_t y;
 } Position;
 
 class Player: public Fighter {
  public:
-    explicit Player(size_t x, size_t y);
-    void move(std::string move, Map map);
-    Position getPosition() const;
-    bool isFight() const;
-    void stopFight();
+  explicit Player(size_t x, size_t y);
+  void move(std::string move, Map map);
+  Position getPosition() const;
+  bool isFight() const;
+  void stopFight();
  private:
-    Position position;
-    bool isFighting = false;
+  Position position;
+  bool isFighting = false;
 };
 
 
