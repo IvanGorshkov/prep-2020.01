@@ -492,8 +492,8 @@ int print_parser(data_t *data) {
   if (data->from == NULL) {
     data->from = calloc(1, sizeof(char));
     if (data->from == NULL) {
-      free(data);
       free(data->to);
+      free(data);
       return EXIT_FAILURE;
     }
   }
