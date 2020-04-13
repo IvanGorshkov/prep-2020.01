@@ -155,7 +155,7 @@ static int check_header(const char *search, char *str, int *flag,
 }
 
 static int alloc_mem_str(char **str, size_t *count) {
-  if(*str == NULL) {
+  if (*str == NULL) {
     *str = calloc(*count, sizeof(char));
     if (*str == NULL) {
       return EXIT_FAILURE;
@@ -217,7 +217,8 @@ data_t* parse(const char *path_to_eml) {
     }
 
     if (c == '\n') {
-      int check_err = check_header("From:", str, &flags.flag_from, flags.flag, file, res_header, data, STATE_FROM);
+      int check_err = check_header("From:", str, &flags.flag_from
+          ,flags.flag, file, res_header, data, STATE_FROM);
       if (check_err == 1) {
         free(str);
         free(res_header);
@@ -233,7 +234,8 @@ data_t* parse(const char *path_to_eml) {
         continue;
       }
 
-      check_err = check_header("To:", str, &flags.flag_to, flags.flag, file, res_header, data, STATE_TO);
+      check_err = check_header("To:", str, &flags.flag_to
+          , flags.flag, file, res_header, data, STATE_TO);
       if (check_err == 1) {
         free(str);
         free(res_header);
@@ -249,7 +251,8 @@ data_t* parse(const char *path_to_eml) {
         continue;
       }
 
-      check_err = check_header("Date:", str, &flags.flag_date, flags.flag, file, res_header, data, STATE_DATE);
+      check_err = check_header("Date:", str, &flags.flag_date
+          , flags.flag, file, res_header, data, STATE_DATE);
       if (check_err == 1) {
         free(str);
         free(res_header);
@@ -283,13 +286,13 @@ data_t* parse(const char *path_to_eml) {
 
         snprintf(boundary_end, len, "%s--", res_boundary);
       }
-      if(res_boundary != NULL) {
+      if (res_boundary != NULL) {
         if (strstr(str, res_boundary) != NULL && flags.flag_boundary) {
           ++count;
           flags.been_flag = 1;
         }
       }
-      if(boundary_end != NULL) {
+      if (boundary_end != NULL) {
         if (strstr(str, boundary_end) != NULL && flags.flag_boundary) {
           --count;
           flags.been_flag = 1;
@@ -449,14 +452,14 @@ data_t* parse(const char *path_to_eml) {
     }
   }
 
-  if(res_boundary != NULL) {
+  if (res_boundary != NULL) {
     if (strstr(str, res_boundary) != NULL && flags.flag_boundary) {
       ++count;
       flags.been_flag = 1;
     }
   }
 
-  if(boundary_end != NULL) {
+  if (boundary_end != NULL) {
     if (strstr(str, boundary_end) != NULL && flags.flag_boundary) {
       --count;
       flags.been_flag = 1;
@@ -472,7 +475,7 @@ data_t* parse(const char *path_to_eml) {
     free(str);
     free(res_header);
     free(res_boundary);
-    if(boundary_end != NULL) {
+    if (boundary_end != NULL) {
       free(boundary_end);
     }
     free(boundary);
