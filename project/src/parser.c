@@ -87,6 +87,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
 
   switch (state) {
     case STATE_FROM:
+      free(data->from);
       data->from = calloc(alloc_mem_size, sizeof(char));
 
       if (data->from == NULL) {
@@ -95,6 +96,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
       break;
 
     case STATE_TO:
+      free(data->from);
       data->to = calloc(alloc_mem_size, sizeof(char));
 
       if (data->to == NULL) {
@@ -103,6 +105,7 @@ static int alloc_mem_struct(data_t *data, const char *res_header, state_t state)
       break;
 
     case STATE_DATE:
+      free(data->from);
       data->date = calloc(alloc_mem_size, sizeof(char));
 
       if (data->date == NULL) {
@@ -178,6 +181,7 @@ static int alloc_mem_str(char **str, size_t *count) {
 }
 
 static int delete_str(char **str, size_t *count) {
+  free(*str);
   *count = 2;
   *str = calloc(*count, sizeof(char));
   if (*str == NULL) {
