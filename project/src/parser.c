@@ -218,7 +218,7 @@ data_t* parse(const char *path_to_eml) {
 
     if (c == '\n') {
       int check_err = check_header("From:", str, &flags.flag_from
-          ,flags.flag, file, res_header, data, STATE_FROM);
+          , flags.flag, file, res_header, data, STATE_FROM);
       if (check_err == 1) {
         free(str);
         free(res_header);
