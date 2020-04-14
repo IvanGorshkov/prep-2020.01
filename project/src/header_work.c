@@ -22,7 +22,7 @@ void insert_to_data(data_t *data, char *text, int *flag, state_t state) {
   *flag = 1;
 }
 
-char* add_to_text(char *res, char c, int *flag, FILE* file) {
+void add_to_text(char **res, char c, int *flag, FILE* file) {
   c = fgetc(file);
   fseek(file, -1, SEEK_CUR);
   size_t space = c == ' ' ? 1 : 0;
@@ -37,49 +37,47 @@ char* add_to_text(char *res, char c, int *flag, FILE* file) {
 
   char *buffer = calloc(len, sizeof(char));
   if (buffer == NULL) {
-    return NULL;
+    return;
   }
 
   fgets(buffer, len, file);
   size_t len_buffer_2 = 0;
-  if (res == NULL) {
+  if (*res == NULL) {
     len_buffer_2 = strlen(buffer) + space + 1;
   } else {
-    len_buffer_2 = strlen(res) + strlen(buffer) + space + 1;
+    len_buffer_2 = strlen(*res) + strlen(buffer) + space + 1;
   }
 
   char *buffer_2 = calloc(len_buffer_2, sizeof(char));
   if (buffer_2 == NULL) {
     free(buffer);
-    return NULL;
+    return;
   }
 
-  if (res == NULL) {
+  if (*res == NULL) {
     memmove(buffer_2, buffer, len);
   } else {
-    snprintf(buffer_2, len_buffer_2, "%s%s", res, buffer);
+    snprintf(buffer_2, len_buffer_2, "%s%s", *res, buffer);
   }
 
   ++len_buffer_2;
-  char *return_str = calloc(len_buffer_2, sizeof(char));
 
+  char *return_str = realloc(*res, len_buffer_2 * sizeof(char));
   if (return_str == NULL) {
-    free(res);
     free(buffer);
     free(buffer_2);
-    return NULL;
+    return;
   }
+  *res = return_str;
 
-  memmove(return_str, buffer_2, --len_buffer_2);
+  memmove(*res, buffer_2, --len_buffer_2);
   *flag = 1;
-  free(res);
   free(buffer);
   free(buffer_2);
-  return return_str;
 }
 
 int check_header(const char *search, char *str, int *flag, FILE *file, char *res_header
-    , data_t *data, state_t st) {
+                 , data_t *data, state_t st) {
   if (strcasecmp(search, str) == 0 && *flag == 0) {
     char next_char = fgetc(file);
     fseek(file, -1, SEEK_CUR);
@@ -123,35 +121,31 @@ int insert_to_header(char *res_header, char *str, FILE *file
 }
 
 int find_header(char *str, flags_t *flags, state_t *state_header
-    , char **res_header, char c, FILE *file) {
+                , char **res_header, char c, FILE *file) {
   if (!strcasecmp("From:", str) && !flags->flag_from) {
-    *res_header = add_to_text(*res_header, c, &flags->flag, file);
+    add_to_text(res_header, c, &flags->flag, file);
     *state_header = STATE_FROM;
     if (res_header == NULL) {
       return EXIT_FAILURE;
     }
-
     return EXIT_SUCCESS;
   }
 
   if (!strcasecmp("To:", str) && !flags->flag_to) {
     *state_header = STATE_TO;
-    *res_header = add_to_text(*res_header, c, &flags->flag, file);
+    add_to_text(res_header, c, &flags->flag, file);
     if (res_header == NULL) {
       return EXIT_FAILURE;
     }
-
     return EXIT_SUCCESS;
   }
 
   if (!strcasecmp("Date:", str) && !flags->flag_date) {
-    *res_header = add_to_text(*res_header, c, &flags->flag, file);
+    add_to_text(res_header, c, &flags->flag, file);
     *state_header = STATE_DATE;
     if (res_header == NULL) {
       return EXIT_FAILURE;
     }
-
-    return EXIT_SUCCESS;
   }
 
   return EXIT_SUCCESS;

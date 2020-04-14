@@ -4,13 +4,6 @@
 #include "utils.h"
 #include "boundary_work.h"
 
-static int append(char *s, char c) {
-  int len = strlen(s);
-  s[len] = c;
-  s[len + 1] = '\0';
-  return EXIT_SUCCESS;
-}
-
 data_t* parse(const char *path_to_eml) {
   FILE *file = fopen(path_to_eml, "r");
 
@@ -115,32 +108,10 @@ data_t* parse(const char *path_to_eml) {
         return NULL;
       }
 
-      if (!strcasecmp("boundary=", boundary) && !flags.flag_boundary) {
-        if (count_been > 2) {
-          continue;
-        }
-
-        if (alloc_mem_str(&res_boundary, &count_res_boundary)) {
-          free_mem(res_header, str, res_boundary, boundary_end, boundary, file);
-          free_data(data);
-          return NULL;
-        }
-
-        append(res_boundary, c);
-
-        if (res_boundary[0] == '=') {
-          res_boundary[0] = '\0';
-          append(res_boundary, '-');
-          append(res_boundary, '-');
-        }
-
-        if (c == '"' || c == ' ' || c == ';') {
-          ++count_been;
-          size_t len = strlen(res_boundary) - 1;
-          res_boundary[len] = '\0';
-        }
-
-        flags.flag = 1;
+      if(header_boundary(boundary, &flags, &res_boundary, &count_been, &count_res_boundary, c)) {
+        free_mem(res_header, str, res_boundary, boundary_end, boundary, file);
+        free_data(data);
+        return NULL;
       }
     }
   }

@@ -9,6 +9,13 @@ data_t* create_data() {
   return data;
 }
 
+int append(char *s, char c) {
+  int len = strlen(s);
+  s[len] = c;
+  s[len + 1] = '\0';
+  return EXIT_SUCCESS;
+}
+
 int alloc_mem_struct(data_t *data, const char *res_header, state_t state) {
   size_t alloc_mem_size = sizeof(char) * strlen(res_header) + 1;
 
