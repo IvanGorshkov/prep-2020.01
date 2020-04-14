@@ -35,7 +35,8 @@ data_t* parse(const char *path_to_eml) {
   size_t count_res_boundary = 3;
   size_t count_str = 2;
   state_t state_header = STATE_START;
-  while (!feof(file)) {
+  
+  while (flags.end_flag != 2) {
     char c =  fgetc(file);
     if (feof(file)) {
       break;
@@ -74,20 +75,6 @@ data_t* parse(const char *path_to_eml) {
         }
 
         snprintf(boundary_end, len, "%s--", res_boundary);
-      }
-
-      if (res_boundary != NULL) {
-        if (strstr(str, res_boundary) != NULL && flags.flag_boundary) {
-          ++count;
-          flags.been_flag = 1;
-        }
-      }
-
-      if (boundary_end != NULL) {
-        if (strstr(str, boundary_end) != NULL && flags.flag_boundary) {
-          --count;
-          flags.been_flag = 1;
-        }
       }
 
       if (delete_str(&str, &count_str)) {
@@ -213,35 +200,45 @@ data_t* parse(const char *path_to_eml) {
     }
   }
 
+  char buf[4096];
   if (res_boundary != NULL) {
-    if (strstr(str, res_boundary) != NULL && flags.flag_boundary) {
-      ++count;
-      flags.been_flag = 1;
+    while (fgets(buf, sizeof(buf), file) != NULL) {
+      buf[strlen(buf)] = '\0';
+      if (strstr("\n", buf) != NULL) {
+        flags.end_flag++;
+      } else {
+        flags.end_flag--;
+      }
+
+      if (strstr(buf, res_boundary) != NULL && flags.flag_boundary) {
+        ++count;
+        flags.been_flag = 1;
+      }
+
+      if (boundary_end != NULL) {
+        if (strstr(buf, boundary_end) != NULL && flags.flag_boundary) {
+          --count;
+          flags.been_flag = 1;
+        }
+      }
     }
   }
 
-  if (boundary_end != NULL) {
-    if (strstr(str, boundary_end) != NULL && flags.flag_boundary) {
-      --count;
-      flags.been_flag = 1;
-    }
-  }
-
-  if (!count && flags.end_flag < 3 && !flags.been_flag) {
+  if (!count && flags.end_flag <= 3 && !flags.been_flag) {
     count = 1;
   }
 
-    data->part = count;
+  data->part = count;
 
-    free(str);
-    free(res_header);
-    free(res_boundary);
-    if (boundary_end != NULL) {
-      free(boundary_end);
-    }
-    free(boundary);
-    fclose(file);
-    return data;
+  free(str);
+  free(res_header);
+  free(res_boundary);
+  if (boundary_end != NULL) {
+    free(boundary_end);
+  }
+  free(boundary);
+  fclose(file);
+  return data;
 }
 
 int print_parser(data_t *data) {
