@@ -125,27 +125,18 @@ int find_header(char *str, flags_t *flags, state_t *state_header
   if (!strcasecmp("From:", str) && !flags->flag_from) {
     add_to_text(res_header, c, &flags->flag, file);
     *state_header = STATE_FROM;
-    if (*res_header == NULL) {
-      return EXIT_FAILURE;
-    }
     return EXIT_SUCCESS;
   }
 
   if (!strcasecmp("To:", str) && !flags->flag_to) {
     *state_header = STATE_TO;
     add_to_text(res_header, c, &flags->flag, file);
-    if (res_header == NULL) {
-      return EXIT_FAILURE;
-    }
     return EXIT_SUCCESS;
   }
 
   if (!strcasecmp("Date:", str) && !flags->flag_date) {
     add_to_text(res_header, c, &flags->flag, file);
     *state_header = STATE_DATE;
-    if (res_header == NULL) {
-      return EXIT_FAILURE;
-    }
   }
 
   return EXIT_SUCCESS;
