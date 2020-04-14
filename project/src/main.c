@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "parser.h"
+#include "utils.h"
 
 int main(int argc, const char **argv) {
     if (argc != 2) {
