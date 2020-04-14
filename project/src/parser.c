@@ -2,37 +2,13 @@
 #include "parser.h"
 #include "header_work.h"
 #include "utils.h"
+#include "boundary_work.h"
 
 static int append(char *s, char c) {
   int len = strlen(s);
   s[len] = c;
   s[len + 1] = '\0';
   return EXIT_SUCCESS;
-}
-
-static void free_mem(char *res_header, char *str, char *res_boundary,
-    char *boundary_end, char *boundary, FILE *file) {
-  if (boundary != NULL) {
-    free(boundary);
-  }
-
-  if (str != NULL) {
-    free(str);
-  }
-
-  if (res_header != NULL) {
-    free(res_header);
-  }
-
-  if (res_boundary != NULL) {
-    free(res_boundary);
-  }
-  if (boundary_end != NULL) {
-    free(boundary_end);
-  }
-  if (file != NULL) {
-    fclose(file);
-  }
 }
 
 data_t* parse(const char *path_to_eml) {
@@ -76,18 +52,9 @@ data_t* parse(const char *path_to_eml) {
         continue;
       }
 
-      if (!strcasecmp("boundary=", boundary) && !flags.flag_boundary && flags.flag) {
-        flags.flag_boundary = 1;
-        size_t len = strlen(res_boundary) + 3;
-        boundary_end  = calloc(len, sizeof(char));
-
-        if (boundary_end == NULL) {
-          free_mem(res_header, str, res_boundary, boundary_end, boundary, file);
-          free_data(data);
-          return NULL;
-        }
-
-        snprintf(boundary_end, len, "%s--", res_boundary);
+      if (create_boundary(boundary, res_boundary, &boundary_end, &flags)) {
+        free_mem(res_header, str, res_boundary, boundary_end, boundary, file);
+        free_data(data);
       }
 
       if (delete_str(&str, &count_str)) {
