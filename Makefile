@@ -6,7 +6,9 @@ HDRS = \
 
 SRCS = \
        project/src/main.c\
-       project/src/parser.c
+       project/src/parser.c\
+       project/src/header_work.c\
+       project/src/utils.c
 
 .PHONY: all clean
 
