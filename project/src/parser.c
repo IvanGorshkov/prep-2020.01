@@ -35,7 +35,7 @@ data_t* parse(const char *path_to_eml) {
   size_t count_res_boundary = 3;
   size_t count_str = 2;
   state_t state_header = STATE_START;
-  
+
   while (flags.end_flag != 2) {
     char c =  fgetc(file);
     if (feof(file)) {
@@ -200,8 +200,8 @@ data_t* parse(const char *path_to_eml) {
     }
   }
 
-  char buf[4096];
   if (res_boundary != NULL) {
+    char buf[4096];
     while (fgets(buf, sizeof(buf), file) != NULL) {
       buf[strlen(buf)] = '\0';
       if (strstr("\n", buf) != NULL) {
