@@ -69,6 +69,7 @@ char* add_to_text(char *res, char c, int *flag, FILE* file) {
     free(buffer_2);
     return NULL;
   }
+
   memmove(return_str, buffer_2, --len_buffer_2);
   *flag = 1;
   free(res);

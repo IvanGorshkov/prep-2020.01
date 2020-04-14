@@ -147,26 +147,9 @@ data_t* parse(const char *path_to_eml) {
 
   if (res_boundary != NULL) {
     char buf[4096] = "";
-
     while (fgets(buf, sizeof(buf), file) != NULL) {
       buf[strlen(buf)] = '\0';
-      if (strstr("\n", buf) != NULL) {
-        ++flags.end_flag;
-      } else {
-        --flags.end_flag;
-      }
-
-      if (strstr(buf, res_boundary) != NULL && flags.flag_boundary) {
-        ++count;
-        flags.been_flag = 1;
-      }
-
-      if (boundary_end != NULL) {
-        if (strstr(buf, boundary_end) != NULL && flags.flag_boundary) {
-          --count;
-          flags.been_flag = 1;
-        }
-      }
+      find_boundary(buf, res_boundary, boundary_end, &flags, &count);
     }
   }
 

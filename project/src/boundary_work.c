@@ -17,3 +17,24 @@ int create_boundary(char *boundary, char *res_boundary, char **boundary_end, fla
   }
   return EXIT_SUCCESS;
 }
+
+void find_res_boundary(char *buf, char *res_boundary
+    , char *boundary_end, flags_t *flags,int *count) {
+  if (strstr("\n", buf) != NULL) {
+    ++flags->end_flag;
+  } else {
+    --flags->end_flag;
+  }
+
+  if (strstr(buf, res_boundary) != NULL && flags->flag_boundary) {
+    ++(*count);
+    flags->been_flag = 1;
+  }
+
+  if (boundary_end != NULL) {
+    if (strstr(buf, boundary_end) != NULL && flags->flag_boundary) {
+      --(*count);
+    flags->been_flag = 1;
+    }
+  }
+}
