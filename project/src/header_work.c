@@ -125,7 +125,7 @@ int find_header(char *str, flags_t *flags, state_t *state_header
   if (!strcasecmp("From:", str) && !flags->flag_from) {
     add_to_text(res_header, c, &flags->flag, file);
     *state_header = STATE_FROM;
-    if (res_header == NULL) {
+    if (*res_header == NULL) {
       return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
