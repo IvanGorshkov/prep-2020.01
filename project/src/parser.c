@@ -108,7 +108,7 @@ data_t* parse(const char *path_to_eml) {
         return NULL;
       }
 
-      if(header_boundary(boundary, &flags, &res_boundary, &count_been, &count_res_boundary, c)) {
+      if (header_boundary(boundary, &flags, &res_boundary, &count_been, &count_res_boundary, c)) {
         free_mem(res_header, str, res_boundary, boundary_end, boundary, file);
         free_data(data);
         return NULL;
