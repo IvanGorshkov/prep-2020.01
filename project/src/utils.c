@@ -86,3 +86,28 @@ void free_data(data_t *data) {
   free(data->date);
   free(data);
 }
+
+void free_mem(char *res_header, char *str, char *res_boundary,
+              char *boundary_end, char *boundary, FILE *file) {
+  if (boundary != NULL) {
+    free(boundary);
+  }
+
+  if (str != NULL) {
+    free(str);
+  }
+
+  if (res_header != NULL) {
+    free(res_header);
+  }
+
+  if (res_boundary != NULL) {
+    free(res_boundary);
+  }
+  if (boundary_end != NULL) {
+    free(boundary_end);
+  }
+  if (file != NULL) {
+    fclose(file);
+  }
+}
