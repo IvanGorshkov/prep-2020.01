@@ -19,7 +19,7 @@ int create_boundary(char *boundary, char *res_boundary, char **boundary_end, fla
 }
 
 void find_boundary(char *buf, char *res_boundary
-    , char *boundary_end, flags_t *flags,int *count) {
+    , char *boundary_end, flags_t *flags, int *count) {
   if (strstr("\n", buf) != NULL) {
     ++flags->end_flag;
   } else {
