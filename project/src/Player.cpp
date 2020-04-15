@@ -4,73 +4,71 @@
 
 #include "Player.h"
 
-Position::Position(size_t x, size_t y) {
-    this->x = x;
-    this->y = y;
-}
+Position::Position(size_t x, size_t y)
+                  : x(x),
+                  y(y) {}
 
-Player::Player(size_t x, size_t y): Fighter(100, 1), position(x, y) {}
+Player::Player(size_t x, size_t y)
+              : Fighter(100, 1),
+              position(x, y) {}
 
 void Player::move(std::string move, Map map) {
-    int i = 0;
+  int i = 0;
 
-    if (move.compare("move left") == 0) {
-        i++;
-
-        if (position.x == 0) {
-            return;
-        }
-
-        this->position.x--;
+  if (move.compare("move left") == 0) {
+    ++i;
+    if (position.x == 0) {
+      return;
     }
+    --(this->position.x);
+  }
 
-    if (move.compare("move right") == 0) {
-        i++;
-
-        if (position.x == map.getCols() - 1) {
-            return;
-        }
-
-        this->position.x++;
+  if (move.compare("move right") == 0) {
+    ++i;
+    if (position.x == map.getCols() - 1) {
+      return;
     }
-    if (move.compare("move down") == 0) {
-        i++;
+    ++(this->position.x);
+  }
 
-        if (position.y == 0) {
-            return;
-        }
-
-        this->position.y--;
+  if (move.compare("move down") == 0) {
+    ++i;
+    if (position.y == 0) {
+      return;
     }
-    if (move.compare("move up") == 0) {
-        i++;
-
-        if (position.y == map.getRows() - 1) {
-            return;
-        }
-
-        this->position.y++;
+    --(this->position.y);
+  }
+  if (move.compare("move up") == 0) {
+    ++i;
+    if (position.y == map.getRows() - 1) {
+      return;
     }
+    ++(this->position.y);
+  }
 
-    if (map(position.y, position.x).getName().compare("") != 0) {
-        std::cout << std::endl << map(position.y, position.x).getName() << " found, " << map(position.y, position.x).getHp() << " hp" << std::endl;
-        isFighting = true;
-        return;
-    }
+  if (map(position.y, position.x).getName().compare("") != 0) {
+    map(position.y, position.x).findEnemy();
+    isFighting = true;
+    return;
+  }
 
-    if (i != 0) {
-        std::cout << std::endl << "moved" << std::endl;
-    }
+  if (i != 0) {
+    std::cout << std::endl << "moved" << std::endl;
+  }
 }
 
 Position Player::getPosition() const {
-    return position;
+  return position;
 }
 
 bool Player::isFight() const {
-    return isFighting;
+  return isFighting;
 }
 
 void Player::stopFight() {
-    isFighting = false;
+  isFighting = false;
+}
+
+void Player::status() {
+  std::cout  << getPosition().x << " x " << getPosition().y  << ", hp: " <<  getHp() << " > ";
 }

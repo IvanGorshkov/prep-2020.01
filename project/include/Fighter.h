@@ -1,9 +1,7 @@
 //
 // Created by Ivan Gorshkov on 11.04.2020.
 //
-
-#ifndef PROJECT_INCLUDE_FIGHTER_H_
-#define PROJECT_INCLUDE_FIGHTER_H_
+#pragma once
 
 class Fighter {
  public:
@@ -15,5 +13,3 @@ class Fighter {
   int hp;
   unsigned int dmg;
 };
-
-#endif  // PROJECT_INCLUDE_FIGHTER_H_

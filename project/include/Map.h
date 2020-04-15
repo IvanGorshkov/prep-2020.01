@@ -2,8 +2,8 @@
 // Created by Ivan Gorshkov on 11.04.2020.
 //
 
-#ifndef PROJECT_INCLUDE_MAP_H_
-#define PROJECT_INCLUDE_MAP_H_
+#pragma once
+
 #include <string>
 #include <vector>
 #include <iostream>
@@ -23,6 +23,3 @@ class Map {
   size_t cols;
   std::vector <std::vector <Enemy>> map_enemy;
 };
-
-
-#endif  // PROJECT_INCLUDE_MAP_H_

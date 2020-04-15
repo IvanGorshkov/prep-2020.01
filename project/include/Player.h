@@ -2,8 +2,8 @@
 // Created by Ivan Gorshkov on 11.04.2020.
 //
 
-#ifndef PROJECT_INCLUDE_PLAYER_H_
-#define PROJECT_INCLUDE_PLAYER_H_
+#pragma once
+
 #include <utility>
 #include <string>
 #include "Map.h"
@@ -22,11 +22,8 @@ class Player: public Fighter {
   Position getPosition() const;
   bool isFight() const;
   void stopFight();
+  void status();
  private:
   Position position;
   bool isFighting = false;
 };
-
-
-
-#endif  // PROJECT_INCLUDE_PLAYER_H_

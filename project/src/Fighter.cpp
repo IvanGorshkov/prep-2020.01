@@ -3,7 +3,9 @@
 //
 #include "Fighter.h"
 
-Fighter::Fighter(int hp, unsigned int dmg): hp(hp), dmg(dmg) {}
+Fighter::Fighter(int hp, unsigned int dmg)
+                : hp(hp)
+                , dmg(dmg) {}
 
 int Fighter::getHp() const {
   return hp;
@@ -11,12 +13,7 @@ int Fighter::getHp() const {
 
 bool Fighter::take_hit(int dmg) {
   hp -= dmg;
-
-  if (hp > 0) {
-    return false;
-  }
-
-  return true;
+  return hp > 0 ? false : true;
 }
 
 int Fighter::get_damage() {

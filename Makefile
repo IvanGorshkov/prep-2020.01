@@ -10,6 +10,7 @@ SRCS = \
        project/src/Player.cpp\
        project/src/Enemy.cpp\
        project/src/Fighter.cpp\
+       project/src/Controller.cpp\
 
 .PHONY: all clean
 
