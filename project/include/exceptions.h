@@ -30,7 +30,7 @@ class OutOfRange: public MatrixException {
   OutOfRange(size_t i, size_t j, const Matrix& matrix)
       : MatrixException(
       "Indexes (" + std::to_string(i) + ", " + std::to_string(j) + ") are out of range. Matrix size is [" +
-      std::to_string(matrix.getRows()) + ", " + std::to_string(matrix.getCols()) + "]"
+          std::to_string(matrix.getRows()) + ", " + std::to_string(matrix.getCols()) + "]"
   ) {}
 };
 
@@ -39,7 +39,7 @@ class DimensionMismatch: public MatrixException {
   DimensionMismatch(const Matrix& m1, const Matrix& m2)
       : MatrixException(
       "M1[" + std::to_string(m1.getRows()) + ", " + std::to_string(m1.getCols()) + "] and M2[" +
-      std::to_string(m2.getRows()) + ", " + std::to_string(m2.getCols()) + "] are not compatible"
+          std::to_string(m2.getRows()) + ", " + std::to_string(m2.getCols()) + "] are not compatible"
   ) {}
 
   explicit DimensionMismatch(const Matrix& m)

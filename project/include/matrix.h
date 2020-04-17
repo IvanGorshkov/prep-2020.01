@@ -36,6 +36,13 @@ class Matrix {
   double det() const;
   Matrix adj() const;
   Matrix inv() const;
+
+ private:
+  size_t rows;
+  size_t cols;
+  std::vector <std::vector <double>> matrix;
+  Matrix gaussMethod() const;
+  Matrix crossOut(size_t row, size_t col) const;
 };
 
 Matrix operator*(double val, const Matrix& matrix);
