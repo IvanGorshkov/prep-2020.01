@@ -41,7 +41,7 @@ size_t Map::getRows() const {
 size_t Map::getCols() const {
   return cols;
 }
-Enemy Map::operator()(Position position) const{
+Enemy Map::operator()(Position position) const {
   return map_enemy[position.y][position.x];
 }
 

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 #include "Fighter.h"
 
 class Enemy: public Fighter {

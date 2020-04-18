@@ -6,7 +6,7 @@
 
 Player::Player(size_t x, size_t y)
               : Fighter(100, 1),
-              position{x,y} {}
+              position{x, y} {}
 
 void Player::move(std::string_view move, Map map) {
   int i = 0;
