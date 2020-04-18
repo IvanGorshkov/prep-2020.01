@@ -4,15 +4,11 @@
 
 #include "Player.h"
 
-Position::Position(size_t x, size_t y)
-                  : x(x),
-                  y(y) {}
-
 Player::Player(size_t x, size_t y)
               : Fighter(100, 1),
-              position(x, y) {}
+              position{x,y} {}
 
-void Player::move(std::string move, Map map) {
+void Player::move(std::string_view move, Map map) {
   int i = 0;
 
   if (move.compare("move left") == 0) {
@@ -20,7 +16,7 @@ void Player::move(std::string move, Map map) {
     if (position.x == 0) {
       return;
     }
-    --(this->position.x);
+    --position.x;
   }
 
   if (move.compare("move right") == 0) {
@@ -28,7 +24,7 @@ void Player::move(std::string move, Map map) {
     if (position.x == map.getCols() - 1) {
       return;
     }
-    ++(this->position.x);
+    ++position.x;
   }
 
   if (move.compare("move down") == 0) {
@@ -36,24 +32,24 @@ void Player::move(std::string move, Map map) {
     if (position.y == 0) {
       return;
     }
-    --(this->position.y);
+    --position.y;
   }
   if (move.compare("move up") == 0) {
     ++i;
     if (position.y == map.getRows() - 1) {
       return;
     }
-    ++(this->position.y);
+    ++position.y;
   }
 
-  if (map(position.y, position.x).getName().compare("") != 0) {
-    map(position.y, position.x).findEnemy();
+  if (!map(position).getName().empty()) {
+    map(position).findEnemy();
     isFighting = true;
     return;
   }
 
   if (i != 0) {
-    std::cout << std::endl << "moved" << std::endl;
+    std::cout << "\nmoved\n";
   }
 }
 

@@ -6,9 +6,10 @@
 class Fighter {
  public:
   explicit Fighter(int hp, unsigned int dmg);
-  bool take_hit(int dmg);
-  int get_damage();
+  bool takeHit(int dmg);
+  int getDamage();
   int getHp() const;
+
  protected:
   int hp;
   unsigned int dmg;

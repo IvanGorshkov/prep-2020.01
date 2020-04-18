@@ -10,32 +10,32 @@ Controller::Controller(std::istream& is)
 
 
 bool Controller::printActions() {
-  std::cout << "Supported actions:" << std::endl;
-  std::string action = "";
+  std::cout << "Supported actions:\n";
   bool in = false;
+
   if (!player.isFight()) {
     if (player.getPosition().x !=  0) {
-      std::cout << " * move left" << std::endl;
+      std::cout << " * move left\n";
       in = true;
     }
 
     if (player.getPosition().x != map.getCols() - 1) {
-      std::cout << " * move right" << std::endl;
+      std::cout << " * move right\n";
       in = true;
     }
 
     if (player.getPosition().y != 0) {
-      std::cout << " * move down" << std::endl;
+      std::cout << " * move down\n";
       in = true;
     }
 
     if (player.getPosition().y != map.getRows() - 1) {
-      std::cout  <<  " * move up" << std::endl;
+      std::cout  <<  " * move up\n";
       in = true;
     }
 
     if (in == false) {
-      std::cout << std::endl;
+      std::cout << "\n";
     }
 
     player.status();
@@ -45,45 +45,45 @@ bool Controller::printActions() {
     }
 
   } else {
-    std::cout  << " * kick enemy" << std::endl;
+    std::cout  << " * kick enemy\n";
     player.status();
   }
 
   return true;
 }
 
-bool Controller::action(std::string action) {
+bool Controller::action(std::string_view action) {
   if ((action.compare(0, 4, "move")) == 0) {
     player.move(action, map);
   }
 
-  if ((action.compare("kick enemy")) == 0) {
+  if (action == "kick enemy") {
     return action_kick();
   }
 
   return true;
 }
 bool Controller::action_kick() {
-  Enemy enemy = map(player.getPosition().y, player.getPosition().x);
+  Enemy enemy = map(player.getPosition());
 
   if (fight(player, enemy)) {
-    std::cout << std::endl << "enemy killed" << std::endl;
+    std::cout << "\nenemy killed\n";
     player.stopFight();
     Enemy enemy_killed = Enemy("", 0, 0);
-    map.setValue(player.getPosition().y, player.getPosition().x, enemy_killed);
+    map(player.getPosition()) = enemy_killed;
     return true;
   }
 
   if (fight(enemy, player)) {
-    std::cout << std::endl <<  "player died" << std::endl;
+    std::cout  << "\nplayer died\n";
     return false;
   }
 
   enemy.status();
-  map.setValue(player.getPosition().y, player.getPosition().x, enemy);
+  map(player.getPosition()) = enemy;
   return true;
 }
 
 bool Controller::fight(Fighter& attacker, Fighter& defender) {
-  return defender.take_hit(attacker.get_damage());
+  return defender.takeHit(attacker.getDamage());
 }

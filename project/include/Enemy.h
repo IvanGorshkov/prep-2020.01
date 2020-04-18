@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <string>
 #include <iostream>
 #include "Fighter.h"
 
@@ -14,6 +13,7 @@ class Enemy: public Fighter {
   std::string getName() const;
   void status();
   void findEnemy();
+
  private:
   std::string name;
 };

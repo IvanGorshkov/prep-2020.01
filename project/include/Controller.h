@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <string>
+#include <iostream>
 #include "Map.h"
 #include "Player.h"
 
@@ -12,9 +12,10 @@ class Controller {
  public:
   explicit Controller(std::istream& is);
   bool printActions();
-  bool action(std::string action);
+  bool action(std::string_view action);
   bool fight(Fighter& attacker, Fighter& defender);
   bool action_kick();
+
  private:
   Map map;
   Player player;

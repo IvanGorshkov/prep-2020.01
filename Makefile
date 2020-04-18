@@ -15,7 +15,7 @@ SRCS = \
 .PHONY: all clean
 
 all: $(SRCS)
-	$(CXX) -std=gnu++17 -Wall -Wextra -Werror $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS)
+	$(CXX) -std=gnu++17 -Wall -Wextra -Werror $(addprefix -I,$(HDRS)) -o $(TARGET) $(CXXFLAGS) $(SRCS)
 
 clean:
 	rm -rf $(TARGET)

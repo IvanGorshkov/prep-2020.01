@@ -6,16 +6,16 @@
 
 Enemy::Enemy(std::string name, int hp, unsigned int dmg)
             : Fighter(hp, dmg)
-            , name(name) {}
+            , name(std::move(name)) {}
 
 std::string Enemy::getName() const {
   return name;
 }
 
 void Enemy::status() {
-  std::cout << std::endl <<  "enemy kicked." << " Enemy hp: " << getHp() << std::endl;
+  std::cout << "\nenemy kicked. Enemy hp: " << getHp() << "\n";
 }
 
 void Enemy::findEnemy() {
-  std::cout << std::endl << getName() << " found, " << getHp() << " hp" << std::endl;
+  std::cout << "\n" << getName() << " found, " << getHp() << " hp\n";
 }

@@ -9,7 +9,7 @@ int main(int argc, const char** argv) {
   const std::string key = argv[1];
   const std::string map_path = argv[2];
 
-  if (key.compare("--map") != 0) {
+  if (key != "--map") {
     return EXIT_FAILURE;
   }
 
@@ -22,18 +22,18 @@ int main(int argc, const char** argv) {
   Controller game(map_file);
 
   while (true) {
-    if (game.printActions() == false) {
+    if (!game.printActions()) {
       break;
     }
 
     std::string action = "";
     std::getline(std::cin, action);
 
-    if (action.compare("\0") == 0) {
+    if (action.empty()) {
       break;
     }
 
-    if (game.action(action) == false) {
+    if (!game.action(action)) {
       break;
     }
   }

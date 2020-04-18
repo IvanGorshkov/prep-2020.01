@@ -4,6 +4,7 @@
 
 #include "Map.h"
 
+
 Map::Map(std::istream& is) {
   is >> cols >> rows;
   map_enemy.resize(rows, std::vector<Enemy>(cols, Enemy("", 0, 0)));
@@ -14,19 +15,19 @@ Map::Map(std::istream& is) {
     std::string enemy = "";
     is >> x >> y >> enemy;
 
-    if (enemy.compare("wolf") == 0) {
+    if (enemy == "wolf") {
       Enemy wolf(enemy, 6, 11);
       map_enemy[y][x] = wolf;
       continue;
     }
 
-    if (enemy.compare("dog") == 0) {
+    if (enemy == "dog") {
       Enemy dog(enemy, 3, 6);
       map_enemy[y][x] = dog;
       continue;
     }
 
-    if (enemy.compare("rat") == 0) {
+    if (enemy == "rat") {
       Enemy rat(enemy, 2, 4);
       map_enemy[y][x] = rat;
     }
@@ -40,10 +41,10 @@ size_t Map::getRows() const {
 size_t Map::getCols() const {
   return cols;
 }
-Enemy Map::operator()(size_t i, size_t j) {
-  return map_enemy[i][j];
+Enemy Map::operator()(Position position) const{
+  return map_enemy[position.y][position.x];
 }
 
-void Map::setValue(size_t i, size_t j, Enemy& enemy) {
-  map_enemy[i][j] = enemy;
+Enemy& Map::operator()(Position position) {
+  return map_enemy[position.y][position.x];
 }

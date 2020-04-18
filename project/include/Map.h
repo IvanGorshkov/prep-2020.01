@@ -4,19 +4,23 @@
 
 #pragma once
 
-#include <string>
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include "Enemy.h"
+
+struct Position {
+  size_t x;
+  size_t y;
+};
 
 class Map {
  public:
   explicit Map(std::istream& is);
   size_t getRows() const;
   size_t getCols() const;
-  Enemy operator()(size_t i, size_t j);
-  void setValue(size_t i, size_t j, Enemy& enemy);
+  Enemy operator()(Position position) const;
+  Enemy& operator()(Position position);
 
  private:
   size_t rows;

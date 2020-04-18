@@ -11,11 +11,11 @@ int Fighter::getHp() const {
   return hp;
 }
 
-bool Fighter::take_hit(int dmg) {
+bool Fighter::takeHit(int dmg) {
   hp -= dmg;
   return hp > 0 ? false : true;
 }
 
-int Fighter::get_damage() {
+int Fighter::getDamage() {
   return dmg;
 }
