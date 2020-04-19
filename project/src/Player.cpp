@@ -8,7 +8,7 @@ Player::Player(size_t x, size_t y)
               : Fighter(100, 1),
               position{x, y} {}
 
-void Player::move(std::string_view move, Map map) {
+void Player::move(std::string_view move, const Map &map) {
   int i = 0;
 
   if (move.compare("move left") == 0) {
@@ -65,6 +65,6 @@ void Player::stopFight() {
   isFighting = false;
 }
 
-void Player::status() {
+void Player::status() const {
   std::cout  << getPosition().x << " x " << getPosition().y  << ", hp: " <<  getHp() << " > ";
 }

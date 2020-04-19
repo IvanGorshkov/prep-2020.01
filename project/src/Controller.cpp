@@ -9,7 +9,7 @@ Controller::Controller(std::istream& is)
                       , player(0, 0) {}
 
 
-bool Controller::printActions() {
+bool Controller::printActions() const {
   std::cout << "Supported actions:\n";
   bool in = false;
 

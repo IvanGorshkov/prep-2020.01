@@ -16,6 +16,6 @@ bool Fighter::takeHit(int dmg) {
   return hp > 0 ? false : true;
 }
 
-int Fighter::getDamage() {
+int Fighter::getDamage() const {
   return dmg;
 }

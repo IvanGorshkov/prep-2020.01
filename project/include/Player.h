@@ -13,11 +13,11 @@
 class Player: public Fighter {
  public:
   explicit Player(size_t x, size_t y);
-  void move(std::string_view move, Map map);
+  void move(std::string_view move, const Map &map);
   Position getPosition() const;
   bool isFight() const;
   void stopFight();
-  void status();
+  void status() const;
 
  private:
   Position position;
