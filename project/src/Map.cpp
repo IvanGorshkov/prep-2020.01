@@ -7,7 +7,7 @@
 
 Map::Map(std::istream& is) {
   is >> cols >> rows;
-  map_enemy.resize(rows, std::vector<Enemy>(cols, Enemy("", 0, 0)));
+  map_enemy.resize(rows, std::vector<Enemy>(cols, Enemy("", 0, 0, false)));
 
   while (is) {
     size_t x = 0;
@@ -16,19 +16,19 @@ Map::Map(std::istream& is) {
     is >> x >> y >> enemy;
 
     if (enemy == "wolf") {
-      Enemy wolf(enemy, 6, 11);
+      Enemy wolf(enemy, 6, 11, true);
       map_enemy[y][x] = wolf;
       continue;
     }
 
     if (enemy == "dog") {
-      Enemy dog(enemy, 3, 6);
+      Enemy dog(enemy, 3, 6, true);
       map_enemy[y][x] = dog;
       continue;
     }
 
     if (enemy == "rat") {
-      Enemy rat(enemy, 2, 4);
+      Enemy rat(enemy, 2, 4, true);
       map_enemy[y][x] = rat;
     }
   }

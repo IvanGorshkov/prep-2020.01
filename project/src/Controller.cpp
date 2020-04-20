@@ -69,8 +69,9 @@ bool Controller::action_kick() {
   if (fight(player, enemy)) {
     std::cout << "\nenemy killed\n";
     player.stopFight();
-    Enemy enemy_killed = Enemy("", 0, 0);
-    map(player.getPosition()) = enemy_killed;
+    enemy = Enemy("", 0, 0, true);
+    enemy.setIsAlive(false);
+    map(player.getPosition()) = enemy;
     return true;
   }
 

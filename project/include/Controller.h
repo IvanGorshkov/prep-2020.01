@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <string_view>
 #include <iostream>
 #include "Map.h"
 #include "Player.h"

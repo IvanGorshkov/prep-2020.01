@@ -4,11 +4,10 @@
 
 #pragma once
 
-#include <utility>
-#include <string>
-#include "Map.h"
+#include <string_view>
 #include "Fighter.h"
-
+#include "Position.h"
+class Map;
 
 class Player: public Fighter {
  public:

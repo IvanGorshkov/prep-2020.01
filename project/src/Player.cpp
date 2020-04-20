@@ -3,6 +3,7 @@
 //
 
 #include "Player.h"
+#include "Map.h"
 
 Player::Player(size_t x, size_t y)
               : Fighter(100, 1),
@@ -42,7 +43,7 @@ void Player::move(std::string_view move, const Map &map) {
     ++position.y;
   }
 
-  if (!map(position).getName().empty()) {
+  if (map(position).getIsAlive()) {
     map(position).findEnemy();
     isFighting = true;
     return;

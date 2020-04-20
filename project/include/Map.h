@@ -8,11 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include "Enemy.h"
-
-struct Position {
-  size_t x;
-  size_t y;
-};
+#include "Position.h"
 
 class Map {
  public:
