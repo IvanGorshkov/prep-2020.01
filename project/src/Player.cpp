@@ -2,6 +2,7 @@
 // Created by Ivan Gorshkov on 11.04.2020.
 //
 
+#include <iostream>
 #include "Player.h"
 #include "Map.h"
 

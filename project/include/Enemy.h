@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 #include "Fighter.h"
 

@@ -2,6 +2,7 @@
 // Created by Ivan Gorshkov on 12.04.2020.
 //
 
+#include <iostream>
 #include "Enemy.h"
 
 Enemy::Enemy(std::string name, int hp, unsigned int dmg, bool is_alive)
