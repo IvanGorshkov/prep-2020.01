@@ -3,6 +3,7 @@
 //
 
 #include "Controller.h"
+#include <iostream>
 
 Controller::Controller(std::istream& is)
                       :map(is)

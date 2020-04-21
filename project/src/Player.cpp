@@ -13,7 +13,7 @@ Player::Player(size_t x, size_t y)
 void Player::move(std::string_view move, const Map &map) {
   int i = 0;
 
-  if (move.compare("move left") == 0) {
+  if (move == "move left") {
     ++i;
     if (position.x == 0) {
       return;
@@ -21,7 +21,7 @@ void Player::move(std::string_view move, const Map &map) {
     --position.x;
   }
 
-  if (move.compare("move right") == 0) {
+  if (move == "move right") {
     ++i;
     if (position.x == map.getCols() - 1) {
       return;
@@ -29,14 +29,14 @@ void Player::move(std::string_view move, const Map &map) {
     ++position.x;
   }
 
-  if (move.compare("move down") == 0) {
+  if (move == "move down") {
     ++i;
     if (position.y == 0) {
       return;
     }
     --position.y;
   }
-  if (move.compare("move up") == 0) {
+  if (move == "move up") {
     ++i;
     if (position.y == map.getRows() - 1) {
       return;

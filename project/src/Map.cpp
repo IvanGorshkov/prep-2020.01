@@ -3,7 +3,7 @@
 //
 
 #include "Map.h"
-#include <iostream>
+#include <istream>
 
 Map::Map(std::istream& is) {
   is >> cols >> rows;

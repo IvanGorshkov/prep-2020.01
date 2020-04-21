@@ -5,7 +5,7 @@
 #pragma once
 
 #include <string_view>
-#include <iostream>
+#include <iosfwd>
 #include "Map.h"
 #include "Player.h"
 
