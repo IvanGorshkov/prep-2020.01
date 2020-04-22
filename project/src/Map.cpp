@@ -2,18 +2,30 @@
 // Created by Ivan Gorshkov on 11.04.2020.
 //
 
+#include <fstream>
+#include <iostream>
+#include "Exeptions.h"
 #include "Map.h"
 #include <istream>
 
-Map::Map(std::istream& is) {
+Map::Map(std::ifstream& is) {
   is >> cols >> rows;
+  if(!is) {
+    throw InvalidFileStream();
+  }
+
   map_enemy.resize(rows, std::vector<Enemy>(cols, Enemy("", 0, 0, false)));
 
-  while (is) {
+  while (!is.eof()) {
     size_t x = 0;
     size_t y = 0;
-    std::string enemy = "";
+    std::string enemy{};
+
     is >> x >> y >> enemy;
+
+    if(!is && !is.eof()) {
+      throw InvalidFileStream();
+    }
 
     if (enemy == "wolf") {
       Enemy wolf(enemy, 6, 11, true);

@@ -11,7 +11,7 @@
 
 class Map {
  public:
-  explicit Map(std::istream& is);
+  explicit Map(std::ifstream& is);
   size_t getRows() const;
   size_t getCols() const;
   Enemy operator()(Position position) const;

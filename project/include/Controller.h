@@ -11,7 +11,7 @@
 
 class Controller {
  public:
-  explicit Controller(std::istream& is);
+  explicit Controller(std::ifstream& is);
   bool printActions() const;
   bool act(std::string_view action);
   bool fight(Fighter& attacker, Fighter& defender);

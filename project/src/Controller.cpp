@@ -5,7 +5,7 @@
 #include "Controller.h"
 #include <iostream>
 
-Controller::Controller(std::istream& is)
+Controller::Controller(std::ifstream& is)
                       :map(is)
                       , player(0, 0) {}
 
@@ -64,6 +64,7 @@ bool Controller::act(std::string_view action) {
 
   return true;
 }
+
 bool Controller::action_kick() {
   Enemy enemy = map(player.getPosition());
 
