@@ -14,14 +14,6 @@ std::string Enemy::getName() const {
   return name;
 }
 
-void Enemy::status() const {
-  std::cout << "\nenemy kicked. Enemy hp: " << getHp() << "\n";
-}
-
-void Enemy::findEnemy() const {
-  std::cout << "\n" << getName() << " found, " << getHp() << " hp\n";
-}
-
 void Enemy::setIsAlive(bool value) {
   is_alive = value;
 }

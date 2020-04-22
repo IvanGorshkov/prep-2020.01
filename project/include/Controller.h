@@ -13,7 +13,7 @@ class Controller {
  public:
   explicit Controller(std::istream& is);
   bool printActions() const;
-  bool action(std::string_view action);
+  bool act(std::string_view action);
   bool fight(Fighter& attacker, Fighter& defender);
   bool action_kick();
 
@@ -21,3 +21,4 @@ class Controller {
   Map map;
   Player player;
 };
+

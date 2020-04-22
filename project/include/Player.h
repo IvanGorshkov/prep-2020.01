@@ -17,7 +17,6 @@ class Player: public Fighter {
   Position getPosition() const;
   bool isFight() const;
   void stopFight();
-  void status() const;
 
  private:
   Position position;

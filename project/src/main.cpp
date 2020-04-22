@@ -28,14 +28,14 @@ int main(int argc, const char** argv) {
       break;
     }
 
-    std::string action = "";
+    std::string action{};
     std::getline(std::cin, action);
 
     if (action.empty()) {
       break;
     }
 
-    if (!game.action(action)) {
+    if (!game.act(action)) {
       break;
     }
   }

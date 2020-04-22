@@ -39,7 +39,7 @@ bool Controller::printActions() const {
       std::cout << "\n";
     }
 
-    player.status();
+    std::cout  << player.getPosition().x << " x " << player.getPosition().y  << ", hp: " <<  player.getHp() << " > ";
 
     if (map.getRows() == 1 && map.getCols() == 1) {
       return false;
@@ -47,14 +47,14 @@ bool Controller::printActions() const {
 
   } else {
     std::cout  << " * kick enemy\n";
-    player.status();
+    std::cout  << player.getPosition().x << " x " << player.getPosition().y  << ", hp: " <<  player.getHp() << " > ";
   }
 
   return true;
 }
 
-bool Controller::action(std::string_view action) {
-  if ((action.compare(0, 4, "move")) == 0) {
+bool Controller::act(std::string_view action) {
+  if (action == "move up" || action == "move down" || action == "move left" || action == "move right") {
     player.move(action, map);
   }
 
@@ -80,7 +80,7 @@ bool Controller::action_kick() {
     return false;
   }
 
-  enemy.status();
+  std::cout << "\nenemy kicked. Enemy hp: " << enemy.getHp() << "\n";
   map(player.getPosition()) = enemy;
   return true;
 }

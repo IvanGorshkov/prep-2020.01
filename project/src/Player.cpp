@@ -45,7 +45,7 @@ void Player::move(std::string_view move, const Map &map) {
   }
 
   if (map(position).getIsAlive()) {
-    map(position).findEnemy();
+    std::cout << "\n" << map(position).getName() << " found, " << map(position).getHp() << " hp\n";
     isFighting = true;
     return;
   }
@@ -67,6 +67,3 @@ void Player::stopFight() {
   isFighting = false;
 }
 
-void Player::status() const {
-  std::cout  << getPosition().x << " x " << getPosition().y  << ", hp: " <<  getHp() << " > ";
-}
