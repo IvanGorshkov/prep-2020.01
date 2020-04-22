@@ -10,7 +10,7 @@
 
 Map::Map(std::ifstream& is) {
   is >> cols >> rows;
-  if(!is) {
+  if (!is) {
     throw InvalidFileStream();
   }
 
@@ -23,7 +23,7 @@ Map::Map(std::ifstream& is) {
 
     is >> x >> y >> enemy;
 
-    if(!is && !is.eof()) {
+    if (!is && !is.eof()) {
       throw InvalidFileStream();
     }
 
