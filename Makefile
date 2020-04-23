@@ -11,6 +11,8 @@ SRCS = \
        project/src/Enemy.cpp\
        project/src/Fighter.cpp\
        project/src/Controller.cpp\
+       project/src/Armor.cpp\
+       project/src/Cell.cpp\
 
 .PHONY: all clean
 

@@ -1,5 +1,5 @@
 //
-// Created by Ivan Gorshkov on 22.04.2020.
+// Created by Ivan Gorshkov on 23.04.2020.
 //
 
 #pragma once
@@ -25,5 +25,3 @@ class InvalidFileStream: public GameException {
   InvalidFileStream()
       : GameException("Error occurred while reading from stream") {}
 };
-
-
