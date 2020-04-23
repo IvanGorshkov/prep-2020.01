@@ -2,9 +2,9 @@
 // Created by Ivan Gorshkov on 23.04.2020.
 //
 
-
 #include <iostream>
 #include <memory>
+#include <algorithm>
 #include "Player.h"
 #include "Map.h"
 #include "Enemy.h"
