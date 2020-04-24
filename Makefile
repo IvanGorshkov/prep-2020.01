@@ -5,12 +5,17 @@ HDRS = \
 	   project/include
 
 SRCS = \
-       project/src/main.cpp
+       project/src/main.cpp\
+       project/src/Map.cpp\
+       project/src/Player.cpp\
+       project/src/Enemy.cpp\
+       project/src/Fighter.cpp\
+       project/src/Controller.cpp\
 
 .PHONY: all clean
 
 all: $(SRCS)
-	$(CXX) -std=gnu++17 -Wall -Wextra -Werror $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS)
+	$(CXX) -std=gnu++17 -Wall -Wextra -Werror $(addprefix -I,$(HDRS)) -o $(TARGET) $(CXXFLAGS) $(SRCS)
 
 clean:
 	rm -rf $(TARGET)
