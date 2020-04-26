@@ -4,6 +4,6 @@
 
 #include "Cell.h"
 
-eCellTypes Cell::get_type() const {
+eCellTypes Cell::getType() const {
   return  eCellTypes::CELL;
 }

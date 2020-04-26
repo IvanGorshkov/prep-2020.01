@@ -16,11 +16,6 @@ Player::Player(size_t x, size_t y)
 
 void Player::move(std::string_view move, Map &map) {
   int i = 0;
-  if (map(position) != nullptr) {
-    if (map(position)->get_type() == eCellTypes::ARMOR) {
-      map.skipArmor(position);
-    }
-  }
 
   if (move == "move left") {
     ++i;
@@ -55,7 +50,7 @@ void Player::move(std::string_view move, Map &map) {
   }
 
   if (map(position) != nullptr) {
-    if (map(position)->get_type() == eCellTypes::ENEMY) {
+    if (map(position)->getType() == eCellTypes::ENEMY) {
       std::shared_ptr<Enemy> enemy = std::static_pointer_cast<Enemy>(map(position));
       if (enemy->getIsAlive()) {
         std::cout << "\n" << enemy->getName() << " found, " << enemy->getHp() << " hp\n";
@@ -64,7 +59,7 @@ void Player::move(std::string_view move, Map &map) {
       }
     }
 
-    if (map(position)->get_type() == eCellTypes::ARMOR) {
+    if (map(position)->getType() == eCellTypes::ARMOR) {
       std::shared_ptr<Armor> armor = std::static_pointer_cast<Armor>(map(position));
       std::cout << "\n" << armor->getName() << " found\n";
       return;
@@ -76,7 +71,7 @@ void Player::move(std::string_view move, Map &map) {
   }
 }
 
-Position Player::getPosition() const {
+Position& Player::getPosition() {
   return position;
 }
 
@@ -92,24 +87,25 @@ static bool compareInterval(std::shared_ptr<Armor> ar1, std::shared_ptr<Armor> a
   return (ar1->getName() < ar2->getName());
 }
 
-void Player::addArmor(Map &map) {
+bool Player::addArmor(Map &map) {
   if (map(getPosition()) != nullptr) {
-    if (map(getPosition())->get_type() == eCellTypes::ARMOR) {
+    if (map(getPosition())->getType() == eCellTypes::ARMOR) {
       std::shared_ptr<Armor> armor = std::static_pointer_cast<Armor>(map(getPosition()));
       if (wgt <= 20) {
         armors.push_back(armor);
         std::sort(armors.begin(), armors.end(), compareInterval);
-        map.skipArmor(position);
         std::cout << "\nclothes worn\n";
         point_armor += armor->getArm();
         wgt += armor->getWgt();
+        return true;
       }
     }
   }
+  return false;
 }
 
-void Player::printArmor() {
-  for (auto armor : armors) {
+void Player::printArmor() const {
+  for (auto& armor : armors) {
     std::cout << " * throw " << armor->getName() << "\n";
   }
 }
@@ -117,7 +113,7 @@ void Player::printArmor() {
 void Player::dropArmor(std::string_view armor_drop) {
   int i = 0;
   bool is_found = false;
-  for (auto armor : armors) {
+  for (auto& armor : armors) {
     if (armor->getName() == armor_drop) {
       is_found = true;
       break;
@@ -134,7 +130,7 @@ void Player::dropArmor(std::string_view armor_drop) {
 }
 
 bool Player::notExist(std::string_view check_armor) {
-  for (auto armor : armors) {
+  for (auto& armor : armors) {
     if (armor->getName() == check_armor) {
       return false;
     }

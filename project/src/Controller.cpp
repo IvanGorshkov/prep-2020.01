@@ -38,7 +38,7 @@ bool Controller::printActions() const {
     }
 
     if (map(player->getPosition()) != nullptr) {
-      if (map(player->getPosition())->get_type() == eCellTypes::ARMOR) {
+      if (map(player->getPosition())->getType() == eCellTypes::ARMOR) {
         std::shared_ptr<Armor> armor = std::static_pointer_cast<Armor>(map(player->getPosition()));
         if (player->notExist(armor->getName())) {
           std::cout << " * pick " << armor->getName() << "\n";
@@ -77,6 +77,12 @@ bool Controller::printActions() const {
 
 bool Controller::act(std::string_view action) {
   if (action == "move up" || action == "move down" || action == "move left" || action == "move right") {
+    if (map(player->getPosition()) != nullptr) {
+      if (map(player->getPosition())->getType() == eCellTypes::ARMOR) {
+        map.skipArmor(player->getPosition());
+      }
+    }
+
     player->move(action, map);
   }
 
@@ -86,7 +92,9 @@ bool Controller::act(std::string_view action) {
 
   if (action == "pick pants" || action == "pick armor" || action == "pick helmet"
       || action == "pick shield" || action == "pick T-Shirt") {
-    player->addArmor(map);
+    if (player->addArmor(map)) {
+      map.skipArmor(player->getPosition());
+    }
   }
 
   if (action == "throw pants" || action == "throw armor" || action == "throw helmet"
@@ -98,7 +106,7 @@ bool Controller::act(std::string_view action) {
 }
 
 bool Controller::actionKick() {
-  if (map(player->getPosition())->get_type() == eCellTypes::ENEMY) {
+  if (map(player->getPosition())->getType() == eCellTypes::ENEMY) {
     std::shared_ptr<Enemy> enemy = std::static_pointer_cast<Enemy>(map(player->getPosition()));
     if (fight(player, enemy)) {
       std::cout << "\nenemy killed\n";

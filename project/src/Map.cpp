@@ -71,10 +71,10 @@ size_t Map::getCols() const {
   return cols;
 }
 
-std::shared_ptr <Cell> Map::operator()(Position position) const {
+std::shared_ptr <Cell> Map::operator()(Position &position) const {
   return map[position.y][position.x];
 }
 
-void Map::skipArmor(Position position) {
+void Map::skipArmor(Position &position) {
   map[position.y][position.x] = nullptr;
 }

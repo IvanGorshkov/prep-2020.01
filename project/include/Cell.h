@@ -10,5 +10,5 @@ class Cell {
  public:
   Cell() = default;
   virtual ~Cell() {}
-  virtual eCellTypes get_type() const;
+  virtual eCellTypes getType() const;
 };

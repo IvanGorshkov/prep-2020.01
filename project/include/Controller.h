@@ -15,10 +15,10 @@ class Controller {
   explicit Controller(std::ifstream& is, int stage);
   bool printActions() const;
   bool act(std::string_view action);
-  bool fight(std::shared_ptr<Fighter> attacker, std::shared_ptr<Fighter> defender);
-  bool actionKick();
 
  private:
+  bool fight(std::shared_ptr<Fighter> attacker, std::shared_ptr<Fighter> defender);
+  bool actionKick();
   Map map;
   std::shared_ptr<Player> player;
   int stage;

@@ -4,20 +4,20 @@
 
 #include "Enemy.h"
 
-Enemy::Enemy(std::string name, int hp, unsigned int dmg, int arm, bool is_alive)
+Enemy::Enemy(std::string_view name, int hp, unsigned int dmg, int arm, bool is_alive)
     : Fighter(hp, dmg, arm)
     , name(std::move(name))
     , is_alive(is_alive) {}
 
-eCellTypes Enemy::get_type() const {
+eCellTypes Enemy::getType() const {
   return  eCellTypes::ENEMY;
 }
 
-std::string Enemy::getName() const {
+std::string_view Enemy::getName() const {
   return name;
 }
 
-bool Enemy::getIsAlive() {
+bool Enemy::getIsAlive() const {
   return is_alive;
 }
 

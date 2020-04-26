@@ -5,19 +5,20 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include "Cell.h"
 #include "eCellType.h"
 
 class Armor: public Cell {
  public:
-  explicit Armor(std::string name, int wgt, int arm);
+  explicit Armor(std::string_view name, int wgt, int arm);
   int getWgt() const;
   int getArm() const;
-  std::string getName() const;
-  eCellTypes get_type() const override;
+  std::string_view getName() const;
+  eCellTypes getType() const override;
 
  private:
-  std::string name;
+  const std::string name;
   int wgt;
   int arm;
 };

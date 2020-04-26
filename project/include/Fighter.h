@@ -6,7 +6,7 @@
 
 class Fighter {
  public:
-  explicit Fighter(int hp, unsigned int dmg,  int arm);
+  explicit Fighter(int hp, unsigned int dmg, int arm);
   bool takeHit(int dmg);
   int getDamage() const;
   int getHp() const;

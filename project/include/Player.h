@@ -13,21 +13,23 @@
 #include "Armor.h"
 class Map;
 
+using armor_vector = std::vector <std::shared_ptr<Armor>>;
+
 class Player: public Fighter  {
  public:
   explicit Player(size_t x, size_t y);
   void move(std::string_view move, Map &map);
-  Position getPosition() const;
+  Position& getPosition();
   bool isFight() const;
   void stopFight();
-  void addArmor(Map &map);
-  void printArmor();
+  bool addArmor(Map &map);
+  void printArmor() const;
   void dropArmor(std::string_view armor_drop);
   bool notExist(std::string_view check_armor);
 
  private:
   Position position;
-  std::vector <std::shared_ptr<Armor>> armors;
+  armor_vector armors;
   bool isFighting = false;
   int wgt;
 };
