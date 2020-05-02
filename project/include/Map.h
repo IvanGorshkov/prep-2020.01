@@ -17,7 +17,7 @@ class Map {
   explicit Map(std::ifstream& is);
   size_t getRows() const;
   size_t getCols() const;
-  std::shared_ptr<Cell> operator()(Position &position) const;
+  const std::shared_ptr<Cell> operator()(Position &position) const;
   void skipArmor(Position &position);
 
  private:

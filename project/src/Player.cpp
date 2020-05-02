@@ -105,7 +105,7 @@ bool Player::addArmor(Map &map) {
 }
 
 void Player::printArmor() const {
-  for (auto& armor : armors) {
+  for (const auto& armor : armors) {
     std::cout << " * throw " << armor->getName() << "\n";
   }
 }
@@ -113,7 +113,7 @@ void Player::printArmor() const {
 void Player::dropArmor(std::string_view armor_drop) {
   int i = 0;
   bool is_found = false;
-  for (auto& armor : armors) {
+  for (const auto& armor : armors) {
     if (armor->getName() == armor_drop) {
       is_found = true;
       break;
@@ -130,7 +130,7 @@ void Player::dropArmor(std::string_view armor_drop) {
 }
 
 bool Player::notExist(std::string_view check_armor) {
-  for (auto& armor : armors) {
+  for (const auto& armor : armors) {
     if (armor->getName() == check_armor) {
       return false;
     }

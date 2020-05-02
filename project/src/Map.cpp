@@ -71,7 +71,7 @@ size_t Map::getCols() const {
   return cols;
 }
 
-std::shared_ptr <Cell> Map::operator()(Position &position) const {
+const std::shared_ptr<Cell> Map::operator()(Position &position) const {
   return map[position.y][position.x];
 }
 
