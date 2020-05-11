@@ -1,18 +1,29 @@
-#include <fstream>
 #include <iostream>
-#include "Player.h"
+#include <fstream>
 #include "Controller.h"
 
 int main(int argc, const char** argv) {
-  if (argc != 3) {
+  if (argc < 3 && argc > 4) {
     return EXIT_FAILURE;
   }
+  std::string key {};
+  std::string map_path {};
+  std::string stage_2 {};
+  int stage = 1;
+  for (int num = 0; num < argc; ++num) {
+    std::string str = argv[num];
+    if (str == "--map") {
+      key = str;
+    }
 
-  const std::string key = argv[1];
-  const std::string map_path = argv[2];
+    if (str == "--view-armor") {
+      stage_2 = str;
+      stage = 2;
+    }
 
-  if (key != "--map") {
-    return EXIT_FAILURE;
+    if (str != "--view-armor" && str != "--map") {
+      map_path = str;
+    }
   }
 
   std::ifstream map_file(map_path);
@@ -21,7 +32,7 @@ int main(int argc, const char** argv) {
     return EXIT_FAILURE;
   }
 
-  Controller game(map_file);
+  Controller game(map_file, stage);
 
   while (true) {
     if (!game.printActions()) {
@@ -39,6 +50,5 @@ int main(int argc, const char** argv) {
       break;
     }
   }
-
   return 0;
 }

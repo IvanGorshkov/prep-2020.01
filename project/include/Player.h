@@ -1,24 +1,35 @@
 //
-// Created by Ivan Gorshkov on 11.04.2020.
+// Created by Ivan Gorshkov on 23.04.2020.
 //
 
 #pragma once
 
 #include <utility>
 #include <string_view>
+#include <vector>
+#include <memory>
 #include "Fighter.h"
 #include "Position.h"
+#include "Armor.h"
 class Map;
 
-class Player: public Fighter {
+using armor_vector = std::vector <std::shared_ptr<Armor>>;
+
+class Player: public Fighter  {
  public:
   explicit Player(size_t x, size_t y);
-  void move(std::string_view move, const Map &map);
-  Position getPosition() const;
+  void move(std::string_view move, Map &map);
+  Position& getPosition();
   bool isFight() const;
   void stopFight();
+  bool addArmor(Map &map);
+  void printArmor() const;
+  void dropArmor(std::string_view armor_drop);
+  bool notExist(std::string_view check_armor);
 
  private:
   Position position;
+  armor_vector armors;
   bool isFighting = false;
+  int wgt;
 };

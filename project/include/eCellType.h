@@ -4,7 +4,8 @@
 
 #pragma once
 
-struct Position {
-  size_t x;
-  size_t y;
+enum class eCellTypes {
+  CELL,
+  ENEMY,
+  ARMOR,
 };
